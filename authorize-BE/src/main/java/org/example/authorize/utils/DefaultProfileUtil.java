@@ -1,6 +1,6 @@
-package com.mmedic.utils;
+package org.example.authorize.utils;
 
-import org.example.authorize.utils.Constants;
+import org.example.authorize.utils.constants.SystemConstants;
 import org.springframework.boot.SpringApplication;
 
 import java.util.HashMap;
@@ -29,7 +29,7 @@ public class DefaultProfileUtil {
     public static void addDefaultProfile(SpringApplication app) {
         Map<String, Object> defProperties = new HashMap<>();
 
-        defProperties.put(SPRING_PROFILE_DEFAULT, Constants.SPRING_PROFILE_LOCAL);
+        defProperties.put(SPRING_PROFILE_DEFAULT, SystemConstants.SPRING_PROFILE_LOCAL);
         app.setDefaultProperties(defProperties);
     }
 }

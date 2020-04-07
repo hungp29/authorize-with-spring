@@ -1,5 +1,6 @@
 package org.example.authorize;
 
+import org.example.authorize.utils.DefaultProfileUtil;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.core.env.Environment;
@@ -15,7 +16,7 @@ public class Application {
 
     public static void main(String[] args) {
         SpringApplication app = new SpringApplication(Application.class);
-        com.mmedic.utils.DefaultProfileUtil.addDefaultProfile(app);
+        DefaultProfileUtil.addDefaultProfile(app);
         Environment env = app.run(args).getEnvironment();
     }
 }
