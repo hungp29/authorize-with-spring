@@ -8,15 +8,15 @@ DROP TABLE IF EXISTS `principal`;
 CREATE TABLE `principal`
 (
     `id`        varchar(32) NOT NULL,
-    `disabled`  tinyint(1)  NULL DEFAULT '0',
-    `deleted`   tinyint(1)  NULL DEFAULT '0',
+    `disabled`  boolean  NULL DEFAULT '0',
+    `deleted`   boolean  NULL DEFAULT '0',
     `create_by` varchar(32) NULL,
     `create_at` timestamp   NULL,
     `update_by` varchar(32) NULL,
     `update_at` timestamp   NULL,
     PRIMARY KEY (`id`)
 ) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8;
+  DEFAULT CHARSET = utf8mb4;
 
 --
 -- Table structure for table `role`
@@ -26,15 +26,15 @@ CREATE TABLE `role`
 (
     `id`          varchar(32)  NOT NULL,
     `name`        varchar(255) NOT NULL,
-    `system_role` tinyint(1) DEFAULT '0',
-    `read_only`   tinyint(1) DEFAULT '0',
+    `system_role` boolean DEFAULT '0',
+    `read_only`   boolean DEFAULT '0',
     `create_by`   varchar(32)  NULL,
     `create_at`   timestamp    NULL,
     `update_by`   varchar(32)  NULL,
     `update_at`   timestamp    NULL,
     PRIMARY KEY (`id`)
 ) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8;
+  DEFAULT CHARSET = utf8mb4;
 
 --
 -- Table structure for table `principal_role`
@@ -56,7 +56,7 @@ CREATE TABLE `principal_role`
     CONSTRAINT `fk_principal_role_w_principal` FOREIGN KEY (`principal_id`) REFERENCES `principal` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
     CONSTRAINT `fk_principal_role_w_role` FOREIGN KEY (`role_id`) REFERENCES `role` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
 ) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8;
+  DEFAULT CHARSET = utf8mb4;
 
 --
 -- Table structure for table `policy`
@@ -66,14 +66,14 @@ CREATE TABLE `policy`
 (
     `id`          varchar(32)  NOT NULL,
     `policy_name` varchar(255) NOT NULL,
-    `read_only`   tinyint(1) DEFAULT '0',
+    `read_only`   boolean DEFAULT '0',
     `create_by`   varchar(32)  NULL,
     `create_at`   timestamp    NULL,
     `update_by`   varchar(32)  NULL,
     `update_at`   timestamp    NULL,
     PRIMARY KEY (`id`)
 ) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8;
+  DEFAULT CHARSET = utf8mb4;
 
 --
 -- Table structure for table `policy_condition`
@@ -93,7 +93,7 @@ CREATE TABLE `policy_condition`
     KEY `policy_id` (`policy_id`),
     CONSTRAINT `fk_policy_condition_w_policy` FOREIGN KEY (`policy_id`) REFERENCES `policy` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
 ) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8;
+  DEFAULT CHARSET = utf8mb4;
 
 --
 -- Table structure for table `policy_permission`
@@ -101,7 +101,7 @@ CREATE TABLE `policy_condition`
 DROP TABLE IF EXISTS `policy_permission`;
 CREATE TABLE `policy_permission`
 (
-    `id`         varchar(32) NOT NULL AUTO_INCREMENT,
+    `id`         varchar(32) NOT NULL,
     `policy_id`  varchar(32) NOT NULL,
     `permission` text        NOT NULL,
     `create_by`  varchar(32) NULL,
@@ -112,7 +112,7 @@ CREATE TABLE `policy_permission`
     KEY `policy_id` (`policy_id`),
     CONSTRAINT `fk_policy_permission_w_policy` FOREIGN KEY (`policy_id`) REFERENCES `policy` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
 ) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8;
+  DEFAULT CHARSET = utf8mb4;
 
 --
 -- Table structure for table `role_policy`
@@ -133,7 +133,7 @@ CREATE TABLE `role_policy`
     CONSTRAINT `fk_role_policy_w_policy` FOREIGN KEY (`policy_id`) REFERENCES `policy` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
     CONSTRAINT `fk_role_policy_w_role` FOREIGN KEY (`role_id`) REFERENCES `role` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
 ) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8;
+  DEFAULT CHARSET = utf8mb4;
 
 --
 -- Table structure for table `account`
@@ -161,7 +161,7 @@ CREATE TABLE `account`
     KEY `principal_id` (`principal_id`),
     CONSTRAINT `fk_account_w_principal` FOREIGN KEY (`principal_id`) REFERENCES `principal` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
 ) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8;
+  DEFAULT CHARSET = utf8mb4;
 
 --
 -- Table structure for table `auth_method`
@@ -169,14 +169,14 @@ CREATE TABLE `account`
 
 CREATE TABLE `auth_method`
 (
-    `id`           varchar(32)                            NOT NULL,
-    `auth_type`    enum ('EMAIL_PASSWORD','PHONE_NUMBER') NOT NULL,
+    `id`           varchar(32)             NOT NULL,
+    `principal_id` varchar(32)             NOT NULL,
+    `auth_type`    enum ('EMAIL_PASSWORD') NOT NULL,
     `auth_data_1`  text,
     `auth_data_2`  text,
     `auth_data_3`  text,
-    `principal_id` int(11)                                NOT NULL,
     PRIMARY KEY (`id`),
     KEY `principal_id` (`principal_id`),
     CONSTRAINT `fk_auth_method_w_principal` FOREIGN KEY (`principal_id`) REFERENCES `principal` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
 ) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8;
+  DEFAULT CHARSET = utf8mb4;
