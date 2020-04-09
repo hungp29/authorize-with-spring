@@ -8,8 +8,8 @@ DROP TABLE IF EXISTS `principal`;
 CREATE TABLE `principal`
 (
     `id`        varchar(32) NOT NULL,
-    `disabled`  boolean  NULL DEFAULT '0',
-    `deleted`   boolean  NULL DEFAULT '0',
+    `disabled`  boolean     NOT NULL DEFAULT '0',
+    `deleted`   boolean     NOT NULL DEFAULT '0',
     `create_by` varchar(32) NULL,
     `create_at` timestamp   NULL,
     `update_by` varchar(32) NULL,
@@ -26,8 +26,8 @@ CREATE TABLE `role`
 (
     `id`          varchar(32)  NOT NULL,
     `name`        varchar(255) NOT NULL,
-    `system_role` boolean DEFAULT '0',
-    `read_only`   boolean DEFAULT '0',
+    `system_role` boolean      NULL DEFAULT '0',
+    `read_only`   boolean      NULL DEFAULT '0',
     `create_by`   varchar(32)  NULL,
     `create_at`   timestamp    NULL,
     `update_by`   varchar(32)  NULL,
@@ -66,7 +66,7 @@ CREATE TABLE `policy`
 (
     `id`          varchar(32)  NOT NULL,
     `policy_name` varchar(255) NOT NULL,
-    `read_only`   boolean DEFAULT '0',
+    `read_only`   boolean      NULL DEFAULT '0',
     `create_by`   varchar(32)  NULL,
     `create_at`   timestamp    NULL,
     `update_by`   varchar(32)  NULL,
@@ -84,7 +84,7 @@ CREATE TABLE `policy_condition`
     `id`              varchar(32) NOT NULL,
     `policy_id`       varchar(32) NOT NULL,
     `operator`        text        NOT NULL,
-    `condition_value` text,
+    `condition_value` text        NULL,
     `create_by`       varchar(32) NULL,
     `create_at`       timestamp   NULL,
     `update_by`       varchar(32) NULL,
@@ -121,17 +121,18 @@ DROP TABLE IF EXISTS `role_policy`;
 CREATE TABLE `role_policy`
 (
     `id`        varchar(32) NOT NULL,
-    `policy_id` varchar(32) NOT NULL,
     `role_id`   varchar(32) NOT NULL,
+    `policy_id` varchar(32) NOT NULL,
     `create_by` varchar(32) NULL,
     `create_at` timestamp   NULL,
     `update_by` varchar(32) NULL,
     `update_at` timestamp   NULL,
     PRIMARY KEY (`id`),
-    KEY `policy_id` (`policy_id`),
     KEY `role_id` (`role_id`),
-    CONSTRAINT `fk_role_policy_w_policy` FOREIGN KEY (`policy_id`) REFERENCES `policy` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
-    CONSTRAINT `fk_role_policy_w_role` FOREIGN KEY (`role_id`) REFERENCES `role` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
+    KEY `policy_id` (`policy_id`),
+    UNIQUE KEY `role_policy` (`role_id`, `policy_id`),
+    CONSTRAINT `fk_role_policy_w_role` FOREIGN KEY (`role_id`) REFERENCES `role` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
+    CONSTRAINT `fk_role_policy_w_policy` FOREIGN KEY (`policy_id`) REFERENCES `policy` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4;
 
@@ -142,7 +143,7 @@ DROP TABLE IF EXISTS `account`;
 CREATE TABLE `account`
 (
     `id`                 varchar(32)  NOT NULL,
-    `principal_id`       varchar(32)  NULL,
+    `principal_id`       varchar(32)  NOT NULL,
     `first_name`         varchar(255) NOT NULL,
     `last_name`          varchar(255) NOT NULL,
     `title`              varchar(255) NULL,
@@ -172,9 +173,13 @@ CREATE TABLE `auth_method`
     `id`           varchar(32)             NOT NULL,
     `principal_id` varchar(32)             NOT NULL,
     `auth_type`    enum ('EMAIL_PASSWORD') NOT NULL,
-    `auth_data_1`  text,
-    `auth_data_2`  text,
-    `auth_data_3`  text,
+    `auth_data_1`  text                    NULL,
+    `auth_data_2`  text                    NULL,
+    `auth_data_3`  text                    NULL,
+    `create_by`    varchar(32)             NULL,
+    `create_at`    timestamp               NULL,
+    `update_by`    varchar(32)             NULL,
+    `update_at`    timestamp               NULL,
     PRIMARY KEY (`id`),
     KEY `principal_id` (`principal_id`),
     CONSTRAINT `fk_auth_method_w_principal` FOREIGN KEY (`principal_id`) REFERENCES `principal` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT

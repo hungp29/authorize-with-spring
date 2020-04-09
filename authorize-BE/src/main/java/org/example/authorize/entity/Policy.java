@@ -3,13 +3,15 @@ package org.example.authorize.entity;
 import lombok.Data;
 
 import javax.persistence.*;
+import javax.validation.constraints.Size;
 import java.util.List;
 
 @Entity
 @Data
 public class Policy extends BaseEntity {
 
-    @Column
+    @Size(max = 255)
+    @Column(nullable = false)
     private String policyName;
 
     @Column

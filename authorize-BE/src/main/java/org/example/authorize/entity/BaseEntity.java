@@ -12,6 +12,7 @@ import javax.persistence.Column;
 import javax.persistence.EntityListeners;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
+import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
@@ -25,8 +26,10 @@ import java.time.LocalDateTime;
 public class BaseEntity implements Serializable {
 
     @Id
+    @Size(max = 32)
     private String id;
 
+    @Size(max = 32)
     @Column
     @CreatedBy
     private String createBy;
@@ -35,6 +38,7 @@ public class BaseEntity implements Serializable {
     @CreatedDate
     private LocalDateTime createAt;
 
+    @Size(max = 32)
     @Column
     @LastModifiedBy
     private String updateBy;

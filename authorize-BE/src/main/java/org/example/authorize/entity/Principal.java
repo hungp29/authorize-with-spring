@@ -3,17 +3,23 @@ package org.example.authorize.entity;
 import lombok.Data;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @Entity
 @Data
 public class Principal extends BaseEntity {
 
-    @Column
+    @NotNull
+    @Column(nullable = false)
     private boolean disabled;
 
-    @Column
+    @NotNull
+    @Column(nullable = false)
     private boolean deleted;
+
+    @OneToOne(mappedBy = "principal")
+    private Account account;
 
     @ManyToMany
     @JoinTable(
