@@ -12,4 +12,6 @@ public class Constants {
     }
 
     public static final String HEX_VALUE = "0123456789ABCDEF";
+
+    public static final String COLON = ";";
 }
