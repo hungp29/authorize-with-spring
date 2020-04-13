@@ -20,6 +20,6 @@ public class PermissionController {
 
     @GetMapping
     public ResponseEntity<List<PermissionDTO>> getPermissions() {
-        return ResponseEntity.ok(permissionService.getAllPermission());
+        return ResponseEntity.ok(permissionService.getPermissions());
     }
 }

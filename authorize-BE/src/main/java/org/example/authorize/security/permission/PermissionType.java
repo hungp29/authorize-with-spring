@@ -7,7 +7,8 @@ public enum PermissionType {
 
     READ("READ"),
     WRITE("WRITE"),
-    UNKNOWN("UNKNOWN");
+    UNKNOWN("UNKNOWN"),
+    NONE(null);
 
     private String code;
 

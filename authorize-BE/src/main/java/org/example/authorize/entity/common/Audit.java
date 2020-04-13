@@ -1,4 +1,4 @@
-package org.example.authorize.entity;
+package org.example.authorize.entity.common;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -10,38 +10,28 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.Column;
 import javax.persistence.EntityListeners;
-import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
-/**
- * Base Entity.
- */
 @Getter
 @Setter
-@EntityListeners(AuditingEntityListener.class)
 @MappedSuperclass
-public class BaseEntity implements Serializable {
+@EntityListeners(AuditingEntityListener.class)
+public abstract class Audit<T> implements Serializable {
 
-    @Id
-    @Size(max = 32)
-    private String id;
-
-    @Size(max = 32)
     @Column
     @CreatedBy
-    private String createBy;
+    private T createBy;
 
     @Column
     @CreatedDate
     private LocalDateTime createAt;
 
-    @Size(max = 32)
     @Column
     @LastModifiedBy
-    private String updateBy;
+    private T updateBy;
 
     @Column
     @LastModifiedDate

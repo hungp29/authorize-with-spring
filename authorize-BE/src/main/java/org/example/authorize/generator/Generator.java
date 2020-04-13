@@ -13,4 +13,12 @@ public interface Generator<T> {
      * @return return value is generated
      */
     T generate();
+
+    /**
+     * Generating ID with value is determined.
+     *
+     * @param value the value to encrypt to id
+     * @return return the ID after encrypt value
+     */
+    T generate(T value);
 }

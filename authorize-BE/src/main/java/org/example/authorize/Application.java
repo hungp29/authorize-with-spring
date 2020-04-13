@@ -1,11 +1,14 @@
 package org.example.authorize;
 
+import org.example.authorize.config.prop.ApplicationProperties;
 import org.example.authorize.utils.DefaultProfileUtil;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.core.env.Environment;
 
 @SpringBootApplication
+@EnableConfigurationProperties({ApplicationProperties.class})
 public class Application {
 
     private final Environment env;

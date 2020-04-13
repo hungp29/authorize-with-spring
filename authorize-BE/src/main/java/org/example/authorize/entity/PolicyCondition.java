@@ -1,16 +1,19 @@
 package org.example.authorize.entity;
 
 import lombok.Data;
+import org.example.authorize.entity.common.Audit;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 @Entity
 @Data
-public class PolicyCondition extends BaseEntity {
+public class PolicyCondition extends Audit<String> {
+
+    @Id
+    @Size(max = 32)
+    private String id;
 
     @ManyToOne
     @JoinColumn(name = "policy_id", nullable = false)

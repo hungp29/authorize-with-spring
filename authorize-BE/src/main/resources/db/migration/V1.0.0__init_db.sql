@@ -42,17 +42,9 @@ CREATE TABLE `role`
 DROP TABLE IF EXISTS `principal_role`;
 CREATE TABLE `principal_role`
 (
-    `id`           varchar(32) NOT NULL,
     `principal_id` varchar(32) NOT NULL,
     `role_id`      varchar(32) NOT NULL,
-    `create_by`    varchar(32) NULL,
-    `create_at`    timestamp   NULL,
-    `update_by`    varchar(32) NULL,
-    `update_at`    timestamp   NULL,
-    PRIMARY KEY (`id`),
-    KEY `principal_id` (`principal_id`),
-    KEY `role_id` (`role_id`),
-    UNIQUE KEY `principal_role` (`principal_id`, `role_id`),
+    PRIMARY KEY (`principal_id`, `role_id`),
     CONSTRAINT `fk_principal_role_w_principal` FOREIGN KEY (`principal_id`) REFERENCES `principal` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
     CONSTRAINT `fk_principal_role_w_role` FOREIGN KEY (`role_id`) REFERENCES `role` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
 ) ENGINE = InnoDB
@@ -120,17 +112,9 @@ CREATE TABLE `policy_permission`
 DROP TABLE IF EXISTS `role_policy`;
 CREATE TABLE `role_policy`
 (
-    `id`        varchar(32) NOT NULL,
     `role_id`   varchar(32) NOT NULL,
     `policy_id` varchar(32) NOT NULL,
-    `create_by` varchar(32) NULL,
-    `create_at` timestamp   NULL,
-    `update_by` varchar(32) NULL,
-    `update_at` timestamp   NULL,
-    PRIMARY KEY (`id`),
-    KEY `role_id` (`role_id`),
-    KEY `policy_id` (`policy_id`),
-    UNIQUE KEY `role_policy` (`role_id`, `policy_id`),
+    PRIMARY KEY (`role_id`, `policy_id`),
     CONSTRAINT `fk_role_policy_w_role` FOREIGN KEY (`role_id`) REFERENCES `role` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
     CONSTRAINT `fk_role_policy_w_policy` FOREIGN KEY (`policy_id`) REFERENCES `policy` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
 ) ENGINE = InnoDB
@@ -144,8 +128,8 @@ CREATE TABLE `account`
 (
     `id`                 varchar(32)  NOT NULL,
     `principal_id`       varchar(32)  NOT NULL,
-    `first_name`         varchar(255) NOT NULL,
-    `last_name`          varchar(255) NOT NULL,
+    `first_name`         varchar(255) NULL,
+    `last_name`          varchar(255) NULL,
     `title`              varchar(255) NULL,
     `date_of_birth`      date         NULL,
     `avatar_url`         text         NULL,

@@ -1,17 +1,20 @@
 package org.example.authorize.entity;
 
 import lombok.Data;
+import org.example.authorize.entity.common.Audit;
 import org.example.authorize.enums.AuthType;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 @Entity
 @Data
-public class AuthMethod extends BaseEntity {
+public class AuthMethod extends Audit<String> {
+
+    @Id
+    @Size(max = 32)
+    private String id;
 
     @ManyToOne
     @JoinColumn(name = "principal_id", nullable = false)

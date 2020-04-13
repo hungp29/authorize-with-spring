@@ -1,14 +1,20 @@
 package org.example.authorize.entity;
 
 import lombok.Data;
+import org.example.authorize.entity.common.Audit;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.List;
 
 @Entity
 @Data
-public class Principal extends BaseEntity {
+public class Principal extends Audit<String> {
+
+    @Id
+    @Size(max = 32)
+    private String id;
 
     @NotNull
     @Column(nullable = false)

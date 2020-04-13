@@ -48,16 +48,26 @@ public class PermissionUtils {
      * @param requestMethod request method
      * @return return "read" if request method is GET, "write" if request method is POST, PUT or DELETE, otherwise return "unknown"
      */
-    public static String getDefaultPermissionType(RequestMethod requestMethod) {
+    public static PermissionType getDefaultPermissionType(RequestMethod requestMethod) {
         switch (requestMethod) {
             case GET:
-                return PermissionType.READ.getCode();
+                return PermissionType.READ;
             case POST:
             case PUT:
             case DELETE:
-                return PermissionType.WRITE.getCode();
+                return PermissionType.WRITE;
             default:
-                return PermissionType.UNKNOWN.getCode();
+                return PermissionType.UNKNOWN;
         }
+    }
+
+    /**
+     * Check permission type is null.
+     *
+     * @param permissionType permission type need to check
+     * @return return true if permission type is null or equals NONE
+     */
+    public static boolean isEmpty(PermissionType permissionType) {
+        return null == permissionType || permissionType.equals(PermissionType.NONE);
     }
 }

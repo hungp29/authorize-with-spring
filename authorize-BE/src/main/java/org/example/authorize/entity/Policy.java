@@ -1,6 +1,7 @@
 package org.example.authorize.entity;
 
 import lombok.Data;
+import org.example.authorize.entity.common.Audit;
 
 import javax.persistence.*;
 import javax.validation.constraints.Size;
@@ -8,7 +9,11 @@ import java.util.List;
 
 @Entity
 @Data
-public class Policy extends BaseEntity {
+public class Policy extends Audit<String> {
+
+    @Id
+    @Size(max = 32)
+    private String id;
 
     @Size(max = 255)
     @Column(nullable = false)

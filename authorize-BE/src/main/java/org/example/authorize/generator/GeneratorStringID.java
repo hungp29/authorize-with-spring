@@ -34,6 +34,23 @@ public class GeneratorStringID implements Generator<String> {
     }
 
     /**
+     * Generating ID with value is determined.
+     *
+     * @param value the value to encrypt to id
+     * @return return the ID after encrypt value
+     */
+    @Override
+    public String generate(String value) {
+        try {
+            MessageDigest salt = MessageDigest.getInstance("SHA-256");
+            salt.update(value.getBytes(StandardCharsets.UTF_8));
+            return bytesToHex(salt.digest());
+        } catch (NoSuchAlgorithmException | NullPointerException e) {
+            throw new GeneratorException("An error occurs while generating ID");
+        }
+    }
+
+    /**
      * Convert bytes to hex string.
      *
      * @param bytes the value need to convert

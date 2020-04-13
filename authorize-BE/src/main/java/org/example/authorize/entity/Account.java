@@ -1,18 +1,20 @@
 package org.example.authorize.entity;
 
 import lombok.Data;
+import org.example.authorize.entity.common.Audit;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
 
 @Entity
 @Data
-public class Account extends BaseEntity {
+public class Account extends Audit<String> {
+
+    @Id
+    @Size(max = 32)
+    private String id;
 
     @OneToOne
     @JoinColumn(name = "principal_id", nullable = false)

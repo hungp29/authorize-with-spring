@@ -9,7 +9,7 @@ public @interface PermissionConditions {
 
     String value() default "";
 
-    String type() default "";
+    PermissionType type() default PermissionType.NONE;
 
     PermissionCondition[] conditions() default {};
 }
