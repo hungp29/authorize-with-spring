@@ -1,7 +1,6 @@
 package org.example.authorize.utils;
 
 import org.example.authorize.config.SecurityConfiguration;
-import org.example.authorize.security.permission.PermissionType;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.web.bind.annotation.RequestMethod;
 

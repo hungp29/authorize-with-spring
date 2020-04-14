@@ -1,7 +1,6 @@
 package org.example.authorize.utils;
 
 import lombok.extern.slf4j.Slf4j;
-import org.example.authorize.rbac.AbstractAccessCondition;
 import org.example.authorize.rbac.AccessCondition;
 import org.example.authorize.rbac.ConditionPrototype;
 import org.example.authorize.rbac.RequestValueResolver;

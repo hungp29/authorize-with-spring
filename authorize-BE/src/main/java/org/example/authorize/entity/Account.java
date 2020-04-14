@@ -4,7 +4,6 @@ import lombok.Data;
 import org.example.authorize.entity.common.Audit;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
 
@@ -21,12 +20,10 @@ public class Account extends Audit<String> {
     private Principal principal;
 
     @Size(max = 255)
-    @NotNull
     @Column(nullable = false)
     private String firstName;
 
     @Size(max = 255)
-    @NotNull
     @Column(nullable = false)
     private String lastName;
 

@@ -14,4 +14,12 @@ public interface PolicyRepository extends JpaRepository<Policy, String> {
      * @return return policy if it's exist
      */
     Optional<Policy> findById(String id);
+
+    /**
+     * Find policy by name.
+     *
+     * @param name the name of policy
+     * @return return policy if it's exist
+     */
+    Optional<Policy> findByName(String name);
 }

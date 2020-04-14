@@ -1,4 +1,4 @@
-package org.example.authorize.generator;
+package org.example.authorize.utils.generator;
 
 /**
  * Generator interface.

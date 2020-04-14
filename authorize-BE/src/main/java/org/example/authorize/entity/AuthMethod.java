@@ -21,7 +21,7 @@ public class AuthMethod extends Audit<String> {
     private Principal principal;
 
     @NotNull
-    @Column(columnDefinition = "enum('EMAIL_PASSWORD')", nullable = false)
+    @Column(columnDefinition = "enum('USERNAME_PASSWORD', 'EMAIL_PASSWORD')", nullable = false)
     private AuthType authType;
 
     @Column(name = "auth_data_1", columnDefinition = "text")

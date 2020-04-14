@@ -9,7 +9,9 @@
 application:
   super-role-name: Super Admin
   policy-full-access: Full Access
-#  super-account-username: super
+  super-account:
+    username: admin
+    password: 123456!
 
 # ===================================================================
 # Spring properties

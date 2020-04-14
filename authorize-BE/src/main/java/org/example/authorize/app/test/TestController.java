@@ -1,12 +1,12 @@
 package org.example.authorize.app.test;
 
-import org.example.authorize.generator.Generator;
 import org.example.authorize.rbac.condition.OwnedResourceCondition;
 import org.example.authorize.rbac.resolver.TestResolver;
 import org.example.authorize.security.permission.PermissionCondition;
 import org.example.authorize.security.permission.PermissionConditions;
 import org.example.authorize.security.permission.PermissionGroup;
 import org.example.authorize.utils.constants.PermissionGroupConstants;
+import org.example.authorize.utils.generator.Generator;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 

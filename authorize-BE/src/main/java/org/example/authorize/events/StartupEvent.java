@@ -2,18 +2,22 @@ package org.example.authorize.events;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.example.authorize.app.account.AccountService;
 import org.example.authorize.app.permission.PermissionDTO;
 import org.example.authorize.app.permission.PermissionService;
 import org.example.authorize.app.policy.PolicyService;
+import org.example.authorize.app.principal.PrincipalService;
 import org.example.authorize.app.role.RoleService;
 import org.example.authorize.config.prop.ApplicationProperties;
+import org.example.authorize.entity.Account;
 import org.example.authorize.entity.Policy;
-import org.example.authorize.entity.PolicyPermission;
+import org.example.authorize.entity.Principal;
 import org.example.authorize.entity.Role;
-import org.example.authorize.generator.Generator;
+import org.example.authorize.utils.generator.Generator;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 
 import java.util.Collections;
 import java.util.List;
@@ -28,10 +32,13 @@ public class StartupEvent {
 
     private final ApplicationProperties appProps;
 
+    private final Generator<String> generator;
+
     private final PermissionService permissionService;
     private final RoleService roleService;
     private final PolicyService policyService;
-    private final Generator<String> generator;
+    private final AccountService accountService;
+    private final PrincipalService principalService;
 
     /**
      * Once the app is ready, it will check for the existence of an Super Admin account,
@@ -45,51 +52,53 @@ public class StartupEvent {
         Policy policyFullAccess = getPolicyFullAccess();
 
         // Generating id of super role
-        String superRoleId = generator.generate(appProps.getSuperRoleName());
-        Role superRole = roleService.findRoleById(superRoleId).orElse(null);
+        Role superRole = roleService.findSuperRole().orElse(null);
 
         // Create new super role if it's not exist
         if (null == superRole) {
             log.debug("Super Role don't exist. Creating new one.");
-            superRole = new Role();
-            superRole.setId(generator.generate(superRoleId));
-            superRole.setReadOnly(true);
-            superRole.setSystemRole(false);
-            superRole.setName(appProps.getSuperRoleName());
+            superRole = roleService.createRole(appProps.getSuperRoleName(), true, false);
             superRole = roleService.save(superRole);
+        }
+        // Attach role to policy
+        policyService.attachRoleToPolicy(policyFullAccess, superRole);
 
-            // Attach role to policy
-            policyFullAccess.setRoles(Collections.singletonList(superRole));
-            policyFullAccess = policyService.save(policyFullAccess);
+        // Create new super account if it's not exist
+        List<Account> superAccounts = accountService.findAccountByRole(superRole);
+        if (CollectionUtils.isEmpty(superAccounts)) {
+            Account superAccount = accountService.createAndSaveByUsernameAndPassword(appProps.getSuperAccount().getUsername(), appProps.getSuperAccount().getPassword());
+
+            // Set super role and active super account
+            Principal superAccountPrincipal = superAccount.getPrincipal();
+            superAccountPrincipal.setRoles(Collections.singletonList(superRole));
+            superAccountPrincipal.setDisabled(false);
+            principalService.save(superAccountPrincipal);
         }
     }
 
     /**
-     * Get policy full access.
+     * Get policy full access. If application have new API or some API is out of date then they will be update to full access policy.
      *
      * @return return policy full access
      */
     private Policy getPolicyFullAccess() {
         // Get all API need to permission to access
-        List<PermissionDTO> permissions = permissionService.getPermissions();
+        List<PermissionDTO> permissionDTOs = permissionService.getPermissions();
 
         // Generating id of policy full access
-        String policyFullAccessId = generator.generate(appProps.getPolicyFullAccess());
-        Policy policyFullAccess = policyService.findPolicyById(policyFullAccessId).orElse(null);
+        Policy policyFullAccess = policyService.findPolicyByName(appProps.getPolicyFullAccess()).orElse(null);
 
-        // Create new policy full access if it's not exist
         if (null == policyFullAccess) {
+            // Create new policy full access if it's not exist
             log.debug("Creating new full access policy");
-            policyFullAccess = new Policy();
-            policyFullAccess.setId(policyFullAccessId);
-            policyFullAccess.setReadOnly(true);
-            policyFullAccess.setPolicyName(appProps.getPolicyFullAccess());
+            policyFullAccess = policyService.createPolicy(appProps.getPolicyFullAccess(), true);
             policyFullAccess = policyService.save(policyFullAccess);
 
             // Grant permission for new policy
-            permissionService.grantPermissionForPolicy(policyFullAccess, permissions);
+            permissionService.grantPermissionForPolicy(policyFullAccess, permissionDTOs);
         } else {
-            List<PolicyPermission> policyPermissions = policyFullAccess.getPolicyPermissions();
+            // Update permissions for policy
+            permissionService.updatePermissionForPolicy(policyFullAccess, permissionDTOs);
         }
 
         return policyFullAccess;

@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.example.authorize.app.policy.PolicyPermissionRepository;
 import org.example.authorize.entity.Policy;
 import org.example.authorize.entity.PolicyPermission;
-import org.example.authorize.generator.Generator;
 import org.example.authorize.rbac.ConditionPrototype;
 import org.example.authorize.security.permission.PermissionCondition;
 import org.example.authorize.security.permission.PermissionConditions;
@@ -12,6 +11,7 @@ import org.example.authorize.security.permission.PermissionGroup;
 import org.example.authorize.utils.PermissionUtils;
 import org.example.authorize.utils.SecurityUtils;
 import org.example.authorize.utils.constants.Constants;
+import org.example.authorize.utils.generator.Generator;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -19,10 +19,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -122,14 +119,12 @@ public class PermissionService {
      *
      * @param policy         the policy contains permission
      * @param permissionDTOs list new permission
+     * @return return list policy permission is saved successfully
      */
     @Transactional
-    public void grantPermissionForPolicy(Policy policy, List<PermissionDTO> permissionDTOs) {
+    public List<PolicyPermission> grantPermissionForPolicy(Policy policy, Collection<PermissionDTO> permissionDTOs) {
+        List<PolicyPermission> savedPolicyPermission = null;
         if (null != policy && !CollectionUtils.isEmpty(permissionDTOs)) {
-            List<PolicyPermission> oldPolicyPermissions = policy.getPolicyPermissions();
-            if (!CollectionUtils.isEmpty(oldPolicyPermissions)) {
-                policyPermissionRepository.deleteInBatch(oldPolicyPermissions);
-            }
             List<PolicyPermission> newPolicyPermissions = new ArrayList<>();
             permissionDTOs.forEach(permissionDTO -> {
                 PolicyPermission policyPermission = new PolicyPermission();
@@ -139,7 +134,81 @@ public class PermissionService {
                 newPolicyPermissions.add(policyPermission);
             });
 
-            policyPermissionRepository.saveAll(newPolicyPermissions);
+            savedPolicyPermission = policyPermissionRepository.saveAll(newPolicyPermissions);
+        }
+        return savedPolicyPermission;
+    }
+
+    /**
+     * Forfeit permissions of Policy.
+     *
+     * @param policyPermissions list permission of policy will be forfeit
+     */
+    @Transactional
+    public void forfeitPermissionForPolicy(List<PolicyPermission> policyPermissions) {
+        if (!CollectionUtils.isEmpty(policyPermissions)) {
+            policyPermissionRepository.deleteInBatch(policyPermissions);
+        }
+    }
+
+    /**
+     * Forfeit one permission of policy.
+     *
+     * @param policyPermission the permission will be forfeit
+     */
+    @Transactional
+    public void forfeitPermissionForPolicy(PolicyPermission policyPermission) {
+        if (null != policyPermission) {
+            policyPermissionRepository.delete(policyPermission);
+        }
+    }
+
+    /**
+     * Update permission for policy.
+     *
+     * @param policy         policy need to update permission
+     * @param permissionDTOs list permission
+     */
+    @Transactional
+    public void updatePermissionForPolicy(Policy policy, List<PermissionDTO> permissionDTOs) {
+        // If full access policy is exist, checking all permission to detect new permissions and out of date permissions
+        List<PolicyPermission> clonePolicyPermissions = new ArrayList<>(policy.getPolicyPermissions());
+
+        if (!CollectionUtils.isEmpty(clonePolicyPermissions)) {
+            if (!CollectionUtils.isEmpty(permissionDTOs)) {
+                Map<String, PermissionDTO> permissionDTOMap = permissionDTOs.stream()
+                        .collect(Collectors.toMap(PermissionDTO::getId, permissionDTO -> permissionDTO));
+
+                // Filter permissions is already exist and not out of date
+                int index = 0;
+                while (index < clonePolicyPermissions.size()) {
+                    String policyPermissionId = clonePolicyPermissions.get(index).getId();
+                    if (permissionDTOMap.containsKey(policyPermissionId)) {
+                        // In this case, the permission is already exist, so we not need add/delete these permissions
+                        permissionDTOMap.remove(policyPermissionId);
+                        clonePolicyPermissions.remove(index);
+                    } else {
+                        index++;
+                    }
+                }
+                // Delete the old permissions, that is not exist in application
+                this.forfeitPermissionForPolicy(clonePolicyPermissions);
+                // Remove permission is deleted in list permission of full access policy
+                policy.getPolicyPermissions().removeAll(clonePolicyPermissions);
+
+                // Add new permission
+                List<PolicyPermission> newPolicyPermission = this.grantPermissionForPolicy(policy, permissionDTOMap.values());
+                // Add new permission is saved successfully to policyFullAccess.
+                if (!CollectionUtils.isEmpty(newPolicyPermission)) {
+                    policy.getPolicyPermissions().addAll(newPolicyPermission);
+                }
+            } else {
+                // Forfeit all permission because app don't have any permission (list permission dto is empty)
+                this.forfeitPermissionForPolicy(clonePolicyPermissions);
+            }
+        } else {
+            // Granting new permissions for full access policy if it's not have any permission before
+            this.grantPermissionForPolicy(policy, permissionDTOs);
         }
     }
 }

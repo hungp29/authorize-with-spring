@@ -10,4 +10,14 @@ public class ApplicationProperties {
     private String superRoleName;
 
     private String policyFullAccess;
+
+    private SuperAccount superAccount;
+
+    @Data
+    public static class SuperAccount {
+
+        private String username;
+
+        private String password;
+    }
 }

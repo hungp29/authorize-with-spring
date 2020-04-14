@@ -17,7 +17,7 @@ public class Policy extends Audit<String> {
 
     @Size(max = 255)
     @Column(nullable = false)
-    private String policyName;
+    private String name;
 
     @Column
     private boolean readOnly;
