@@ -128,8 +128,10 @@ CREATE TABLE `account`
 (
     `id`                 varchar(32)  NOT NULL,
     `principal_id`       varchar(32)  NOT NULL,
+    `username`           varchar(255) NULL,
     `first_name`         varchar(255) NULL,
     `last_name`          varchar(255) NULL,
+    `email`              varchar(255) NULL,
     `title`              varchar(255) NULL,
     `date_of_birth`      date         NULL,
     `avatar_url`         text         NULL,

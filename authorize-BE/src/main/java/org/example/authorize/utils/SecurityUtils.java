@@ -1,7 +1,11 @@
 package org.example.authorize.utils;
 
 import org.example.authorize.config.SecurityConfiguration;
+import org.example.authorize.entity.Account;
+import org.example.authorize.utils.constants.Constants;
 import org.springframework.util.AntPathMatcher;
+import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 public class SecurityUtils {
@@ -55,5 +59,48 @@ public class SecurityUtils {
             }
         }
         return false;
+    }
+
+    /**
+     * Format role name by replace space with underscore.
+     *
+     * @param name the name of role
+     * @return return the name is formatted
+     */
+    public static String formatRoleName(String name) {
+        if (!StringUtils.isEmpty(name)) {
+            return name.trim().replaceAll(Constants.SPACE, Constants.UNDERSCORE);
+        }
+        return Constants.EMPTY_STRING;
+    }
+
+    /**
+     * Checking account have principal information.
+     *
+     * @param account the account need to checking
+     * @return return true if account have principal info, otherwise return false
+     */
+    public static boolean hasPrincipal(Account account) {
+        return null != account && null != account.getPrincipal();
+    }
+
+    /**
+     * Checking account have auth method.
+     *
+     * @param account the account need to checking
+     * @return return true if account have any auth method, otherwise return false
+     */
+    public static boolean hasAuthMethod(Account account) {
+        return null != account && null != account.getPrincipal() && !CollectionUtils.isEmpty(account.getPrincipal().getAuthMethods());
+    }
+
+    /**
+     * Checking account have role.
+     *
+     * @param account the account need to checking
+     * @return return true if account have any role, otherwise return false
+     */
+    public static boolean hasRole(Account account) {
+        return null != account && null != account.getPrincipal() && !CollectionUtils.isEmpty(account.getPrincipal().getRoles());
     }
 }

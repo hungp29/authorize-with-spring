@@ -5,6 +5,9 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
 
+/**
+ * Spring context, it use to get bean.
+ */
 @Component
 public class SpringContext implements ApplicationContextAware {
 
@@ -14,8 +17,8 @@ public class SpringContext implements ApplicationContextAware {
      * Returns the Spring managed bean instance of the given class type if it exists.
      * Returns null otherwise.
      *
-     * @param beanClass
-     * @return
+     * @param beanClass bean class
+     * @return return bean of class
      */
     public static <T extends Object> T getBean(Class<T> beanClass) {
         return context.getBean(beanClass);

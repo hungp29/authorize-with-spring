@@ -27,4 +27,8 @@ public class PasswordEncode {
         Assert.notNull(value, "The password have to value");
         return passwordEncoder.encode(value);
     }
+
+    public PasswordEncoder getPasswordEncoder() {
+        return passwordEncoder;
+    }
 }

@@ -42,6 +42,16 @@ spring:
     table: flyway_history
 
 # ===================================================================
+# JSON Web Token
+# ===================================================================
+
+jwt:
+  signing-key: 9D2295F32A80E79274F31C5CEEA8523F
+  access-token-validity-seconds: 86400 # 1 day
+  refresh-token-validity-seconds: 172800 # 2 days
+#  prefix: # prefix use for redis
+
+# ===================================================================
 # Logger
 # ===================================================================
 logging:

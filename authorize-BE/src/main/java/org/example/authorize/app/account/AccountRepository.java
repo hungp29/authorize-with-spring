@@ -27,4 +27,12 @@ public interface AccountRepository extends JpaRepository<Account, String> {
      * @return return list account satisfy condition
      */
     List<Account> findByPrincipal_RolesIn(List<Role> roles);
+
+    /**
+     * Find account by username.
+     *
+     * @param username username of account
+     * @return return account if it's exist
+     */
+    Optional<Account> findByUsername(String username);
 }

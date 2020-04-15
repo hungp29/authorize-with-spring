@@ -32,8 +32,6 @@ public class StartupEvent {
 
     private final ApplicationProperties appProps;
 
-    private final Generator<String> generator;
-
     private final PermissionService permissionService;
     private final RoleService roleService;
     private final PolicyService policyService;

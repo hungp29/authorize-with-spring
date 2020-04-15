@@ -20,12 +20,20 @@ public class Account extends Audit<String> {
     private Principal principal;
 
     @Size(max = 255)
-    @Column(nullable = false)
+    @Column
+    private String username;
+
+    @Size(max = 255)
+    @Column
     private String firstName;
 
     @Size(max = 255)
-    @Column(nullable = false)
+    @Column
     private String lastName;
+
+    @Size(max = 255)
+    @Column
+    private String email;
 
     @Size(max = 255)
     @Column

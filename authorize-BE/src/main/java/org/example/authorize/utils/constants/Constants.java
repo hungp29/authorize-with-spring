@@ -18,4 +18,8 @@ public class Constants {
     public static final String SYSTEM = "SYSTEM";
 
     public static final String EMPTY_STRING = "";
+
+    public static final String UNDERSCORE = "_";
+
+    public static final String SPACE = " ";
 }

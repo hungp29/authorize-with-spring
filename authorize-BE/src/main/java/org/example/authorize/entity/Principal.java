@@ -34,4 +34,7 @@ public class Principal extends Audit<String> {
             inverseJoinColumns = @JoinColumn(name = "role_id")
     )
     private List<Role> roles;
+
+    @OneToMany(mappedBy = "principal", cascade = CascadeType.PERSIST)
+    private List<AuthMethod> authMethods;
 }
