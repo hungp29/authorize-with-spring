@@ -46,7 +46,7 @@ spring:
 # ===================================================================
 
 jwt:
-  signing-key: 9D2295F32A80E79274F31C5CEEA8523F
+  signing-key: bW1lZGljLWFwaS1qd3Qtc2VjcmV0LWtleS01TUdNNE1qRTRPREk0WXpSaU5qWmtPVFJoTlRVM1ltTmtNV1JtTVdZeE16a3pZ
   access-token-validity-seconds: 86400 # 1 day
   refresh-token-validity-seconds: 172800 # 2 days
 #  prefix: # prefix use for redis
