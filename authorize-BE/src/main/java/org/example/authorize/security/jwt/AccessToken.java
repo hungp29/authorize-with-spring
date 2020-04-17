@@ -1,7 +1,6 @@
 package org.example.authorize.security.jwt;
 
 import java.util.Date;
-import java.util.List;
 
 /**
  * Access Token.
@@ -48,5 +47,5 @@ public interface AccessToken {
      *
      * @return the access token
      */
-    String getValue();
+    String getToken();
 }

@@ -18,7 +18,6 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Component;
-import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import java.nio.charset.StandardCharsets;
@@ -114,7 +113,7 @@ public class TokenProvider implements InitializingBean {
      */
     public boolean validateToken(String accessTokenValue) {
         AccessToken accessToken = readAccessToken(accessTokenValue);
-        return null != accessToken && JWTUtils.verify(accessToken.getValue(), key);
+        return null != accessToken && JWTUtils.verify(accessToken.getToken(), key);
     }
 
     /**

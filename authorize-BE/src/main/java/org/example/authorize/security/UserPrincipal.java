@@ -1,20 +1,16 @@
 package org.example.authorize.security;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.Getter;
 import org.example.authorize.entity.Account;
 import org.example.authorize.entity.AuthMethod;
 import org.example.authorize.entity.Principal;
-import org.example.authorize.entity.Role;
 import org.example.authorize.enums.AuthType;
 import org.example.authorize.exception.AccountInvalidException;
 import org.example.authorize.utils.SecurityUtils;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.util.CollectionUtils;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;

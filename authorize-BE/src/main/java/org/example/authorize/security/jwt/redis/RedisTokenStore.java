@@ -78,7 +78,7 @@ public class RedisTokenStore implements TokenStore, InitializingBean {
      */
     @Override
     public Authentication readAuthentication(AccessToken accessToken) {
-        return readAuthentication(accessToken.getValue());
+        return readAuthentication(accessToken.getToken());
     }
 
     /**
@@ -100,8 +100,8 @@ public class RedisTokenStore implements TokenStore, InitializingBean {
      */
     @Override
     public void storeAccessToken(AccessToken token, Authentication authentication) {
-        String accessKey = redisKey(ACCESS + token.getValue());
-        String authKey = redisKey(AUTH + token.getValue());
+        String accessKey = redisKey(ACCESS + token.getToken());
+        String authKey = redisKey(AUTH + token.getToken());
         String authToAccessKey = redisKey(AUTH_TO_ACCESS + authenticationKeyGenerator.extractKey(authentication));
         String usernameKey = redisKey(UNAME_TO_ACCESS + getUsername(authentication));
 
@@ -120,9 +120,9 @@ public class RedisTokenStore implements TokenStore, InitializingBean {
         RefreshToken refreshToken = token.getRefreshToken();
         if (null != refreshToken && null != refreshToken.getValue()) {
             String refreshToAccessKey = redisKey(REFRESH_TO_ACCESS + token.getRefreshToken().getValue());
-            String accessToRefreshKey = redisKey(ACCESS_TO_REFRESH + token.getValue());
+            String accessToRefreshKey = redisKey(ACCESS_TO_REFRESH + token.getToken());
 
-            redisTemplate.opsForValue().set(refreshToAccessKey, token.getValue());
+            redisTemplate.opsForValue().set(refreshToAccessKey, token.getToken());
             redisTemplate.opsForValue().set(accessToRefreshKey, token.getRefreshToken().getValue());
             if (null != refreshToken.getExpiration()) {
                 int seconds = Long.valueOf((refreshToken.getExpiration().getTime() - System.currentTimeMillis()) / 1000L)
@@ -151,7 +151,7 @@ public class RedisTokenStore implements TokenStore, InitializingBean {
      */
     @Override
     public void removeAccessToken(AccessToken accessToken) {
-        removeAccessToken(accessToken.getValue());
+        removeAccessToken(accessToken.getToken());
     }
 
     /**
@@ -293,7 +293,7 @@ public class RedisTokenStore implements TokenStore, InitializingBean {
         String key = authenticationKeyGenerator.extractKey(authentication);
         AccessToken accessToken = convertClass(redisTemplate.opsForValue().get(redisKey(AUTH_TO_ACCESS + key)), AccessToken.class);
         if (null != accessToken) {
-            Authentication storedAuthentication = readAuthentication(accessToken.getValue());
+            Authentication storedAuthentication = readAuthentication(accessToken.getToken());
             if ((null == storedAuthentication || !key.equals(authenticationKeyGenerator.extractKey(storedAuthentication)))) {
                 // Keep the stores consistent (maybe the same user is
                 // represented by this authentication but the details have

@@ -8,7 +8,7 @@ import java.util.Date;
  */
 public class DefaultAccessToken implements AccessToken, Serializable {
 
-    private String value;
+    private String token;
     private Date expiration;
     private RefreshToken refreshToken;
 
@@ -16,13 +16,13 @@ public class DefaultAccessToken implements AccessToken, Serializable {
         this(null, null);
     }
 
-    public DefaultAccessToken(String value, Date expiration) {
-        this.value = value;
+    public DefaultAccessToken(String token, Date expiration) {
+        this.token = token;
         this.expiration = expiration;
     }
 
-    public DefaultAccessToken(String value, Date expiration, RefreshToken refreshToken) {
-        this.value = value;
+    public DefaultAccessToken(String token, Date expiration, RefreshToken refreshToken) {
+        this.token = token;
         this.expiration = expiration;
         this.refreshToken = refreshToken;
     }
@@ -54,7 +54,7 @@ public class DefaultAccessToken implements AccessToken, Serializable {
     }
 
     @Override
-    public String getValue() {
-        return value;
+    public String getToken() {
+        return token;
     }
 }

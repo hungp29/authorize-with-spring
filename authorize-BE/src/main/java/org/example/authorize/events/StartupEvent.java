@@ -13,7 +13,6 @@ import org.example.authorize.entity.Account;
 import org.example.authorize.entity.Policy;
 import org.example.authorize.entity.Principal;
 import org.example.authorize.entity.Role;
-import org.example.authorize.utils.generator.Generator;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
