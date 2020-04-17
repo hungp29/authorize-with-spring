@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import org.example.authorize.entity.Account;
 import org.example.authorize.entity.AuthMethod;
+import org.example.authorize.entity.Principal;
 import org.example.authorize.entity.Role;
 import org.example.authorize.enums.AuthType;
 import org.example.authorize.exception.AccountInvalidException;
@@ -65,19 +66,22 @@ public class UserPrincipal implements UserDetails {
             throw new AccountInvalidException("Account don't have any role");
         }
 
+        // Get principal
+        Principal principal = account.getPrincipal();
+
         // Get list granted authority
-        List<GrantedAuthority> grantedAuthorities = account.getPrincipal().getRoles()
+        List<GrantedAuthority> grantedAuthorities = principal.getRoles()
                 .stream().map(BGrantedAuthority::create).collect(Collectors.toList());
 
         // List auth method
-        List<AuthMethod> authMethods = account.getPrincipal().getAuthMethods();
+        List<AuthMethod> authMethods = principal.getAuthMethods();
         AuthMethod usernameAndPassAuthMethod = authMethods.stream()
                 .filter(authMethod -> authMethod.getAuthType().equals(AuthType.USERNAME_PASSWORD)).findFirst().orElse(null);
 
         if (null != usernameAndPassAuthMethod) {
-            return new UserPrincipal(account.getId(), account.getPrincipal().getId(), account.getFirstName(), account.getLastName(),
+            return new UserPrincipal(account.getId(), principal.getId(), account.getFirstName(), account.getLastName(),
                     usernameAndPassAuthMethod.getAuthData1(), usernameAndPassAuthMethod.getAuthData2(), grantedAuthorities,
-                    usernameAndPassAuthMethod.getAuthType(), true);
+                    usernameAndPassAuthMethod.getAuthType(), !principal.isDisabled());
         }
         return null;
     }
@@ -89,32 +93,32 @@ public class UserPrincipal implements UserDetails {
 
     @Override
     public String getPassword() {
-        return null;
+        return password;
     }
 
     @Override
     public String getUsername() {
-        return null;
+        return username;
     }
 
     @Override
     public boolean isAccountNonExpired() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isEnabled() {
-        return false;
+        return enabled;
     }
 
     public String getId() {

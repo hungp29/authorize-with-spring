@@ -1,8 +1,11 @@
 package org.example.authorize.utils;
 
+import org.example.authorize.app.authentication.AuthReq;
 import org.example.authorize.config.SecurityConfiguration;
 import org.example.authorize.entity.Account;
 import org.example.authorize.utils.constants.Constants;
+import org.springframework.security.authentication.AbstractAuthenticationToken;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
@@ -102,5 +105,15 @@ public class SecurityUtils {
      */
     public static boolean hasRole(Account account) {
         return null != account && null != account.getPrincipal() && !CollectionUtils.isEmpty(account.getPrincipal().getRoles());
+    }
+
+    /**
+     * Create Username Password Authentication Token object.
+     *
+     * @param authReq object store username and password
+     * @return return UsernamePasswordAuthenticationToken object
+     */
+    public static AbstractAuthenticationToken createUsernamePasswordAuthenticationToken(AuthReq authReq) {
+        return new UsernamePasswordAuthenticationToken(authReq.getUsername(), authReq.getPassword());
     }
 }

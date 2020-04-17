@@ -5,6 +5,7 @@ import org.example.authorize.app.account.AccountService;
 import org.example.authorize.security.SecurityConfigurer;
 import org.example.authorize.security.SecurityProblemHandler;
 import org.example.authorize.utils.PasswordEncode;
+import org.example.authorize.utils.constants.URLConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -30,6 +31,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     };
 
     public static final String[] POST_WHITE_LIST = {
+            URLConstants.C_AUTHENTICATION + URLConstants.M_AUTHENTICATION
     };
 
     public static final String[] PUT_WHITE_LIST = {
