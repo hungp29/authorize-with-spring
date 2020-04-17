@@ -70,16 +70,34 @@ public class RedisTokenStore implements TokenStore, InitializingBean {
         return null;
     }
 
+    /**
+     * Read Authentication object from redis by access token object.
+     *
+     * @param accessToken the access token
+     * @return return Authentication object if it's stored by access token determine
+     */
     @Override
     public Authentication readAuthentication(AccessToken accessToken) {
         return readAuthentication(accessToken.getValue());
     }
 
+    /**
+     * Read Authentication object from redis by access token value.
+     *
+     * @param token the access token value
+     * @return return Authentication object if it's store by access token value determine
+     */
     @Override
     public Authentication readAuthentication(String token) {
         return convertClass(redisTemplate.opsForValue().get(redisKey(AUTH + token)), Authentication.class);
     }
 
+    /**
+     * Store Authentication, Access Token, Refresh Token objects to redis and set expire time if it's exist.
+     *
+     * @param token          the access token
+     * @param authentication the authentication
+     */
     @Override
     public void storeAccessToken(AccessToken token, Authentication authentication) {
         String accessKey = redisKey(ACCESS + token.getValue());
@@ -115,11 +133,22 @@ public class RedisTokenStore implements TokenStore, InitializingBean {
         }
     }
 
+    /**
+     * Read Access Token from redis by token value.
+     *
+     * @param token the access token value
+     * @return return Access Token
+     */
     @Override
     public AccessToken readAccessToken(String token) {
         return convertClass(redisTemplate.opsForValue().get(redisKey(ACCESS + token)), AccessToken.class);
     }
 
+    /**
+     * Remove Access Token from redis.
+     *
+     * @param accessToken the access token need to remove
+     */
     @Override
     public void removeAccessToken(AccessToken accessToken) {
         removeAccessToken(accessToken.getValue());
@@ -150,6 +179,12 @@ public class RedisTokenStore implements TokenStore, InitializingBean {
         }
     }
 
+    /**
+     * Store refresh token to redis.
+     *
+     * @param refreshToken   the refresh token
+     * @param authentication the authentication
+     */
     @Override
     public void storeRefreshToken(RefreshToken refreshToken, Authentication authentication) {
         String refreshKey = redisKey(REFRESH + refreshToken.getValue());
@@ -164,11 +199,23 @@ public class RedisTokenStore implements TokenStore, InitializingBean {
         }
     }
 
+    /**
+     * Read Refresh Token from redis.
+     *
+     * @param refreshToken the refresh token
+     * @return return Refresh Token
+     */
     @Override
     public RefreshToken readRefreshToken(String refreshToken) {
         return convertClass(redisTemplate.opsForValue().get(redisKey(REFRESH + refreshToken)), RefreshToken.class);
     }
 
+    /**
+     * Read Authentication object from redis by refresh token.
+     *
+     * @param refreshToken the refresh token
+     * @return return Authentication object
+     */
     @Override
     public Authentication readAuthenticationForRefreshToken(RefreshToken refreshToken) {
         return readAuthenticationForRefreshToken(refreshToken.getValue());
@@ -184,6 +231,11 @@ public class RedisTokenStore implements TokenStore, InitializingBean {
         return convertClass(redisTemplate.opsForValue().get(redisKey(REFRESH_AUTH + token)), Authentication.class);
     }
 
+    /**
+     * Remove Refresh Token.
+     *
+     * @param refreshToken the refresh token need to remove
+     */
     @Override
     public void removeRefreshToken(RefreshToken refreshToken) {
         removeRefreshToken(refreshToken.getValue());
@@ -205,6 +257,11 @@ public class RedisTokenStore implements TokenStore, InitializingBean {
         redisTemplate.delete(access2RefreshKey);
     }
 
+    /**
+     * Remove Access Token by using refresh token object.
+     *
+     * @param refreshToken the refresh token
+     */
     @Override
     public void removeAccessTokenUsingRefreshToken(RefreshToken refreshToken) {
         removeAccessTokenUsingRefreshToken(refreshToken.getValue());
@@ -225,6 +282,12 @@ public class RedisTokenStore implements TokenStore, InitializingBean {
         removeAccessToken(accessToken);
     }
 
+    /**
+     * Get Access Token by Authentication object.
+     *
+     * @param authentication the authentication instance
+     * @return return Access Token
+     */
     @Override
     public AccessToken getAccessToken(Authentication authentication) {
         String key = authenticationKeyGenerator.extractKey(authentication);
@@ -241,22 +304,28 @@ public class RedisTokenStore implements TokenStore, InitializingBean {
         return accessToken;
     }
 
+    /**
+     * Find List Access Token of account from redis.
+     *
+     * @param username the username
+     * @return return collection Access Token.
+     */
     @Override
     public Collection<AccessToken> findTokensByUserName(String username) {
         String usernameKey = redisKey(UNAME_TO_ACCESS + username);
         Set<Object> results = redisTemplate.opsForSet().members(usernameKey);
         if (null == results || 0 == results.size()) {
-            return Collections.<AccessToken>emptySet();
+            return Collections.emptySet();
         }
         List<AccessToken> accessTokens = new ArrayList<>();
-        results.stream().forEach(result -> {
+        results.forEach(result -> {
             accessTokens.add(convertClass(result, AccessToken.class));
         });
-        return Collections.<AccessToken>unmodifiableCollection(accessTokens);
+        return Collections.unmodifiableCollection(accessTokens);
     }
 
     @Override
-    public void afterPropertiesSet() throws Exception {
+    public void afterPropertiesSet() {
         prefix = jwtProperties.getPrefix();
     }
 }

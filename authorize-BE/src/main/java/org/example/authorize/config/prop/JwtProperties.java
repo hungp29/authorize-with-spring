@@ -19,4 +19,6 @@ public class JwtProperties {
     private int refreshTokenValiditySeconds;
 
     private String prefix = "";
+
+    private String name;
 }

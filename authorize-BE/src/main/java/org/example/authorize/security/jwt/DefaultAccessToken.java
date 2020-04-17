@@ -12,6 +12,15 @@ public class DefaultAccessToken implements AccessToken, Serializable {
     private Date expiration;
     private RefreshToken refreshToken;
 
+    public DefaultAccessToken() {
+        this(null, null);
+    }
+
+    public DefaultAccessToken(String value, Date expiration) {
+        this.value = value;
+        this.expiration = expiration;
+    }
+
     public DefaultAccessToken(String value, Date expiration, RefreshToken refreshToken) {
         this.value = value;
         this.expiration = expiration;
@@ -20,31 +29,32 @@ public class DefaultAccessToken implements AccessToken, Serializable {
 
     @Override
     public RefreshToken getRefreshToken() {
-        return null;
+        return refreshToken;
     }
 
     @Override
     public void setRefreshToken(RefreshToken refreshToken) {
-
+        this.refreshToken = refreshToken;
     }
 
     @Override
     public boolean isExpired() {
-        return false;
+        return null != expiration && expiration.before(new Date());
     }
 
     @Override
     public Date getExpiration() {
-        return null;
+        return expiration;
     }
 
     @Override
     public int getExpiresIn() {
-        return 0;
+        return null != expiration ? Long.valueOf((expiration.getTime() - System.currentTimeMillis()) / 1000L)
+                .intValue() : 0;
     }
 
     @Override
     public String getValue() {
-        return null;
+        return value;
     }
 }

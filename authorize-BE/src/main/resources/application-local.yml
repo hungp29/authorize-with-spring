@@ -46,10 +46,11 @@ spring:
 # ===================================================================
 
 jwt:
+  name: AUTHORIZE_APP
   signing-key: bW1lZGljLWFwaS1qd3Qtc2VjcmV0LWtleS01TUdNNE1qRTRPREk0WXpSaU5qWmtPVFJoTlRVM1ltTmtNV1JtTVdZeE16a3pZ
   access-token-validity-seconds: 86400 # 1 day
   refresh-token-validity-seconds: 172800 # 2 days
-#  prefix: # prefix use for redis
+  prefix: authorize-app
 
 # ===================================================================
 # Logger
