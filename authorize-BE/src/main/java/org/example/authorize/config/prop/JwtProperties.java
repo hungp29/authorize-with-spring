@@ -20,5 +20,5 @@ public class JwtProperties {
 
     private String prefix = "";
 
-    private String name;
+    private String name = "";
 }

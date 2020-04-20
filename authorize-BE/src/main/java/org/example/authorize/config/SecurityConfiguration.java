@@ -18,25 +18,45 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationProvider;
 
+/**
+ * Security Configuration.
+ */
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
+    /**
+     * White list for all http method.
+     */
     public static final String[] WHITE_LIST = {
     };
 
+    /**
+     * White list for GET method.
+     */
     public static final String[] GET_WHITE_LIST = {
     };
 
+    /**
+     * White list for POST method.
+     */
     public static final String[] POST_WHITE_LIST = {
-            URLConstants.C_AUTHENTICATION + URLConstants.M_AUTHENTICATION
+            URLConstants.C_AUTHENTICATION + URLConstants.M_AUTHENTICATION,
+            URLConstants.C_AUTHENTICATION + URLConstants.M_REFRESH_TOKEN
     };
 
+    /**
+     * White list for PUT method.
+     */
     public static final String[] PUT_WHITE_LIST = {
     };
 
+    /**
+     * White list for DELETE method.
+     */
     public static final String[] DELETE_WHITE_LIST = {
     };
 
@@ -45,6 +65,12 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     private final SecurityProblemHandler securityProblemHandler;
     private final SecurityConfigurer securityConfigurer;
 
+    /**
+     * Create AuthenticationManager bean.
+     *
+     * @return return AuthenticationManager bean
+     * @throws Exception
+     */
     @Bean(BeanIds.AUTHENTICATION_MANAGER)
     @Override
     public AuthenticationManager authenticationManagerBean() throws Exception {
@@ -58,22 +84,34 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
      */
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) {
-        auth.
-                authenticationProvider(usernamePasswordAuthenticationProvider());
-//                authenticationProvider(preAuthenticatedAuthenticationProvider());
+        auth
+                .authenticationProvider(usernamePasswordAuthenticationProvider())
+                .authenticationProvider(preAuthenticatedAuthenticationProvider());
 
     }
 
     /**
      * Authentication Provider for Username Password.
      *
-     * @return Authentication Provider
+     * @return DAO Authentication Provider
      */
     @Bean
     public DaoAuthenticationProvider usernamePasswordAuthenticationProvider() {
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
         provider.setPasswordEncoder(passwordEncode.getPasswordEncoder());
         provider.setUserDetailsService(accountService);
+        return provider;
+    }
+
+    /**
+     * Authentication Provider for Refresh Token.
+     *
+     * @return Pre Authenticated Authentication Provider
+     */
+    @Bean
+    public PreAuthenticatedAuthenticationProvider preAuthenticatedAuthenticationProvider() {
+        PreAuthenticatedAuthenticationProvider provider = new PreAuthenticatedAuthenticationProvider();
+        provider.setPreAuthenticatedUserDetailsService(accountService);
         return provider;
     }
 

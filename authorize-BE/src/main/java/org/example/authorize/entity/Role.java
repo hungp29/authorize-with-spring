@@ -10,6 +10,9 @@ import javax.persistence.ManyToMany;
 import javax.validation.constraints.Size;
 import java.util.List;
 
+/**
+ * Role entity.
+ */
 @Entity
 @Data
 public class Role extends Audit<String> {

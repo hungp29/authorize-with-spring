@@ -4,6 +4,11 @@ import lombok.Data;
 
 import java.time.LocalDateTime;
 
+/**
+ * Response class.
+ *
+ * @param <T> class of body
+ */
 @Data
 public class Response<T> {
 

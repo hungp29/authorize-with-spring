@@ -8,12 +8,15 @@ import org.springframework.util.MultiValueMap;
 
 import java.time.LocalDateTime;
 
+/**
+ * Custom response entity.
+ *
+ * @param <T> class of body
+ */
 public class WResponseEntity<T> extends ResponseEntity<Response<T>> {
 
     public static final String SUCCESS_CODE = "00000";
     public static final String ERROR_CODE = "00099";
-
-    private Response wrapBody;
 
     /**
      * Create a new {@code WResponseEntity} with the given entity body, and no headers.
@@ -21,7 +24,7 @@ public class WResponseEntity<T> extends ResponseEntity<Response<T>> {
      * @param body the entity body
      */
     public WResponseEntity(@Nullable T body) {
-        this(null, SUCCESS_CODE, Constants.EMPTY_STRING, null, HttpStatus.OK);
+        this(body, SUCCESS_CODE, Constants.EMPTY_STRING, null, HttpStatus.OK);
     }
 
     /**

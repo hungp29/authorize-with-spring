@@ -11,6 +11,9 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+/**
+ * Security Utils.
+ */
 public class SecurityUtils {
 
     /**

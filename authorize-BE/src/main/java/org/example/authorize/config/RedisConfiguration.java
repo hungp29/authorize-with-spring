@@ -33,8 +33,7 @@ public class RedisConfiguration {
         redisStandaloneConfiguration.setPort(redisProperties.getPort());
         redisStandaloneConfiguration.setPassword(redisProperties.getPassword());
 
-        JedisConnectionFactory jedisConnectionFactory = new JedisConnectionFactory(redisStandaloneConfiguration);
-        return jedisConnectionFactory;
+        return new JedisConnectionFactory(redisStandaloneConfiguration);
     }
 
     /**

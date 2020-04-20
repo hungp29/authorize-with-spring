@@ -2,7 +2,9 @@ package org.example.authorize.app.account;
 
 import org.example.authorize.entity.Account;
 import org.example.authorize.entity.Role;
+import org.springframework.security.core.userdetails.AuthenticationUserDetailsService;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
 
 import java.util.List;
 import java.util.Optional;
@@ -10,7 +12,7 @@ import java.util.Optional;
 /**
  * Account Service.
  */
-public interface AccountService extends UserDetailsService {
+public interface AccountService extends UserDetailsService, AuthenticationUserDetailsService<PreAuthenticatedAuthenticationToken> {
 
     /**
      * Find account by id.

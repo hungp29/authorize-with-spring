@@ -14,6 +14,11 @@ import javax.persistence.MappedSuperclass;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
+/**
+ * Audit entity.
+ *
+ * @param <T> class of id
+ */
 @Getter
 @Setter
 @MappedSuperclass

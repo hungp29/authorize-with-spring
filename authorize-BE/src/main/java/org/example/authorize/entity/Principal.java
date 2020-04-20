@@ -8,6 +8,9 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.List;
 
+/**
+ * Principal entity.
+ */
 @Entity
 @Data
 public class Principal extends Audit<String> {

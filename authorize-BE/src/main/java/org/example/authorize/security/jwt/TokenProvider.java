@@ -75,7 +75,6 @@ public class TokenProvider implements InitializingBean {
                 collect(Collectors.toList());
 
         UserPrincipal principal = (UserPrincipal) authentication.getPrincipal();
-        String name = principal.getUsername();
 
         // Prepare claims
         Map<String, Object> claims = new HashMap<>();

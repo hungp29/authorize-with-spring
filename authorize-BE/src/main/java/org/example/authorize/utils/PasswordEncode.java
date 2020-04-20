@@ -28,6 +28,11 @@ public class PasswordEncode {
         return passwordEncoder.encode(value);
     }
 
+    /**
+     * Get password encoder.
+     *
+     * @return return PasswordEncoder
+     */
     public PasswordEncoder getPasswordEncoder() {
         return passwordEncoder;
     }

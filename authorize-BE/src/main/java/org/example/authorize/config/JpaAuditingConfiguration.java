@@ -31,7 +31,9 @@ public class JpaAuditingConfiguration {
 
         @Override
         public Optional<String> getCurrentAuditor() {
+            // Set SYSTEM value to default
             AtomicReference<String> currentAuditor = new AtomicReference<>(Constants.SYSTEM);
+            // If Authentication is not null then get auditor from Authentication
             Authentication auth = SecurityContextHolder.getContext().getAuthentication();
             Optional.ofNullable(auth)
                     .filter(Authentication::isAuthenticated)

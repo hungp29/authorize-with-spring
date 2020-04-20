@@ -7,6 +7,9 @@ import javax.persistence.*;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
 
+/**
+ * Account entity.
+ */
 @Entity
 @Data
 public class Account extends Audit<String> {

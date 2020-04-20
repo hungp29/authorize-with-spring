@@ -11,6 +11,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
+/**
+ * Permission Utils.
+ */
 @Slf4j
 public class PermissionUtils {
 

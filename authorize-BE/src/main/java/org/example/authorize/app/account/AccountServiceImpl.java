@@ -11,10 +11,12 @@ import org.example.authorize.entity.Principal;
 import org.example.authorize.entity.Role;
 import org.example.authorize.enums.AuthType;
 import org.example.authorize.security.UserPrincipal;
+import org.example.authorize.security.authentoken.JWTAuthenticationToken;
 import org.example.authorize.utils.PasswordEncode;
 import org.example.authorize.utils.generator.Generator;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -91,7 +93,7 @@ public class AccountServiceImpl implements AccountService {
      * Load UserDetails by username. It use for spring security to checking authenticate.
      *
      * @param username username of account
-     * @return return UserDetails object
+     * @return return UserDetails instance
      * @throws UsernameNotFoundException throw Ex
      */
     @Override
@@ -100,6 +102,25 @@ public class AccountServiceImpl implements AccountService {
 
         if (null != authMethod && null != authMethod.getPrincipal()) {
             return UserPrincipal.create(authMethod.getPrincipal().getAccount());
+        }
+        return null;
+    }
+
+    /**
+     * Load UserDetails by token.
+     *
+     * @param token JWT authentication provider
+     * @return return UserDetails instance
+     * @throws UsernameNotFoundException throw Ex
+     */
+    @Override
+    public UserDetails loadUserDetails(PreAuthenticatedAuthenticationToken token) throws UsernameNotFoundException {
+        JWTAuthenticationToken jwtAuthenticationToken = (JWTAuthenticationToken) token;
+        UserPrincipal principal = (UserPrincipal) jwtAuthenticationToken.getAuthentication().getPrincipal();
+
+        if (null != principal) {
+            String accountId = principal.getId();
+            return UserPrincipal.create(accountRepository.findById(accountId).orElse(null));
         }
         return null;
     }

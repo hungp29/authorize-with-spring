@@ -7,6 +7,9 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+/**
+ * Policy Condition entity.
+ */
 @Entity
 @Data
 public class PolicyCondition extends Audit<String> {
