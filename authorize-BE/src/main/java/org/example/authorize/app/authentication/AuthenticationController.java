@@ -25,23 +25,24 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class AuthenticationController {
 
-    private final TokenProvider tokenProvider;
+    private final AuthenticationService authenticationService;
 
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
 
     /**
      * Authentication method.
      *
+     * @param authReq request have username and password
      * @return return account token
      */
     @PostMapping(URLConstants.M_AUTHENTICATION)
     public WResponseEntity<AccessToken> authorize(@RequestBody AuthReq authReq) {
-        Authentication authentication = authenticationManagerBuilder.getObject().
-                authenticate(SecurityUtils.createUsernamePasswordAuthenticationToken(authReq));
+        Authentication authentication = authenticationManagerBuilder.getObject()
+                .authenticate(SecurityUtils.createUsernamePasswordAuthenticationToken(authReq));
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        return WResponseEntity.success(tokenProvider.createAccessToken(authentication, authReq.isRememberMe()));
+        return WResponseEntity.success(authenticationService.createAccessToken(authentication, authReq.isRememberMe()));
     }
 
     /**
@@ -52,7 +53,18 @@ public class AuthenticationController {
      */
     @PostMapping(URLConstants.M_REFRESH_TOKEN)
     public WResponseEntity<AccessToken> refresh(@RequestBody RefreshReq refreshReq) {
-        AccessToken accessToken = tokenProvider.refreshAccessToken(refreshReq.getToken());
-        return WResponseEntity.success(accessToken);
+        return WResponseEntity.success(authenticationService.refreshAccessToken(refreshReq.getToken()));
+    }
+
+    /**
+     * Authentication by OTP.
+     *
+     * @param authReq request data, it include phone number
+     * @return return otp
+     */
+    @PostMapping(URLConstants.M_OTP)
+    public WResponseEntity<String> authorizeByOTP(@RequestBody AuthReq authReq) {
+        authenticationService.generateOTP(authReq.getPhone());
+        return WResponseEntity.success("ok");
     }
 }

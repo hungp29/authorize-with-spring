@@ -9,5 +9,7 @@ public class AuthReq {
 
     private String password;
 
+    private String phone;
+
     private boolean rememberMe;
 }

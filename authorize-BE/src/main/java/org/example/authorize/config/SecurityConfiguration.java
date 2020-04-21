@@ -45,7 +45,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
      */
     public static final String[] POST_WHITE_LIST = {
             URLConstants.C_AUTHENTICATION + URLConstants.M_AUTHENTICATION,
-            URLConstants.C_AUTHENTICATION + URLConstants.M_REFRESH_TOKEN
+            URLConstants.C_AUTHENTICATION + URLConstants.M_REFRESH_TOKEN,
+            URLConstants.C_AUTHENTICATION + URLConstants.M_OTP
     };
 
     /**

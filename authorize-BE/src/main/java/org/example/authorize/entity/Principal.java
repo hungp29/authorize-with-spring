@@ -6,6 +6,7 @@ import org.example.authorize.entity.common.Audit;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -26,6 +27,12 @@ public class Principal extends Audit<String> {
     @NotNull
     @Column(nullable = false)
     private boolean deleted;
+
+    @Column
+    private LocalDateTime expireDate;
+
+    @Column
+    private short attemptCount;
 
     @OneToOne(mappedBy = "principal")
     private Account account;

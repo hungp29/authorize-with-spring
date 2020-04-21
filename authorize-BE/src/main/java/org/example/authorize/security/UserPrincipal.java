@@ -11,6 +11,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -32,11 +33,15 @@ public class UserPrincipal implements UserDetails {
 
     private Collection<? extends GrantedAuthority> authorities;
 
-    private AuthType authType;
+//    private AuthType authType;
 
     private boolean enabled;
 
-    public UserPrincipal(String id, String principalId, String firstName, String lastName, String username, String password, Collection<? extends GrantedAuthority> authorities, AuthType authType, boolean enabled) {
+    private LocalDateTime expireDate;
+
+    private short attemptCount;
+
+    public UserPrincipal(String id, String principalId, String firstName, String lastName, String username, String password, Collection<? extends GrantedAuthority> authorities, boolean enabled) {
         this.id = id;
         this.principalId = principalId;
         this.firstName = firstName;
@@ -44,7 +49,7 @@ public class UserPrincipal implements UserDetails {
         this.username = username;
         this.password = password;
         this.authorities = authorities;
-        this.authType = authType;
+//        this.authType = authType;
         this.enabled = enabled;
     }
 
@@ -74,12 +79,13 @@ public class UserPrincipal implements UserDetails {
         AuthMethod usernameAndPassAuthMethod = authMethods.stream()
                 .filter(authMethod -> authMethod.getAuthType().equals(AuthType.USERNAME_PASSWORD)).findFirst().orElse(null);
 
-        if (null != usernameAndPassAuthMethod) {
-            return new UserPrincipal(account.getId(), principal.getId(), account.getFirstName(), account.getLastName(),
-                    usernameAndPassAuthMethod.getAuthData1(), usernameAndPassAuthMethod.getAuthData2(), grantedAuthorities,
-                    usernameAndPassAuthMethod.getAuthType(), !principal.isDisabled());
-        }
-        return null;
+        String username = "";
+        String password = "";
+//        if (null != usernameAndPassAuthMethod) {
+        return new UserPrincipal(account.getId(), principal.getId(), account.getFirstName(), account.getLastName(),
+                usernameAndPassAuthMethod.getAuthData1(), usernameAndPassAuthMethod.getAuthData2(), grantedAuthorities, !principal.isDisabled());
+//        }
+//        return null;
     }
 
     @Override
