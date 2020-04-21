@@ -13,7 +13,7 @@ import org.example.authorize.enums.AuthType;
 import org.example.authorize.security.UserPrincipal;
 import org.example.authorize.security.authentoken.JWTAuthenticationToken;
 import org.example.authorize.utils.PasswordEncode;
-import org.example.authorize.utils.generator.Generator;
+import org.example.authorize.utils.generator.id.Generator;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;

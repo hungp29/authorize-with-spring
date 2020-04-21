@@ -6,32 +6,28 @@ import com.google.zxing.WriterException;
 import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
 import org.apache.commons.codec.binary.Base32;
+import org.example.authorize.utils.generator.otp.HMACOneTimePasswordGenerator;
 
-import javax.crypto.KeyGenerator;
-import javax.crypto.SecretKey;
-import javax.crypto.spec.SecretKeySpec;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
-import java.security.Key;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
-import java.time.Instant;
-import java.util.Base64;
 
 public class Test {
 
     public static void main(String[] args) throws NoSuchAlgorithmException, InvalidKeyException, IOException, WriterException, InterruptedException {
+//        Base32 base32 = new Base32();
 
-        String k = "N7ABXHJ4J5TNICNIFWWGOLBL4S6QUAMBI3UZYBICV4TL7EK72LADHBC2FCXSRLCGH7QUZVUFBJSGJWNG3J26CX5S6OFNIJSINX2NNRQ=";
+//        String k = "N7ABXHJ4J5TNICNIFWWGOLBL4S6QUAMBI3UZYBICV4TL7EK72LADHBC2FCXSRLCGH7QUZVUFBJSGJWNG3J26CX5S6OFNIJSINX2NNRQ=";
 
-        HmacOneTimePasswordGenerator generator = new HmacOneTimePasswordGenerator();
+//        HmacOneTimePasswordGenerator generator = new HmacOneTimePasswordGenerator();
 
 //        KeyGenerator keyGenerator = KeyGenerator.getInstance(generator.getAlgorithm());
 
-        Base32 base32 = new Base32();
 
         // SHA-1 and SHA-256 prefer 64-byte (512-bit) keys; SHA512 prefers 128-byte (1024-bit) keys
 //        keyGenerator.init(512);
@@ -43,11 +39,11 @@ public class Test {
 //        System.out.println(key.getAlgorithm());
 
 //        byte[] decodedKey = Base64.getDecoder().decode(k);
-        byte[] decodedKey = base32.decode(k);
-        SecretKey originalKey = new SecretKeySpec(decodedKey, 0, decodedKey.length, generator.getAlgorithm());
+//        byte[] decodedKey = base32.decode(k);
+//        SecretKey originalKey = new SecretKeySpec(decodedKey, 0, decodedKey.length, generator.getAlgorithm());
 
 
-        System.out.println(generator.generateOneTimePassword(originalKey, 1));
+//        System.out.println(generator.generateOneTimePassword(originalKey, 1));
 
 
 //        TimeBasedOneTimePasswordGenerator totp = new TimeBasedOneTimePasswordGenerator();
@@ -61,12 +57,27 @@ public class Test {
 //        System.out.format("Future password:  %06d\n", totp.generateOneTimePassword(originalKey, later));
 
 
-        String email = "test@gmail.com";
-        String companyName = "My Awesome Company";
-        String barCodeUrl = getGoogleAuthenticatorBarCode("QDWSM3OYBPGTEVSPB5FKVDM3CSNCWHVK", email, companyName);
-        System.out.println(barCodeUrl);
+//        String email = "test@gmail.com";
+//        String companyName = "My Awesome Company";
+//        String barCodeUrl = getGoogleAuthenticatorBarCode("QDWSM3OYBPGTEVSPB5FKVDM3CSNCWHVK", email, companyName);
+//        System.out.println(barCodeUrl);
+//
+//        createQRCode(barCodeUrl, "/home/hungp/workspaces/learn-spring/authorize-with-spring/authorize-BE/qr", 200, 200);
+//        System.out.println(generateSecretKey());
 
-        createQRCode(barCodeUrl, "/home/hungp/workspaces/learn-spring/authorize-with-spring/authorize-BE/qr", 200, 200);
+//        HMACOneTimePasswordGenerator otpGen = new HMACOneTimePasswordGenerator();
+//        System.out.println(otpGen.generateWithLongMovingFactor("QDWSM3OYBPGTEVSPB5FKVDM3CSNCWHVK".getBytes(StandardCharsets.UTF_8),
+//                1, 6, false, 1));
+
+    }
+
+
+    public static String generateSecretKey() {
+        SecureRandom random = new SecureRandom();
+        byte[] bytes = new byte[10];
+        random.nextBytes(bytes);
+        Base32 base32 = new Base32();
+        return base32.encodeToString(bytes);
     }
 
 

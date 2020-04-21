@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.example.authorize.entity.AuthMethod;
 import org.example.authorize.enums.AuthType;
 import org.example.authorize.utils.PasswordEncode;
-import org.example.authorize.utils.generator.Generator;
+import org.example.authorize.utils.generator.id.Generator;
 import org.springframework.stereotype.Service;
 
 /**

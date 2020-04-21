@@ -1,4 +1,4 @@
-package org.example.authorize.utils.generator;
+package org.example.authorize.utils.generator.otp;
 
 import javax.crypto.Mac;
 import javax.crypto.ShortBufferException;
@@ -6,7 +6,7 @@ import java.security.InvalidKeyException;
 import java.security.Key;
 import java.security.NoSuchAlgorithmException;
 
-public class HmacOneTimePasswordGenerator {
+public class HmacOneTimePasswordGeneratorTemp {
 
     private final Mac mac;
     private final int passwordLength;
@@ -24,15 +24,15 @@ public class HmacOneTimePasswordGenerator {
      */
     public static final String HOTP_HMAC_ALGORITHM = "HmacSHA1";
 
-    public HmacOneTimePasswordGenerator() throws NoSuchAlgorithmException {
+    public HmacOneTimePasswordGeneratorTemp() throws NoSuchAlgorithmException {
         this(DEFAULT_PASSWORD_LENGTH);
     }
 
-    public HmacOneTimePasswordGenerator(final int passwordLength) throws NoSuchAlgorithmException {
+    public HmacOneTimePasswordGeneratorTemp(final int passwordLength) throws NoSuchAlgorithmException {
         this(passwordLength, HOTP_HMAC_ALGORITHM);
     }
 
-    protected HmacOneTimePasswordGenerator(final int passwordLength, final String algorithm) throws NoSuchAlgorithmException {
+    protected HmacOneTimePasswordGeneratorTemp(final int passwordLength, final String algorithm) throws NoSuchAlgorithmException {
         this.mac = Mac.getInstance(algorithm);
 
         switch (passwordLength) {

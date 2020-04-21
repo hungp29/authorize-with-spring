@@ -11,7 +11,7 @@ import org.example.authorize.security.permission.PermissionGroup;
 import org.example.authorize.utils.PermissionUtils;
 import org.example.authorize.utils.SecurityUtils;
 import org.example.authorize.utils.constants.Constants;
-import org.example.authorize.utils.generator.Generator;
+import org.example.authorize.utils.generator.id.Generator;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;

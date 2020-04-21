@@ -6,7 +6,7 @@ import org.example.authorize.security.permission.PermissionCondition;
 import org.example.authorize.security.permission.PermissionConditions;
 import org.example.authorize.security.permission.PermissionGroup;
 import org.example.authorize.utils.constants.PermissionGroupConstants;
-import org.example.authorize.utils.generator.Generator;
+import org.example.authorize.utils.generator.id.Generator;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 

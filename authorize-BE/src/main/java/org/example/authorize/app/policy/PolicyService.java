@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.example.authorize.entity.Policy;
 import org.example.authorize.entity.Role;
 import org.example.authorize.exception.SaveEntityException;
-import org.example.authorize.utils.generator.Generator;
+import org.example.authorize.utils.generator.id.Generator;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
