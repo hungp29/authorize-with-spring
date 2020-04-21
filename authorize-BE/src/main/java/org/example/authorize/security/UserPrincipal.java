@@ -139,7 +139,7 @@ public class UserPrincipal implements UserDetails {
         return lastName;
     }
 
-    public AuthType getAuthType() {
-        return authType;
-    }
+//    public AuthType getAuthType() {
+//        return authType;
+//    }
 }
