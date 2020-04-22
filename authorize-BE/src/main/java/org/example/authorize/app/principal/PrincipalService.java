@@ -1,6 +1,9 @@
 package org.example.authorize.app.principal;
 
 import lombok.RequiredArgsConstructor;
+import org.example.authorize.app.authmethod.AuthMethodRepository;
+import org.example.authorize.entity.Account;
+import org.example.authorize.entity.AuthMethod;
 import org.example.authorize.entity.Principal;
 import org.example.authorize.exception.SaveEntityException;
 import org.example.authorize.utils.generator.id.Generator;
@@ -16,6 +19,8 @@ public class PrincipalService {
 
     private final Generator<String> generator;
     private final PrincipalRepository principalRepository;
+
+    private final AuthMethodRepository authMethodRepository;
 
     /**
      * Create principal but not save it.
@@ -65,5 +70,17 @@ public class PrincipalService {
             return principalRepository.save(principal);
         }
         throw new SaveEntityException("Principal is empty, cannot save it");
+    }
+
+    /**
+     * Find Principal by auth data 1.
+     *
+     * @param authData1 auth data 1 (username, email, phone number)
+     * @return return principal instance if it exist
+     */
+    public Principal findPrincipalByAuthData1(String authData1) {
+        AuthMethod authMethod = authMethodRepository.findByAuthData1(authData1).orElse(null);
+
+        return null != authMethod ? authMethod.getPrincipal() : null;
     }
 }

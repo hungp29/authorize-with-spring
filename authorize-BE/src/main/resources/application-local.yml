@@ -12,6 +12,7 @@ application:
   super-account:
     username: admin
     password: 123456!
+  login-attempts-threshold: 5
 
 # ===================================================================
 # Spring properties

@@ -16,6 +16,8 @@ public class ApplicationProperties {
 
     private SuperAccount superAccount;
 
+    private short loginAttemptsThreshold;
+
     /**
      * Super account properties.
      */

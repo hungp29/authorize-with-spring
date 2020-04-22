@@ -69,6 +69,8 @@ public class Test {
 //        System.out.println(otpGen.generateWithLongMovingFactor("QDWSM3OYBPGTEVSPB5FKVDM3CSNCWHVK".getBytes(StandardCharsets.UTF_8),
 //                1, 6, false, 1));
 
+
+
     }
 
 

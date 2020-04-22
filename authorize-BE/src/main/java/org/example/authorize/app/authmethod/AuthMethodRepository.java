@@ -19,4 +19,12 @@ public interface AuthMethodRepository extends JpaRepository<AuthMethod, String> 
      * @return return authentication method
      */
     Optional<AuthMethod> findByAuthTypeAndAuthData1(AuthType authType, String authData1);
+
+    /**
+     * Find Auth method by auth data 1.
+     *
+     * @param authData1 auth data 1 (username, email, phone number)
+     * @return return AuthMethod instance if it exist
+     */
+    Optional<AuthMethod> findByAuthData1(String authData1);
 }

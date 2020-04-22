@@ -90,6 +90,20 @@ public class AccountServiceImpl implements AccountService {
     }
 
     /**
+     * Find Account by auth data 1.
+     *
+     * @param authData1 auth data 1 (username, email, phone number)
+     * @return return account instance if it exist
+     */
+    public Account findAccountByAuthData1(String authData1) {
+        AuthMethod authMethod = authMethodRepository.findByAuthData1(authData1).orElse(null);
+        if (null != authMethod && null != authMethod.getPrincipal()) {
+            return authMethod.getPrincipal().getAccount();
+        }
+        return null;
+    }
+
+    /**
      * Load UserDetails by username. It use for spring security to checking authenticate.
      *
      * @param username username of account
@@ -101,9 +115,10 @@ public class AccountServiceImpl implements AccountService {
         AuthMethod authMethod = authMethodRepository.findByAuthTypeAndAuthData1(AuthType.USERNAME_PASSWORD, username).orElse(null);
 
         if (null != authMethod && null != authMethod.getPrincipal()) {
-            return UserPrincipal.create(authMethod.getPrincipal().getAccount());
+            return UserPrincipal.create(authMethod.getPrincipal().getAccount(), AuthType.USERNAME_PASSWORD);
+        } else {
+            throw new UsernameNotFoundException("Cannot find user");
         }
-        return null;
     }
 
     /**
@@ -120,8 +135,9 @@ public class AccountServiceImpl implements AccountService {
 
         if (null != principal) {
             String accountId = principal.getId();
-            return UserPrincipal.create(accountRepository.findById(accountId).orElse(null));
+            return UserPrincipal.create(accountRepository.findById(accountId).orElse(null), AuthType.REFRESH_TOKEN);
+        } else {
+            throw new UsernameNotFoundException("Cannot find user");
         }
-        return null;
     }
 }

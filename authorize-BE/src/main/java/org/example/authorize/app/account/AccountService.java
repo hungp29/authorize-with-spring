@@ -38,4 +38,12 @@ public interface AccountService extends UserDetailsService, AuthenticationUserDe
      * @return return the account is created
      */
     Account createAndSaveByUsernameAndPassword(String username, String password);
+
+    /**
+     * Find Account by auth data 1.
+     *
+     * @param authData1 auth data 1 (username, email, phone number)
+     * @return return account instance if it exist
+     */
+    Account findAccountByAuthData1(String authData1);
 }
