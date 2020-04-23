@@ -11,6 +11,7 @@ import java.time.Instant;
 /**
  * This class is extension of {@code AbstractHMACOneTimePasswordGenerator} class.
  * It use time-step as counter.
+ * https://tools.ietf.org/html/rfc6238
  */
 @Component("TOTP")
 @RequiredArgsConstructor

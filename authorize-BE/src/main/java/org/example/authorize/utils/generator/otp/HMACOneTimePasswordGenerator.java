@@ -8,6 +8,7 @@ import org.springframework.util.Assert;
 /**
  * This class contains methods that are used to calculate the
  * One-Time Password (OTP) using JCE to provide the HMAC-SHA-1.
+ * https://tools.ietf.org/html/rfc4226
  */
 @Component("HOTP")
 @RequiredArgsConstructor
