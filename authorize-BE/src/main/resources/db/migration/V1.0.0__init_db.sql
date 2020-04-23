@@ -7,16 +7,34 @@ USE `authorize_demo`;
 DROP TABLE IF EXISTS `principal`;
 CREATE TABLE `principal`
 (
+    `id`          varchar(32) NOT NULL,
+    `disabled`    boolean     NOT NULL DEFAULT '0',
+    `deleted`     boolean     NOT NULL DEFAULT '0',
+    `expire_date` timestamp   NULL,
+    `locked`      boolean     NOT NULL DEFAULT '0',
+    `create_by`   varchar(32) NULL,
+    `create_at`   timestamp   NULL,
+    `update_by`   varchar(32) NULL,
+    `update_at`   timestamp   NULL,
+    PRIMARY KEY (`id`)
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4;
+
+--
+-- Table structure for table `principal_attempt`
+--
+DROP TABLE IF EXISTS `principal_attempt`;
+CREATE TABLE `principal_attempt`
+(
     `id`            varchar(32) NOT NULL,
-    `disabled`      boolean     NOT NULL DEFAULT '0',
-    `deleted`       boolean     NOT NULL DEFAULT '0',
-    `expire_date`   timestamp   NULL,
+    `principal_id`  varchar(32) NOT NULL,
     `attempt_count` smallint    NULL,
     `create_by`     varchar(32) NULL,
     `create_at`     timestamp   NULL,
     `update_by`     varchar(32) NULL,
     `update_at`     timestamp   NULL,
-    PRIMARY KEY (`id`)
+    PRIMARY KEY (`id`),
+    CONSTRAINT `fk_principal_attempts_w_principal` FOREIGN KEY (`principal_id`) REFERENCES `principal` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4;
 

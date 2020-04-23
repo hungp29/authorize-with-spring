@@ -32,10 +32,13 @@ public class Principal extends Audit<String> {
     private LocalDateTime expireDate;
 
     @Column
-    private short attemptCount;
+    private boolean locked;
 
     @OneToOne(mappedBy = "principal")
     private Account account;
+
+    @OneToOne(mappedBy = "principal")
+    private PrincipalAttempt principalAttempt;
 
     @ManyToMany
     @JoinTable(

@@ -83,4 +83,34 @@ public class PrincipalService {
 
         return null != authMethod ? authMethod.getPrincipal() : null;
     }
+
+    /**
+     * Lock principal.
+     *
+     * @param principal the principal instance
+     * @return principal after locked
+     */
+    @Transactional
+    public Principal lockPrincipal(Principal principal) {
+        if (null != principal) {
+            principal.setLocked(true);
+            principal = principalRepository.save(principal);
+        }
+        return principal;
+    }
+
+    /**
+     * Unlock principal.
+     *
+     * @param principal the principal instance
+     * @return principal after unlocked
+     */
+    @Transactional
+    public Principal unlockPrincipal(Principal principal) {
+        if (null != principal) {
+            principal.setLocked(false);
+            principal = principalRepository.save(principal);
+        }
+        return principal;
+    }
 }

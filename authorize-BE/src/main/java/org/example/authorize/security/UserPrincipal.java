@@ -39,9 +39,9 @@ public class UserPrincipal implements UserDetails {
 
     private LocalDateTime expireDate;
 
-    private short attemptCount;
+    private boolean lock;
 
-    public UserPrincipal(String id, String principalId, String firstName, String lastName, String username, String password, Collection<? extends GrantedAuthority> authorities, boolean enabled, LocalDateTime expireDate, short attemptCount) {
+    public UserPrincipal(String id, String principalId, String firstName, String lastName, String username, String password, Collection<? extends GrantedAuthority> authorities, boolean enabled, LocalDateTime expireDate, boolean lock) {
         this.id = id;
         this.principalId = principalId;
         this.firstName = firstName;
@@ -51,7 +51,7 @@ public class UserPrincipal implements UserDetails {
         this.authorities = authorities;
         this.enabled = enabled;
         this.expireDate = expireDate;
-        this.attemptCount = attemptCount;
+        this.lock = lock;
     }
 
     @Override
@@ -76,7 +76,7 @@ public class UserPrincipal implements UserDetails {
 
     @Override
     public boolean isAccountNonLocked() {
-        return true;
+        return !lock;
     }
 
     @Override
@@ -155,7 +155,7 @@ public class UserPrincipal implements UserDetails {
         }
 
         return new UserPrincipal(account.getId(), principal.getId(), account.getFirstName(), account.getLastName(),
-                username, password, grantedAuthorities, !principal.isDisabled(), principal.getExpireDate(), principal.getAttemptCount());
+                username, password, grantedAuthorities, !principal.isDisabled(), principal.getExpireDate(), principal.isLocked());
     }
 
 }
