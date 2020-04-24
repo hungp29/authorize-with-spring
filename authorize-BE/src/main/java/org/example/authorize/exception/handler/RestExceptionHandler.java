@@ -3,10 +3,7 @@ package org.example.authorize.exception.handler;
 import lombok.extern.slf4j.Slf4j;
 import org.example.authorize.response.WResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.DisabledException;
-import org.springframework.security.authentication.InternalAuthenticationServiceException;
-import org.springframework.security.authentication.LockedException;
+import org.springframework.security.authentication.*;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -60,6 +57,7 @@ public class RestExceptionHandler {
 
     /**
      * Handle locked exception.
+     *
      * @param e Locked Exception
      * @return error response
      */
@@ -67,6 +65,18 @@ public class RestExceptionHandler {
     public WResponseEntity<String> handleAccountLockedException(LockedException e) {
         log.error(e.getMessage(), e);
         return WResponseEntity.error(ResponseCode.ACCOUNT_LOCKED);
+    }
+
+    /**
+     * Handle Credentials Expire exception.
+     *
+     * @param e Locked Exception
+     * @return error response
+     */
+    @ExceptionHandler(CredentialsExpiredException.class)
+    public WResponseEntity<String> handleCredentialsExpiredException(CredentialsExpiredException e) {
+        log.error(e.getMessage(), e);
+        return WResponseEntity.error(ResponseCode.CREDENTIALS_EXPIRED);
     }
 
     /**

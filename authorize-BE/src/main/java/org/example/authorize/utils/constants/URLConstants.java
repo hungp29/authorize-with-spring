@@ -16,4 +16,7 @@ public class URLConstants {
     public static final String M_REFRESH_TOKEN = "/refresh";
     public static final String M_OTP = "/otp";
 
+    public static final String C_ACCOUNT = "/api/v1/accounts";
+    public static final String M_ADD_PHONE = "/{id}/phone";
+
 }

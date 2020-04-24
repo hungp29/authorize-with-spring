@@ -7,12 +7,14 @@
 # Application properties
 # ===================================================================
 application:
+  name: Authorize
   super-role-name: Super Admin
   policy-full-access: Full Access
   super-account:
     username: admin
     password: 123456!
   login-attempts-threshold: 5
+  otp-length: 6
 
 # ===================================================================
 # Spring properties
@@ -36,12 +38,7 @@ spring:
             non_contextual_creation: true
     hibernate:
       ddl-auto: validate
-    show-sql: true
-
-  # Flyway configuration
-  flyway:
-    locations: classpath:/db/migration
-    table: flyway_history
+    show-sql: on
 
   # Redis configuration
   redis:
@@ -79,3 +76,12 @@ logging:
         type:
           descriptor:
             sql: trace
+
+# ===================================================================
+# Velocity Template
+# ===================================================================
+velocity:
+  resource-loader: class
+  class-loader: org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader
+  template-path: /template/
+  suffix: .vm

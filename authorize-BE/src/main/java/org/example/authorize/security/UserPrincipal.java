@@ -11,7 +11,6 @@ import org.example.authorize.utils.SecurityUtils;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.util.StringUtils;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
@@ -41,7 +40,13 @@ public class UserPrincipal implements UserDetails {
 
     private boolean lock;
 
-    public UserPrincipal(String id, String principalId, String firstName, String lastName, String username, String password, Collection<? extends GrantedAuthority> authorities, boolean enabled, LocalDateTime expireDate, boolean lock) {
+    private AuthType authType;
+
+    private LocalDateTime expireDateCredentials;
+
+    public UserPrincipal(String id, String principalId, String firstName, String lastName, String username, String password,
+                         Collection<? extends GrantedAuthority> authorities, boolean enabled, LocalDateTime expireDate, boolean lock,
+                         AuthType authType, LocalDateTime expireDateCredentials) {
         this.id = id;
         this.principalId = principalId;
         this.firstName = firstName;
@@ -52,6 +57,8 @@ public class UserPrincipal implements UserDetails {
         this.enabled = enabled;
         this.expireDate = expireDate;
         this.lock = lock;
+        this.authType = authType;
+        this.expireDateCredentials = expireDateCredentials;
     }
 
     @Override
@@ -71,7 +78,7 @@ public class UserPrincipal implements UserDetails {
 
     @Override
     public boolean isAccountNonExpired() {
-        return null == expireDate || !expireDate.isAfter(LocalDateTime.now());
+        return null == expireDate || !expireDate.isBefore(LocalDateTime.now());
     }
 
     @Override
@@ -81,7 +88,7 @@ public class UserPrincipal implements UserDetails {
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return true;
+        return null == expireDateCredentials || !expireDateCredentials.isBefore(LocalDateTime.now());
     }
 
     @Override
@@ -137,10 +144,12 @@ public class UserPrincipal implements UserDetails {
         List<AuthMethod> authMethods = principal.getAuthMethods();
 
         AuthMethod authMethodUsed = null;
+        LocalDateTime authMethodExpire = null;
         if (!AuthType.REFRESH_TOKEN.equals(authType)) {
             authMethodUsed = authMethods.stream()
                     .filter(authMethod -> authMethod.getAuthType().equals(authType)).findFirst()
                     .orElseThrow(() -> new AccountInvalidException("Cannot find the " + authType.getCode() + " authentication method"));
+            authMethodExpire = authMethodUsed.getExpireDate();
         }
 
         // Get Username and Password
@@ -155,7 +164,8 @@ public class UserPrincipal implements UserDetails {
         }
 
         return new UserPrincipal(account.getId(), principal.getId(), account.getFirstName(), account.getLastName(),
-                username, password, grantedAuthorities, !principal.isDisabled(), principal.getExpireDate(), principal.isLocked());
+                username, password, grantedAuthorities, !principal.isDisabled(), principal.getExpireDate(), principal.isLocked(),
+                authType, authMethodExpire);
     }
 
 }

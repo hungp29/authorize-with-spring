@@ -176,16 +176,17 @@ CREATE TABLE `account`
 
 CREATE TABLE `auth_method`
 (
-    `id`           varchar(32)                                  NOT NULL,
-    `principal_id` varchar(32)                                  NOT NULL,
-    `auth_type`    enum ('USERNAME_PASSWORD', 'EMAIL_PASSWORD') NOT NULL,
-    `auth_data_1`  text                                         NULL,
-    `auth_data_2`  text                                         NULL,
-    `auth_data_3`  text                                         NULL,
-    `create_by`    varchar(32)                                  NULL,
-    `create_at`    timestamp                                    NULL,
-    `update_by`    varchar(32)                                  NULL,
-    `update_at`    timestamp                                    NULL,
+    `id`           varchar(32)                                                  NOT NULL,
+    `principal_id` varchar(32)                                                  NOT NULL,
+    `auth_type`    enum ('USERNAME_PASSWORD', 'EMAIL_PASSWORD', 'PHONE_NUMBER') NOT NULL,
+    `auth_data_1`  text                                                         NULL,
+    `auth_data_2`  text                                                         NULL,
+    `auth_data_3`  text                                                         NULL,
+    `expire_date`  timestamp                                                    NULL,
+    `create_by`    varchar(32)                                                  NULL,
+    `create_at`    timestamp                                                    NULL,
+    `update_by`    varchar(32)                                                  NULL,
+    `update_at`    timestamp                                                    NULL,
     PRIMARY KEY (`id`),
     KEY `principal_id` (`principal_id`),
     CONSTRAINT `fk_auth_method_w_principal` FOREIGN KEY (`principal_id`) REFERENCES `principal` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT

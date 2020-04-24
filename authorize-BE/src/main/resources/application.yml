@@ -12,13 +12,18 @@ spring:
     # Otherwise, it will be filled in by gradle when building the JAR file
     # Either way, it can be overridden by `--spring.profiles.active` value passed in the commandline or `-Dspring.profiles.active` set in `JAVA_OPTS`
     active: #spring.profiles.active#
-#  messages:
-#    basename: i18n/messages
+  #  messages:
+  #    basename: i18n/messages
   datasource:
-    #Hikari Thread Pool
+    # Hikari Thread Pool
     hikari:
       connection-timeout: 30000
       idle-timeout: 60000
       max-lifetime: 180000
       maximum-pool-size: 2
       connection-test-query: SELECT 1
+
+  # Flyway configuration
+  flyway:
+    locations: classpath:/db/migration
+    table: flyway_history

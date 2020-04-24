@@ -5,7 +5,9 @@ import org.example.authorize.utils.constants.Constants;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.Nullable;
+import org.springframework.util.Assert;
 import org.springframework.util.MultiValueMap;
+import org.springframework.util.StringUtils;
 
 import java.time.LocalDateTime;
 
@@ -15,9 +17,6 @@ import java.time.LocalDateTime;
  * @param <T> class of body
  */
 public class WResponseEntity<T> extends ResponseEntity<Response<T>> {
-
-    public static final String SUCCESS_CODE = "00000";
-    public static final String ERROR_CODE = "00099";
 
     /**
      * Create a new {@code WResponseEntity} with the given entity body, and no headers.
@@ -106,9 +105,10 @@ public class WResponseEntity<T> extends ResponseEntity<Response<T>> {
      * @return return Wrap body object
      */
     private static <T> Response<T> wrapBody(T body, ResponseCode responseCode, String message) {
+        Assert.notNull(responseCode, "Response code cannot be null");
         Response<T> wrapBody = new Response<T>();
         wrapBody.setCode(responseCode);
-        wrapBody.setMessage(message);
+        wrapBody.setMessage(!StringUtils.isEmpty(message) ? message : responseCode.getMessage());
         wrapBody.setData(body);
         wrapBody.setTimestamp(LocalDateTime.now());
         return wrapBody;
@@ -120,7 +120,7 @@ public class WResponseEntity<T> extends ResponseEntity<Response<T>> {
      * @return the created {@code WResponseEntity}
      */
     public static <T> WResponseEntity<T> success(T body) {
-        return new WResponseEntity<T>(body);
+        return new WResponseEntity<>(body);
     }
 
     /**
@@ -130,7 +130,7 @@ public class WResponseEntity<T> extends ResponseEntity<Response<T>> {
      */
     public static <T> WResponseEntity<T> error(String message) {
         message = null != message ? message : "The application have error, please try again later!";
-        return new WResponseEntity<T>(null, ResponseCode.ERROR_CODE, message);
+        return new WResponseEntity<>(null, ResponseCode.ERROR_CODE, message);
     }
 
     /**
@@ -139,6 +139,6 @@ public class WResponseEntity<T> extends ResponseEntity<Response<T>> {
      * @return the created {@code WResponseEntity}
      */
     public static <T> WResponseEntity<T> error(ResponseCode code) {
-        return new WResponseEntity<T>(null, code, code.getMessage());
+        return new WResponseEntity<>(null, code, code.getMessage());
     }
 }

@@ -1,6 +1,5 @@
 package org.example.authorize.response;
 
-import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.Data;
 import org.example.authorize.exception.handler.ResponseCode;
 

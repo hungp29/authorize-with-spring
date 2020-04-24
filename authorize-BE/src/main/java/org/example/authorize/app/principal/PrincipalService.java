@@ -1,8 +1,7 @@
 package org.example.authorize.app.principal;
 
 import lombok.RequiredArgsConstructor;
-import org.example.authorize.app.authmethod.AuthMethodRepository;
-import org.example.authorize.entity.Account;
+import org.example.authorize.app.authmethod.AuthMethodService;
 import org.example.authorize.entity.AuthMethod;
 import org.example.authorize.entity.Principal;
 import org.example.authorize.exception.SaveEntityException;
@@ -20,7 +19,7 @@ public class PrincipalService {
     private final Generator<String> generator;
     private final PrincipalRepository principalRepository;
 
-    private final AuthMethodRepository authMethodRepository;
+    private final AuthMethodService authMethodService;
 
     /**
      * Create principal but not save it.
@@ -79,7 +78,7 @@ public class PrincipalService {
      * @return return principal instance if it exist
      */
     public Principal findPrincipalByAuthData1(String authData1) {
-        AuthMethod authMethod = authMethodRepository.findByAuthData1(authData1).orElse(null);
+        AuthMethod authMethod = authMethodService.findByAuthData1(authData1);
 
         return null != authMethod ? authMethod.getPrincipal() : null;
     }

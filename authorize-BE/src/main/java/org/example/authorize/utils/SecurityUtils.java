@@ -1,5 +1,6 @@
 package org.example.authorize.utils;
 
+import org.apache.commons.codec.binary.Base32;
 import org.example.authorize.app.authentication.AuthReq;
 import org.example.authorize.config.SecurityConfiguration;
 import org.example.authorize.entity.Account;
@@ -10,6 +11,8 @@ import org.springframework.util.AntPathMatcher;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMethod;
+
+import java.security.SecureRandom;
 
 /**
  * Security Utils.
@@ -118,5 +121,18 @@ public class SecurityUtils {
      */
     public static AbstractAuthenticationToken createUsernamePasswordAuthenticationToken(AuthReq authReq) {
         return new UsernamePasswordAuthenticationToken(authReq.getUsername(), authReq.getPassword());
+    }
+
+    /**
+     * Generate Secret Key, it use for generate OTP value.
+     *
+     * @return return Secret Key
+     */
+    public static String generateSecretKey() {
+        SecureRandom random = new SecureRandom();
+        byte[] bytes = new byte[20];
+        random.nextBytes(bytes);
+        Base32 base32 = new Base32();
+        return base32.encodeToString(bytes);
     }
 }

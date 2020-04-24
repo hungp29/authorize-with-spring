@@ -1,6 +1,7 @@
 package org.example.authorize.app.account;
 
 import lombok.RequiredArgsConstructor;
+import org.example.authorize.app.account.requestobject.PhoneReq;
 import org.example.authorize.app.authmethod.AuthMethodRepository;
 import org.example.authorize.app.authmethod.AuthMethodService;
 import org.example.authorize.app.principal.PrincipalRepository;
@@ -12,13 +13,13 @@ import org.example.authorize.entity.Role;
 import org.example.authorize.enums.AuthType;
 import org.example.authorize.security.UserPrincipal;
 import org.example.authorize.security.authentoken.JWTAuthenticationToken;
-import org.example.authorize.utils.PasswordEncode;
 import org.example.authorize.utils.generator.id.Generator;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 import java.util.Collections;
 import java.util.List;
@@ -38,7 +39,6 @@ public class AccountServiceImpl implements AccountService {
     private final AuthMethodService authMethodService;
     private final PrincipalService principalService;
 
-    private final PasswordEncode passwordEncode;
     private final Generator<String> generator;
 
     /**
@@ -96,7 +96,7 @@ public class AccountServiceImpl implements AccountService {
      * @return return account instance if it exist
      */
     public Account findAccountByAuthData1(String authData1) {
-        AuthMethod authMethod = authMethodRepository.findByAuthData1(authData1).orElse(null);
+        AuthMethod authMethod = authMethodService.findByAuthData1(authData1);
         if (null != authMethod && null != authMethod.getPrincipal()) {
             return authMethod.getPrincipal().getAccount();
         }
@@ -108,11 +108,10 @@ public class AccountServiceImpl implements AccountService {
      *
      * @param username username of account
      * @return return UserDetails instance
-     * @throws UsernameNotFoundException throw Ex
      */
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        AuthMethod authMethod = authMethodRepository.findByAuthTypeAndAuthData1(AuthType.USERNAME_PASSWORD, username).orElse(null);
+    public UserDetails loadUserByUsername(String username) {
+        AuthMethod authMethod = authMethodService.findByAuthTypeAndAuthData1(AuthType.USERNAME_PASSWORD, username);
 
         if (null != authMethod && null != authMethod.getPrincipal()) {
             return UserPrincipal.create(authMethod.getPrincipal().getAccount(), AuthType.USERNAME_PASSWORD);
@@ -126,10 +125,9 @@ public class AccountServiceImpl implements AccountService {
      *
      * @param token JWT authentication provider
      * @return return UserDetails instance
-     * @throws UsernameNotFoundException throw Ex
      */
     @Override
-    public UserDetails loadUserDetails(PreAuthenticatedAuthenticationToken token) throws UsernameNotFoundException {
+    public UserDetails loadUserDetails(PreAuthenticatedAuthenticationToken token) {
         JWTAuthenticationToken jwtAuthenticationToken = (JWTAuthenticationToken) token;
         UserPrincipal principal = (UserPrincipal) jwtAuthenticationToken.getAuthentication().getPrincipal();
 
@@ -139,5 +137,30 @@ public class AccountServiceImpl implements AccountService {
         } else {
             throw new UsernameNotFoundException("Cannot find user");
         }
+    }
+
+    /**
+     * Update phone number for account.
+     *
+     * @param id       id of account
+     * @param phoneReq phone request object
+     * @return return true if update successfully, otherwise return false
+     */
+    public boolean addOrUpdatePhoneNumber(String id, PhoneReq phoneReq) {
+        Account account = accountRepository.findById(id).orElse(null);
+        if (null != account && null != account.getPrincipal() && !CollectionUtils.isEmpty(account.getPrincipal().getAuthMethods())) {
+            AuthMethod phoneAuthMethod = account.getPrincipal().getAuthMethods().stream()
+                    .filter(authMethod -> AuthType.PHONE_NUMBER.equals(authMethod.getAuthType()))
+                    .findFirst()
+                    .orElse(null);
+            if (null == phoneAuthMethod) {
+                phoneAuthMethod = authMethodService.createAuthMethodByPhoneNumber(phoneReq.getPhone());
+                phoneAuthMethod.setPrincipal(account.getPrincipal());
+            }
+            phoneAuthMethod.setAuthData1(phoneReq.getPhone());
+            authMethodService.save(phoneAuthMethod);
+            return true;
+        }
+        return false;
     }
 }

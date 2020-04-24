@@ -10,6 +10,8 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties(prefix = "application", ignoreUnknownFields = false)
 public class ApplicationProperties {
 
+    private String name;
+
     private String superRoleName;
 
     private String policyFullAccess;
@@ -17,6 +19,8 @@ public class ApplicationProperties {
     private SuperAccount superAccount;
 
     private short loginAttemptsThreshold;
+
+    private int otpLength = 6;
 
     /**
      * Super account properties.

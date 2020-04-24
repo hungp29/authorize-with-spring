@@ -6,13 +6,11 @@ import com.google.zxing.WriterException;
 import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
 import org.apache.commons.codec.binary.Base32;
-import org.example.authorize.utils.generator.otp.HMACOneTimePasswordGenerator;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
@@ -63,12 +61,11 @@ public class Test {
 //        System.out.println(barCodeUrl);
 //
 //        createQRCode(barCodeUrl, "/home/hungp/workspaces/learn-spring/authorize-with-spring/authorize-BE/qr", 200, 200);
-//        System.out.println(generateSecretKey());
+        System.out.println(generateSecretKey());
 
 //        HMACOneTimePasswordGenerator otpGen = new HMACOneTimePasswordGenerator();
 //        System.out.println(otpGen.generateWithLongMovingFactor("QDWSM3OYBPGTEVSPB5FKVDM3CSNCWHVK".getBytes(StandardCharsets.UTF_8),
 //                1, 6, false, 1));
-
 
 
     }
@@ -76,7 +73,7 @@ public class Test {
 
     public static String generateSecretKey() {
         SecureRandom random = new SecureRandom();
-        byte[] bytes = new byte[10];
+        byte[] bytes = new byte[20];
         random.nextBytes(bytes);
         Base32 base32 = new Base32();
         return base32.encodeToString(bytes);

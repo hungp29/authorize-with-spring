@@ -1,5 +1,6 @@
 package org.example.authorize.app.account;
 
+import org.example.authorize.app.account.requestobject.PhoneReq;
 import org.example.authorize.entity.Account;
 import org.example.authorize.entity.Role;
 import org.springframework.security.core.userdetails.AuthenticationUserDetailsService;
@@ -46,4 +47,13 @@ public interface AccountService extends UserDetailsService, AuthenticationUserDe
      * @return return account instance if it exist
      */
     Account findAccountByAuthData1(String authData1);
+
+    /**
+     * Update phone number for account.
+     *
+     * @param id       id of account
+     * @param phoneReq phone request object
+     * @return return true if update phone number successfully, otherwise return false
+     */
+    boolean addOrUpdatePhoneNumber(String id, PhoneReq phoneReq);
 }

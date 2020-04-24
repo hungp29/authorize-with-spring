@@ -3,7 +3,6 @@ package org.example.authorize.app.authentication;
 import lombok.RequiredArgsConstructor;
 import org.example.authorize.response.WResponseEntity;
 import org.example.authorize.security.jwt.AccessToken;
-import org.example.authorize.security.jwt.TokenProvider;
 import org.example.authorize.security.permission.PermissionGroup;
 import org.example.authorize.utils.SecurityUtils;
 import org.example.authorize.utils.constants.PermissionGroupConstants;
@@ -63,8 +62,7 @@ public class AuthenticationController {
      * @return return otp
      */
     @PostMapping(URLConstants.M_OTP)
-    public WResponseEntity<String> authorizeByOTP(@RequestBody AuthReq authReq) {
-        authenticationService.generateOTP(authReq.getPhone());
-        return WResponseEntity.success("ok");
+    public WResponseEntity<Boolean> authorizeByOTP(@RequestBody AuthReq authReq) {
+        return WResponseEntity.success(authenticationService.generateOTP(authReq.getPhone()));
     }
 }

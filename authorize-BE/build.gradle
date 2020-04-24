@@ -38,6 +38,7 @@ ext {
     jedisVersion = '3.2.0'
     zxingVersion = '3.4.0'
     commonCodecVersion = '1.14'
+    velocityVersion = '1.7'
 }
 
 dependencies {
@@ -69,6 +70,9 @@ dependencies {
     // Generate QR
     implementation "com.google.zxing:javase:$zxingVersion"
     implementation "commons-codec:commons-codec:$commonCodecVersion"
+
+    // Other
+    implementation "org.apache.velocity:velocity:$velocityVersion"
 
     testCompile "junit:junit:$junitVersion"
 }
