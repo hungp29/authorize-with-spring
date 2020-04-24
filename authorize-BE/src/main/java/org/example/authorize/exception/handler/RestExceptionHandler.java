@@ -6,6 +6,7 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
+import org.springframework.security.authentication.LockedException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -35,14 +36,14 @@ public class RestExceptionHandler {
     @ExceptionHandler({AccessDeniedException.class})
     public WResponseEntity<String> handleAccessDeniedException(AccessDeniedException e) {
         log.error(e.getMessage(), e);
-        return WResponseEntity.error(e.getMessage());
+        return WResponseEntity.error(ResponseCode.ACCESS_DENIED);
     }
 
     @ExceptionHandler({BadCredentialsException.class,
             InternalAuthenticationServiceException.class})
     public WResponseEntity<String> handleBadCredentialException(Exception e) {
         log.error(e.getMessage(), e);
-        return WResponseEntity.error(e.getMessage());
+        return WResponseEntity.error(ResponseCode.BAD_CREDENTIALS);
     }
 
     /**
@@ -54,7 +55,18 @@ public class RestExceptionHandler {
     @ExceptionHandler(DisabledException.class)
     public WResponseEntity<String> handleAccountDisableException(DisabledException e) {
         log.error(e.getMessage(), e);
-        return WResponseEntity.error(e.getMessage());
+        return WResponseEntity.error(ResponseCode.ACCOUNT_DISABLED);
+    }
+
+    /**
+     * Handle locked exception.
+     * @param e Locked Exception
+     * @return error response
+     */
+    @ExceptionHandler(LockedException.class)
+    public WResponseEntity<String> handleAccountLockedException(LockedException e) {
+        log.error(e.getMessage(), e);
+        return WResponseEntity.error(ResponseCode.ACCOUNT_LOCKED);
     }
 
     /**
@@ -66,7 +78,6 @@ public class RestExceptionHandler {
     @ExceptionHandler(Exception.class)
     public WResponseEntity<String> handleException(Exception e) {
         log.error(e.getMessage(), e);
-
-        return WResponseEntity.error(e.getMessage());
+        return WResponseEntity.error(ResponseCode.ERROR_CODE);
     }
 }

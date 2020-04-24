@@ -1,5 +1,6 @@
 package org.example.authorize.response;
 
+import org.example.authorize.exception.handler.ResponseCode;
 import org.example.authorize.utils.constants.Constants;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,7 +25,7 @@ public class WResponseEntity<T> extends ResponseEntity<Response<T>> {
      * @param body the entity body
      */
     public WResponseEntity(@Nullable T body) {
-        this(body, SUCCESS_CODE, Constants.EMPTY_STRING, null, HttpStatus.OK);
+        this(body, ResponseCode.SUCCESS_CODE, Constants.EMPTY_STRING, null, HttpStatus.OK);
     }
 
     /**
@@ -34,7 +35,7 @@ public class WResponseEntity<T> extends ResponseEntity<Response<T>> {
      * @param status the status code
      */
     public WResponseEntity(@Nullable T body, HttpStatus status) {
-        this(body, SUCCESS_CODE, Constants.EMPTY_STRING, null, status);
+        this(body, ResponseCode.SUCCESS_CODE, Constants.EMPTY_STRING, null, status);
     }
 
     /**
@@ -44,7 +45,7 @@ public class WResponseEntity<T> extends ResponseEntity<Response<T>> {
      * @param status  the status code
      */
     public WResponseEntity(MultiValueMap<String, String> headers, HttpStatus status) {
-        this(null, SUCCESS_CODE, Constants.EMPTY_STRING, headers, status);
+        this(null, ResponseCode.SUCCESS_CODE, Constants.EMPTY_STRING, headers, status);
     }
 
     /**
@@ -55,7 +56,7 @@ public class WResponseEntity<T> extends ResponseEntity<Response<T>> {
      * @param status  the status code
      */
     public WResponseEntity(@Nullable T body, @Nullable MultiValueMap<String, String> headers, HttpStatus status) {
-        this(body, SUCCESS_CODE, Constants.EMPTY_STRING, headers, status);
+        this(body, ResponseCode.SUCCESS_CODE, Constants.EMPTY_STRING, headers, status);
     }
 
     /**
@@ -65,7 +66,7 @@ public class WResponseEntity<T> extends ResponseEntity<Response<T>> {
      * @param code    the response code
      * @param message the response message
      */
-    public WResponseEntity(@Nullable T body, @Nullable String code, @Nullable String message) {
+    public WResponseEntity(@Nullable T body, @Nullable ResponseCode code, @Nullable String message) {
         this(body, code, message, null, HttpStatus.OK);
     }
 
@@ -77,7 +78,7 @@ public class WResponseEntity<T> extends ResponseEntity<Response<T>> {
      * @param message the response message
      * @param headers the entity header
      */
-    public WResponseEntity(@Nullable T body, @Nullable String code, @Nullable String message,
+    public WResponseEntity(@Nullable T body, @Nullable ResponseCode code, @Nullable String message,
                            @Nullable MultiValueMap<String, String> headers) {
         this(body, code, message, headers, HttpStatus.OK);
     }
@@ -91,7 +92,7 @@ public class WResponseEntity<T> extends ResponseEntity<Response<T>> {
      * @param headers the entity headers
      * @param status  the status code
      */
-    public WResponseEntity(@Nullable T body, @Nullable String code, @Nullable String message,
+    public WResponseEntity(@Nullable T body, @Nullable ResponseCode code, @Nullable String message,
                            @Nullable MultiValueMap<String, String> headers, HttpStatus status) {
         super(wrapBody(body, code, message), headers, status);
     }
@@ -104,7 +105,7 @@ public class WResponseEntity<T> extends ResponseEntity<Response<T>> {
      * @param message      the message
      * @return return Wrap body object
      */
-    private static <T> Response<T> wrapBody(T body, String responseCode, String message) {
+    private static <T> Response<T> wrapBody(T body, ResponseCode responseCode, String message) {
         Response<T> wrapBody = new Response<T>();
         wrapBody.setCode(responseCode);
         wrapBody.setMessage(message);
@@ -123,12 +124,21 @@ public class WResponseEntity<T> extends ResponseEntity<Response<T>> {
     }
 
     /**
-     * A shortcut for creating a {@code WResponseEntity} with the given body and set to {@linkplain HttpStatus#OK OK}.
+     * A shortcut for creating a {@code WResponseEntity} with the given message.
      *
      * @return the created {@code WResponseEntity}
      */
     public static <T> WResponseEntity<T> error(String message) {
         message = null != message ? message : "The application have error, please try again later!";
-        return new WResponseEntity<T>(null, ERROR_CODE, message);
+        return new WResponseEntity<T>(null, ResponseCode.ERROR_CODE, message);
+    }
+
+    /**
+     * A shortcut for creating a {@code WResponseEntity} with the given Response code.
+     *
+     * @return the created {@code WResponseEntity}
+     */
+    public static <T> WResponseEntity<T> error(ResponseCode code) {
+        return new WResponseEntity<T>(null, code, code.getMessage());
     }
 }

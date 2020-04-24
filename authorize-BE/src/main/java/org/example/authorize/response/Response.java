@@ -1,6 +1,8 @@
 package org.example.authorize.response;
 
+import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.Data;
+import org.example.authorize.exception.handler.ResponseCode;
 
 import java.time.LocalDateTime;
 
@@ -12,7 +14,7 @@ import java.time.LocalDateTime;
 @Data
 public class Response<T> {
 
-    private String code;
+    private ResponseCode code;
 
     private String message;
 
