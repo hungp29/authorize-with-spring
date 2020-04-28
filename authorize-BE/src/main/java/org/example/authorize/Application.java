@@ -2,7 +2,7 @@ package org.example.authorize;
 
 import org.example.authorize.config.prop.ApplicationProperties;
 import org.example.authorize.config.prop.JwtProperties;
-import org.example.authorize.config.prop.OtpProperties;
+import org.example.authorize.config.prop.OTPProperties;
 import org.example.authorize.config.prop.VelocityProperties;
 import org.example.authorize.utils.DefaultProfileUtil;
 import org.springframework.boot.SpringApplication;
@@ -14,7 +14,7 @@ import org.springframework.core.env.Environment;
 @EnableConfigurationProperties({
         ApplicationProperties.class,
         JwtProperties.class,
-        OtpProperties.class,
+        OTPProperties.class,
         VelocityProperties.class
 })
 public class Application {

@@ -13,6 +13,7 @@ import org.example.authorize.entity.Role;
 import org.example.authorize.enums.AuthType;
 import org.example.authorize.security.UserPrincipal;
 import org.example.authorize.security.authentoken.JWTAuthenticationToken;
+import org.example.authorize.security.authentoken.OTPAuthenticationToken;
 import org.example.authorize.utils.generator.id.Generator;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -134,6 +135,23 @@ public class AccountServiceImpl implements AccountService {
         if (null != principal) {
             String accountId = principal.getId();
             return UserPrincipal.create(accountRepository.findById(accountId).orElse(null), AuthType.REFRESH_TOKEN);
+        } else {
+            throw new UsernameNotFoundException("Cannot find user");
+        }
+    }
+
+    /**
+     * Load UserDetails by otp token.
+     *
+     * @param otpToken The otp authentication token
+     * @return return UserDetails instance
+     */
+    @Override
+    public UserDetails loadUserDetailsForOTP(OTPAuthenticationToken otpToken) {
+        AuthMethod authMethod = authMethodService.findByAuthTypeAndAuthData1(AuthType.PHONE_NUMBER, (String) otpToken.getPrincipal());
+
+        if (null != authMethod && null != authMethod.getPrincipal()) {
+            return UserPrincipal.create(authMethod.getPrincipal().getAccount(), AuthType.PHONE_NUMBER);
         } else {
             throw new UsernameNotFoundException("Cannot find user");
         }

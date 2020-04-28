@@ -1,7 +1,7 @@
 package org.example.authorize.utils.generator.otp;
 
 import lombok.RequiredArgsConstructor;
-import org.example.authorize.config.prop.OtpProperties;
+import org.example.authorize.config.prop.OTPProperties;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 
@@ -14,7 +14,7 @@ import org.springframework.util.Assert;
 @RequiredArgsConstructor
 public class HMACOneTimePasswordGenerator extends AbstractHMACOneTimePasswordGenerator<Long> {
 
-    private final OtpProperties otpProperties;
+    private final OTPProperties otpProperties;
 
     protected String getAlgorithm() {
         return otpProperties.getAlgorithm();

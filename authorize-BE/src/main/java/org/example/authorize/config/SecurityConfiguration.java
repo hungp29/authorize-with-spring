@@ -4,6 +4,8 @@ import lombok.RequiredArgsConstructor;
 import org.example.authorize.app.account.AccountService;
 import org.example.authorize.security.SecurityConfigurer;
 import org.example.authorize.security.SecurityProblemHandler;
+import org.example.authorize.security.authenprovider.OTPAuthenticationProvider;
+import org.example.authorize.utils.OTPSupport;
 import org.example.authorize.utils.PasswordEncode;
 import org.example.authorize.utils.constants.URLConstants;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,7 +48,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     public static final String[] POST_WHITE_LIST = {
             URLConstants.C_AUTHENTICATION + URLConstants.M_AUTHENTICATION,
             URLConstants.C_AUTHENTICATION + URLConstants.M_REFRESH_TOKEN,
-            URLConstants.C_AUTHENTICATION + URLConstants.M_OTP
+            URLConstants.C_AUTHENTICATION + URLConstants.M_OTP,
+            URLConstants.C_AUTHENTICATION + URLConstants.M_OTP_VERIFY
     };
 
     /**
@@ -62,6 +65,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     };
 
     private final PasswordEncode passwordEncode;
+    private final OTPSupport otpSupport;
     private final AccountService accountService;
     private final SecurityProblemHandler securityProblemHandler;
     private final SecurityConfigurer securityConfigurer;
@@ -87,7 +91,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     public void configureGlobal(AuthenticationManagerBuilder auth) {
         auth
                 .authenticationProvider(usernamePasswordAuthenticationProvider())
-                .authenticationProvider(preAuthenticatedAuthenticationProvider());
+                .authenticationProvider(preAuthenticatedAuthenticationProvider())
+                .authenticationProvider(otpAuthenticationProvider());
 
     }
 
@@ -113,6 +118,20 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     public PreAuthenticatedAuthenticationProvider preAuthenticatedAuthenticationProvider() {
         PreAuthenticatedAuthenticationProvider provider = new PreAuthenticatedAuthenticationProvider();
         provider.setPreAuthenticatedUserDetailsService(accountService);
+        return provider;
+    }
+
+    /**
+     * Authentication Provider for OTP Token.
+     *
+     * @return OTP Authentication Provider
+     */
+    @Bean
+    public OTPAuthenticationProvider otpAuthenticationProvider() {
+        OTPAuthenticationProvider provider = new OTPAuthenticationProvider();
+        provider.setOtpUserDetailsService(accountService);
+        provider.setOtpSupport(otpSupport);
+        provider.setThrowExceptionWhenTokenExpire(false);
         return provider;
     }
 

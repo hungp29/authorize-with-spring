@@ -20,8 +20,6 @@ public class ApplicationProperties {
 
     private short loginAttemptsThreshold;
 
-    private int otpLength = 6;
-
     /**
      * Super account properties.
      */

@@ -14,7 +14,6 @@ application:
     username: admin
     password: 123456!
   login-attempts-threshold: 5
-  otp-length: 6
 
 # ===================================================================
 # Spring properties
@@ -62,8 +61,10 @@ jwt:
 # OTP configuration
 # ===================================================================
 otp:
-  algorithm: HmacSHA1
+  algorithm: HmacSHA1 # for TOTP algorithm
   time-step: 30 # for TOTP algorithm
+  otp-length: 6
+  validity-seconds: 60 # for HOTP algorithm
 
 # ===================================================================
 # Logger

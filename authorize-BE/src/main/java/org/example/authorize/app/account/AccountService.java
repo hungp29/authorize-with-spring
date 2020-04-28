@@ -3,7 +3,9 @@ package org.example.authorize.app.account;
 import org.example.authorize.app.account.requestobject.PhoneReq;
 import org.example.authorize.entity.Account;
 import org.example.authorize.entity.Role;
-import org.springframework.security.core.userdetails.AuthenticationUserDetailsService;
+import org.example.authorize.security.authentoken.OTPAuthenticationToken;
+import org.example.authorize.security.userdetails.OTPUserDetailsService;
+import org.example.authorize.security.userdetails.TokenUserDetailsService;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
 
@@ -13,7 +15,9 @@ import java.util.Optional;
 /**
  * Account Service.
  */
-public interface AccountService extends UserDetailsService, AuthenticationUserDetailsService<PreAuthenticatedAuthenticationToken> {
+public interface AccountService extends UserDetailsService,
+        TokenUserDetailsService<PreAuthenticatedAuthenticationToken>,
+        OTPUserDetailsService<OTPAuthenticationToken> {
 
     /**
      * Find account by id.

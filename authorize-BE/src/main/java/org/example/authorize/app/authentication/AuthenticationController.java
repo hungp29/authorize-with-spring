@@ -2,6 +2,7 @@ package org.example.authorize.app.authentication;
 
 import lombok.RequiredArgsConstructor;
 import org.example.authorize.response.WResponseEntity;
+import org.example.authorize.security.authentoken.OTPAuthenticationToken;
 import org.example.authorize.security.jwt.AccessToken;
 import org.example.authorize.security.permission.PermissionGroup;
 import org.example.authorize.utils.SecurityUtils;
@@ -45,6 +46,33 @@ public class AuthenticationController {
     }
 
     /**
+     * Generate OTP value.
+     *
+     * @param authReq request data, it include phone number
+     * @return return otp
+     */
+    @PostMapping(URLConstants.M_OTP)
+    public WResponseEntity<Boolean> generateOTP(@RequestBody AuthReq authReq) {
+        return WResponseEntity.success(authenticationService.generateHOTP(authReq.getPhone()));
+    }
+
+    /**
+     * Authentication by OTP.
+     *
+     * @param authReq request data, it include phone number and otp value
+     * @return return access token if authentication successfully
+     */
+    @PostMapping(URLConstants.M_OTP_VERIFY)
+    public WResponseEntity<AccessToken> authorizeByOTP(@RequestBody AuthReq authReq) {
+        OTPAuthenticationToken otpToken = new OTPAuthenticationToken(authReq.getPhone(), authReq.getOtp());
+
+        Authentication authentication = authenticationManagerBuilder.getObject().authenticate(otpToken);
+
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        return WResponseEntity.success(authenticationService.createAccessToken(authentication, true));
+    }
+
+    /**
      * Refresh Access Token.
      *
      * @param refreshReq refresh request, it have refresh token value.
@@ -53,16 +81,5 @@ public class AuthenticationController {
     @PostMapping(URLConstants.M_REFRESH_TOKEN)
     public WResponseEntity<AccessToken> refresh(@RequestBody RefreshReq refreshReq) {
         return WResponseEntity.success(authenticationService.refreshAccessToken(refreshReq.getToken()));
-    }
-
-    /**
-     * Authentication by OTP.
-     *
-     * @param authReq request data, it include phone number
-     * @return return otp
-     */
-    @PostMapping(URLConstants.M_OTP)
-    public WResponseEntity<Boolean> authorizeByOTP(@RequestBody AuthReq authReq) {
-        return WResponseEntity.success(authenticationService.generateOTP(authReq.getPhone()));
     }
 }

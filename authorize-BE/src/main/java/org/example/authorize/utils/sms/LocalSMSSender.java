@@ -10,11 +10,10 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -37,17 +36,14 @@ public class LocalSMSSender implements SMSSender, InitializingBean {
 
     @Override
     public void sendSMS(String phone, String template, Map<String, String> data) {
-        String smsFileName = Paths.get(smsLocalFolder, phone + Constants.UNDERSCORE +
-                LocalDateTime.now().format(DateTimeFormatter.ofPattern(Constants.DATE_FM_FILE_NAME)) + FILE_EXTENSION)
-                .toString();
+        Path smsFilePath = Paths.get(smsLocalFolder, phone + Constants.UNDERSCORE +
+                LocalDateTime.now().format(DateTimeFormatter.ofPattern(Constants.DATE_FM_FILE_NAME)) + FILE_EXTENSION);
 
         try {
             String message = patternFormatter.mergeDataAndTemplate(template, data);
-            PrintWriter writer = new PrintWriter(smsFileName, "UTF-8");
-            writer.println(message);
-            writer.close();
-        } catch (FileNotFoundException | UnsupportedEncodingException e) {
-            log.error(e.getMessage(), e);
+            Files.write(smsFilePath, message.getBytes(StandardCharsets.UTF_8));
+        } catch (IOException e) {
+            log.warn("Error occurs while save OTP message to file in local environment", e);
         }
     }
 
@@ -58,7 +54,7 @@ public class LocalSMSSender implements SMSSender, InitializingBean {
             try {
                 Files.createDirectories(Paths.get(smsLocalFolder));
             } catch (IOException e) {
-                log.error(e.getMessage(), e);
+                log.error("Error occurs while create folder to save OTP value in local environment", e);
             }
         }
     }

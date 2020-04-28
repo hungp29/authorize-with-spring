@@ -7,12 +7,11 @@ import org.example.authorize.entity.AuthMethod;
 import org.example.authorize.enums.AuthType;
 import org.example.authorize.security.jwt.AccessToken;
 import org.example.authorize.security.jwt.TokenProvider;
-import org.example.authorize.utils.CommonUtils;
+import org.example.authorize.utils.OTPSupport;
 import org.example.authorize.utils.generator.otp.OTPGenerator;
 import org.example.authorize.utils.sms.SMSSender;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -30,6 +29,7 @@ public class AuthenticationService {
 
     private final AuthMethodService authMethodService;
     private final SMSSender smsSender;
+    private final OTPSupport otpSupport;
 
 
     /**
@@ -59,19 +59,11 @@ public class AuthenticationService {
      * @param phone the phone number of account.
      * @return return value
      */
-    public boolean generateOTP(String phone) {
+    public boolean generateHOTP(String phone) {
         AuthMethod phoneAuthMethod = authMethodService.findByAuthTypeAndAuthData1(AuthType.PHONE_NUMBER, phone);
         if (null != phoneAuthMethod) {
-            // Re-generate secret key if it's empty
-            if (StringUtils.isEmpty(phoneAuthMethod.getAuthData2())) {
-                phoneAuthMethod = authMethodService.regenerateSecretKeyForPhoneAuthMethod(phoneAuthMethod);
-            }
-
-            // Increase moving factor
-            long movingFactor = authMethodService.increaseMovingFactorForPhoneAuthMethod(phoneAuthMethod);
-            // Generate OTP base on secret key and moving factor
-            String otp = hotpGenerator.generate(CommonUtils.stringToByteArray(phoneAuthMethod.getAuthData2()),
-                    movingFactor, appProps.getOtpLength(), false, 20);
+            // Generate OTP by using HMAC One Time Password algorithm
+            String otp = otpSupport.generateHOTP(phoneAuthMethod);
 
             // Prepare Data for sms
             Map<String, String> smsData = new HashMap<>();

@@ -11,5 +11,7 @@ public class AuthReq {
 
     private String phone;
 
+    private String otp;
+
     private boolean rememberMe;
 }

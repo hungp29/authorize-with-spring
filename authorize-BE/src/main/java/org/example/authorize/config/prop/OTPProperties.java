@@ -10,9 +10,13 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @Getter
 @Setter
 @ConfigurationProperties(prefix = "otp", ignoreUnknownFields = false)
-public class OtpProperties {
+public class OTPProperties {
 
     private String algorithm;
 
     private int timeStep;
+
+    private int otpLength = 6;
+
+    private int validitySeconds;
 }
