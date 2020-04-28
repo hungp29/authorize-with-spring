@@ -67,6 +67,23 @@ public class AuthMethodService {
     }
 
     /**
+     * Create Auth method by email.
+     *
+     * @param email the email
+     * @return return auth method
+     */
+    public AuthMethod createAuthMethodByEmail(String email) {
+        if (checkAuthMethodEmailExist(email)) {
+            throw new UsernameAlreadyExistException("Email " + email + " is exist");
+        }
+        AuthMethod authMethod = new AuthMethod();
+        authMethod.setId(generator.generate());
+        authMethod.setAuthType(AuthType.EMAIL_PASSWORD);
+        authMethod.setAuthData1(email);
+        return authMethod;
+    }
+
+    /**
      * Re-generate secret key for phone auth method.
      *
      * @param authMethod authentication method for phone number
@@ -185,5 +202,16 @@ public class AuthMethodService {
      */
     public AuthMethod findByAuthTypeAndAuthData1(AuthType authType, String authData1) {
         return authMethodRepository.findByAuthTypeAndAuthData1(authType, authData1).orElse(null);
+    }
+
+    /**
+     * Find Auth method by auth data 1 and list auth type.
+     *
+     * @param authData1 auth data 1 (username, email, phone number)
+     * @param authTypes auth type
+     * @return return auth method if it exist
+     */
+    public AuthMethod findByAuthData1AndAuthTypes(String authData1, AuthType... authTypes) {
+        return authMethodRepository.findByAuthData1AndAuthTypeIn(authData1, authTypes).orElse(null);
     }
 }

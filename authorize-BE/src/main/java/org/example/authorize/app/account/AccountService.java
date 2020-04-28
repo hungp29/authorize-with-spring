@@ -1,6 +1,7 @@
 package org.example.authorize.app.account;
 
-import org.example.authorize.app.account.requestobject.PhoneReq;
+import org.example.authorize.app.account.req.EmailReq;
+import org.example.authorize.app.account.req.PhoneReq;
 import org.example.authorize.entity.Account;
 import org.example.authorize.entity.Role;
 import org.example.authorize.security.authentoken.OTPAuthenticationToken;
@@ -60,4 +61,13 @@ public interface AccountService extends UserDetailsService,
      * @return return true if update phone number successfully, otherwise return false
      */
     boolean addOrUpdatePhoneNumber(String id, PhoneReq phoneReq);
+
+    /**
+     * Update email for account.
+     *
+     * @param id       id of account
+     * @param emailReq email request object
+     * @return return true if update email successfully, otherwise return false
+     */
+    boolean addOrUpdateEmail(String id, EmailReq emailReq);
 }

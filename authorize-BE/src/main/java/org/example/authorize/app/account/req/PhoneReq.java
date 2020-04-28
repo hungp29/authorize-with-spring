@@ -1,4 +1,4 @@
-package org.example.authorize.app.account.requestobject;
+package org.example.authorize.app.account.req;
 
 import lombok.Data;
 

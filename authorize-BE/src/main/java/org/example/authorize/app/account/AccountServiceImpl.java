@@ -1,7 +1,8 @@
 package org.example.authorize.app.account;
 
 import lombok.RequiredArgsConstructor;
-import org.example.authorize.app.account.requestobject.PhoneReq;
+import org.example.authorize.app.account.req.EmailReq;
+import org.example.authorize.app.account.req.PhoneReq;
 import org.example.authorize.app.authmethod.AuthMethodRepository;
 import org.example.authorize.app.authmethod.AuthMethodService;
 import org.example.authorize.app.principal.PrincipalRepository;
@@ -112,10 +113,10 @@ public class AccountServiceImpl implements AccountService {
      */
     @Override
     public UserDetails loadUserByUsername(String username) {
-        AuthMethod authMethod = authMethodService.findByAuthTypeAndAuthData1(AuthType.USERNAME_PASSWORD, username);
+        AuthMethod authMethod = authMethodService.findByAuthData1AndAuthTypes(username, AuthType.USERNAME_PASSWORD, AuthType.EMAIL_PASSWORD);
 
         if (null != authMethod && null != authMethod.getPrincipal()) {
-            return UserPrincipal.create(authMethod.getPrincipal().getAccount(), AuthType.USERNAME_PASSWORD);
+            return UserPrincipal.create(authMethod.getPrincipal().getAccount(), authMethod.getAuthType());
         } else {
             throw new UsernameNotFoundException("Cannot find user");
         }
@@ -164,9 +165,11 @@ public class AccountServiceImpl implements AccountService {
      * @param phoneReq phone request object
      * @return return true if update successfully, otherwise return false
      */
+    @Transactional
     public boolean addOrUpdatePhoneNumber(String id, PhoneReq phoneReq) {
         Account account = accountRepository.findById(id).orElse(null);
         if (null != account && null != account.getPrincipal() && !CollectionUtils.isEmpty(account.getPrincipal().getAuthMethods())) {
+            // Set/Update phone auth method
             AuthMethod phoneAuthMethod = account.getPrincipal().getAuthMethods().stream()
                     .filter(authMethod -> AuthType.PHONE_NUMBER.equals(authMethod.getAuthType()))
                     .findFirst()
@@ -174,9 +177,45 @@ public class AccountServiceImpl implements AccountService {
             if (null == phoneAuthMethod) {
                 phoneAuthMethod = authMethodService.createAuthMethodByPhoneNumber(phoneReq.getPhone());
                 phoneAuthMethod.setPrincipal(account.getPrincipal());
+            } else {
+                phoneAuthMethod.setAuthData1(phoneReq.getPhone());
             }
-            phoneAuthMethod.setAuthData1(phoneReq.getPhone());
             authMethodService.save(phoneAuthMethod);
+
+            // Set/Update phone number for account
+            account.setPhoneNumber(phoneReq.getPhone());
+            return true;
+        }
+        return false;
+    }
+
+
+    /**
+     * Update email for account.
+     *
+     * @param id       id of account
+     * @param emailReq email request object
+     * @return return true if update successfully, otherwise return false
+     */
+    @Transactional
+    public boolean addOrUpdateEmail(String id, EmailReq emailReq) {
+        Account account = accountRepository.findById(id).orElse(null);
+        if (null != account && null != account.getPrincipal() && !CollectionUtils.isEmpty(account.getPrincipal().getAuthMethods())) {
+            // Set/Update phone auth method
+            AuthMethod emailAuthMethod = account.getPrincipal().getAuthMethods().stream()
+                    .filter(authMethod -> AuthType.EMAIL_PASSWORD.equals(authMethod.getAuthType()))
+                    .findFirst()
+                    .orElse(null);
+            if (null == emailAuthMethod) {
+                emailAuthMethod = authMethodService.createAuthMethodByEmail(emailReq.getEmail());
+                emailAuthMethod.setPrincipal(account.getPrincipal());
+            } else {
+                emailAuthMethod.setAuthData1(emailReq.getEmail());
+            }
+            authMethodService.save(emailAuthMethod);
+
+            // Set/Update phone number for account
+            account.setEmail(emailReq.getEmail());
             return true;
         }
         return false;

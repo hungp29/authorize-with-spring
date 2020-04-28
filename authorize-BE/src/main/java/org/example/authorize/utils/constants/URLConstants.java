@@ -19,5 +19,6 @@ public class URLConstants {
 
     public static final String C_ACCOUNT = "/api/v1/accounts";
     public static final String M_ADD_PHONE = "/{id}/phone";
+    public static final String M_ADD_EMAIL = "/{id}/email";
 
 }

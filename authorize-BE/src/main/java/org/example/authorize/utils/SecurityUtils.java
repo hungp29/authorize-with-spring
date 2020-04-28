@@ -1,9 +1,10 @@
 package org.example.authorize.utils;
 
 import org.apache.commons.codec.binary.Base32;
-import org.example.authorize.app.authentication.AuthReq;
+import org.example.authorize.app.authentication.req.AuthReq;
 import org.example.authorize.config.SecurityConfiguration;
 import org.example.authorize.entity.Account;
+import org.example.authorize.security.authentoken.OTPAuthenticationToken;
 import org.example.authorize.utils.constants.Constants;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -121,6 +122,16 @@ public class SecurityUtils {
      */
     public static AbstractAuthenticationToken createUsernamePasswordAuthenticationToken(AuthReq authReq) {
         return new UsernamePasswordAuthenticationToken(authReq.getUsername(), authReq.getPassword());
+    }
+
+    /**
+     * Create OTP Authentication Token instance.
+     *
+     * @param authReq object store phone and otp value
+     * @return return OTPAuthenticationToken instance
+     */
+    public static AbstractAuthenticationToken createOTPAuthenticationToken(AuthReq authReq) {
+        return new OTPAuthenticationToken(authReq.getPhone(), authReq.getOtp());
     }
 
     /**

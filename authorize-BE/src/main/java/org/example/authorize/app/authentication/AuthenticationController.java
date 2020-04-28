@@ -1,8 +1,8 @@
 package org.example.authorize.app.authentication;
 
 import lombok.RequiredArgsConstructor;
+import org.example.authorize.app.authentication.req.AuthReq;
 import org.example.authorize.response.WResponseEntity;
-import org.example.authorize.security.authentoken.OTPAuthenticationToken;
 import org.example.authorize.security.jwt.AccessToken;
 import org.example.authorize.security.permission.PermissionGroup;
 import org.example.authorize.utils.SecurityUtils;
@@ -64,9 +64,8 @@ public class AuthenticationController {
      */
     @PostMapping(URLConstants.M_OTP_VERIFY)
     public WResponseEntity<AccessToken> authorizeByOTP(@RequestBody AuthReq authReq) {
-        OTPAuthenticationToken otpToken = new OTPAuthenticationToken(authReq.getPhone(), authReq.getOtp());
-
-        Authentication authentication = authenticationManagerBuilder.getObject().authenticate(otpToken);
+        Authentication authentication = authenticationManagerBuilder.getObject()
+                .authenticate(SecurityUtils.createOTPAuthenticationToken(authReq));
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
         return WResponseEntity.success(authenticationService.createAccessToken(authentication, true));
