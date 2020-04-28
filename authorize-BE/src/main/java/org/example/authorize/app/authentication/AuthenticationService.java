@@ -2,13 +2,11 @@ package org.example.authorize.app.authentication;
 
 import lombok.RequiredArgsConstructor;
 import org.example.authorize.app.authmethod.AuthMethodService;
-import org.example.authorize.config.prop.ApplicationProperties;
 import org.example.authorize.entity.AuthMethod;
 import org.example.authorize.enums.AuthType;
 import org.example.authorize.security.jwt.AccessToken;
 import org.example.authorize.security.jwt.TokenProvider;
 import org.example.authorize.utils.OTPSupport;
-import org.example.authorize.utils.generator.otp.OTPGenerator;
 import org.example.authorize.utils.sms.SMSSender;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
@@ -24,8 +22,6 @@ import java.util.Map;
 public class AuthenticationService {
 
     private final TokenProvider tokenProvider;
-    private final OTPGenerator<Long> hotpGenerator;
-    private final ApplicationProperties appProps;
 
     private final AuthMethodService authMethodService;
     private final SMSSender smsSender;
