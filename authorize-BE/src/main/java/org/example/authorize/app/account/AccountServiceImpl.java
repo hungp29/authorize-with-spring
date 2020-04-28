@@ -77,7 +77,7 @@ public class AccountServiceImpl implements AccountService {
         principal = principalRepository.save(principal);
 
         // Create new auth method
-        AuthMethod authMethod = authMethodService.createAuthMethodByUsernameAndPassword(username, password);
+        AuthMethod authMethod = authMethodService.createAuthMethodUsername(username, password);
         authMethod.setPrincipal(principal);
         authMethodRepository.save(authMethod);
 
@@ -98,7 +98,7 @@ public class AccountServiceImpl implements AccountService {
      * @return return account instance if it exist
      */
     public Account findAccountByAuthData1(String authData1) {
-        AuthMethod authMethod = authMethodService.findByAuthData1(authData1);
+        AuthMethod authMethod = authMethodService.findByDetermineId(authData1);
         if (null != authMethod && null != authMethod.getPrincipal()) {
             return authMethod.getPrincipal().getAccount();
         }
@@ -113,7 +113,7 @@ public class AccountServiceImpl implements AccountService {
      */
     @Override
     public UserDetails loadUserByUsername(String username) {
-        AuthMethod authMethod = authMethodService.findByAuthData1AndAuthTypes(username, AuthType.USERNAME_PASSWORD, AuthType.EMAIL_PASSWORD);
+        AuthMethod authMethod = authMethodService.findByDetermineIdAndAuthTypes(username, AuthType.USERNAME_PASSWORD, AuthType.EMAIL_PASSWORD);
 
         if (null != authMethod && null != authMethod.getPrincipal()) {
             return UserPrincipal.create(authMethod.getPrincipal().getAccount(), authMethod.getAuthType());
@@ -149,7 +149,7 @@ public class AccountServiceImpl implements AccountService {
      */
     @Override
     public UserDetails loadUserDetailsForOTP(OTPAuthenticationToken otpToken) {
-        AuthMethod authMethod = authMethodService.findByAuthTypeAndAuthData1(AuthType.PHONE_NUMBER, (String) otpToken.getPrincipal());
+        AuthMethod authMethod = authMethodService.findByAuthTypeAndDetermineId(AuthType.PHONE_NUMBER, (String) otpToken.getPrincipal());
 
         if (null != authMethod && null != authMethod.getPrincipal()) {
             return UserPrincipal.create(authMethod.getPrincipal().getAccount(), AuthType.PHONE_NUMBER);
@@ -175,10 +175,10 @@ public class AccountServiceImpl implements AccountService {
                     .findFirst()
                     .orElse(null);
             if (null == phoneAuthMethod) {
-                phoneAuthMethod = authMethodService.createAuthMethodByPhoneNumber(phoneReq.getPhone());
+                phoneAuthMethod = authMethodService.createAuthMethodPhoneNumber(phoneReq.getPhone());
                 phoneAuthMethod.setPrincipal(account.getPrincipal());
             } else {
-                phoneAuthMethod.setAuthData1(phoneReq.getPhone());
+                phoneAuthMethod.setDetermineId(phoneReq.getPhone());
             }
             authMethodService.save(phoneAuthMethod);
 
@@ -207,10 +207,10 @@ public class AccountServiceImpl implements AccountService {
                     .findFirst()
                     .orElse(null);
             if (null == emailAuthMethod) {
-                emailAuthMethod = authMethodService.createAuthMethodByEmail(emailReq.getEmail());
+                emailAuthMethod = authMethodService.createAuthMethodEmail(emailReq.getEmail(), "");
                 emailAuthMethod.setPrincipal(account.getPrincipal());
             } else {
-                emailAuthMethod.setAuthData1(emailReq.getEmail());
+                emailAuthMethod.setDetermineId(emailReq.getEmail());
             }
             authMethodService.save(emailAuthMethod);
 

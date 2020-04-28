@@ -12,28 +12,28 @@ import java.util.Optional;
 public interface AuthMethodRepository extends JpaRepository<AuthMethod, String> {
 
     /**
-     * Find Auth method by auth type and auth data 1.
+     * Find Auth method by auth type and determine.
      *
-     * @param authType  auth type
-     * @param authData1 auth data
+     * @param authType    auth type
+     * @param determineId determine id (username, email, phone number)
      * @return return authentication method
      */
-    Optional<AuthMethod> findByAuthTypeAndAuthData1(AuthType authType, String authData1);
+    Optional<AuthMethod> findByAuthTypeAndDetermineId(AuthType authType, String determineId);
 
     /**
-     * Find Auth method by auth data 1.
+     * Find Auth method by determine.
      *
-     * @param authData1 auth data 1 (username, email, phone number)
+     * @param determineId determine id (username, email, phone number)
      * @return return AuthMethod instance if it exist
      */
-    Optional<AuthMethod> findByAuthData1(String authData1);
+    Optional<AuthMethod> findByDetermineId(String determineId);
 
     /**
-     * Find Auth method by auth data 1 and list auth type.
+     * Find Auth method by determine id and list auth type.
      *
-     * @param authData1 auth data 1 (username, email, phone number)
-     * @param authTypes list auth type
+     * @param determineId determine id (username, email, phone number)
+     * @param authTypes   list auth type
      * @return return auth method
      */
-    Optional<AuthMethod> findByAuthData1AndAuthTypeIn(String authData1, AuthType... authTypes);
+    Optional<AuthMethod> findByDetermineIdAndAuthTypeIn(String determineId, AuthType... authTypes);
 }

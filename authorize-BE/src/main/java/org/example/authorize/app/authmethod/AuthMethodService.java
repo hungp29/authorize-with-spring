@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.authorize.config.prop.OTPProperties;
 import org.example.authorize.entity.AuthMethod;
+import org.example.authorize.entity.AuthMethodData;
 import org.example.authorize.enums.AuthType;
 import org.example.authorize.exception.SaveEntityException;
 import org.example.authorize.exception.UsernameAlreadyExistException;
@@ -12,6 +13,7 @@ import org.example.authorize.utils.SecurityUtils;
 import org.example.authorize.utils.generator.id.Generator;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.Assert;
 
 import java.time.LocalDateTime;
 
@@ -28,6 +30,7 @@ public class AuthMethodService {
     private final Generator<String> generator;
     private final PasswordEncode passwordEncode;
     private final AuthMethodRepository authMethodRepository;
+    private final AuthMethodDataRepository authMethodDataRepository;
 
     /**
      * Create auth method USERNAME and PASSWORD.
@@ -36,15 +39,68 @@ public class AuthMethodService {
      * @param password password
      * @return return auth method
      */
-    public AuthMethod createAuthMethodByUsernameAndPassword(String username, String password) {
+    public AuthMethod createAuthMethodUsername(String username, String password) {
+        AuthMethodData authMethodData = new AuthMethodData();
+        authMethodData.setId(generator.generate());
+        authMethodData.setAuthData1(passwordEncode.encode(password));
+
+        return createAuthMethodUsername(username, authMethodData);
+    }
+
+    /**
+     * Create auth method USERNAME and PASSWORD.
+     *
+     * @param username       username
+     * @param authMethodData auth method data
+     * @return return auth method
+     */
+    public AuthMethod createAuthMethodUsername(String username, AuthMethodData authMethodData) {
+        Assert.notNull(authMethodData, "AuthMethodData cannot be null");
         if (checkAuthMethodUsernameExist(username)) {
             throw new UsernameAlreadyExistException("Username " + username + " is exist");
         }
         AuthMethod authMethod = new AuthMethod();
         authMethod.setId(generator.generate());
         authMethod.setAuthType(AuthType.USERNAME_PASSWORD);
-        authMethod.setAuthData1(username);
-        authMethod.setAuthData2(passwordEncode.encode(password));
+        authMethod.setDetermineId(username);
+        authMethod.setAuthMethodData(authMethodData);
+
+        return authMethod;
+    }
+
+    /**
+     * Create Auth method email.
+     *
+     * @param email    the email
+     * @param password the password
+     * @return return auth method
+     */
+    public AuthMethod createAuthMethodEmail(String email, String password) {
+        AuthMethodData authMethodData = new AuthMethodData();
+        authMethodData.setId(generator.generate());
+        authMethodData.setAuthData1(passwordEncode.encode(password));
+
+        return createAuthMethodEmail(email, authMethodData);
+    }
+
+    /**
+     * Create Auth method email.
+     *
+     * @param email          the email
+     * @param authMethodData the auth method data
+     * @return return auth method
+     */
+    public AuthMethod createAuthMethodEmail(String email, AuthMethodData authMethodData) {
+        Assert.notNull(authMethodData, "AuthMethodData cannot be null");
+        if (checkAuthMethodEmailExist(email)) {
+            throw new UsernameAlreadyExistException("Email " + email + " is exist");
+        }
+        AuthMethod authMethod = new AuthMethod();
+        authMethod.setId(generator.generate());
+        authMethod.setAuthType(AuthType.EMAIL_PASSWORD);
+        authMethod.setDetermineId(email);
+
+        authMethod.setAuthMethodData(authMethodData);
         return authMethod;
     }
 
@@ -54,32 +110,20 @@ public class AuthMethodService {
      * @param phoneNumber phone number
      * @return return auth method
      */
-    public AuthMethod createAuthMethodByPhoneNumber(String phoneNumber) {
+    public AuthMethod createAuthMethodPhoneNumber(String phoneNumber) {
         if (checkAuthMethodPhoneExist(phoneNumber)) {
             throw new UsernameAlreadyExistException("Phone number " + phoneNumber + " is exist");
         }
         AuthMethod authMethod = new AuthMethod();
         authMethod.setId(generator.generate());
         authMethod.setAuthType(AuthType.PHONE_NUMBER);
-        authMethod.setAuthData1(phoneNumber);
-        authMethod.setAuthData2(SecurityUtils.generateSecretKey());
-        return authMethod;
-    }
+        authMethod.setDetermineId(phoneNumber);
 
-    /**
-     * Create Auth method by email.
-     *
-     * @param email the email
-     * @return return auth method
-     */
-    public AuthMethod createAuthMethodByEmail(String email) {
-        if (checkAuthMethodEmailExist(email)) {
-            throw new UsernameAlreadyExistException("Email " + email + " is exist");
-        }
-        AuthMethod authMethod = new AuthMethod();
-        authMethod.setId(generator.generate());
-        authMethod.setAuthType(AuthType.EMAIL_PASSWORD);
-        authMethod.setAuthData1(email);
+        AuthMethodData authMethodData = new AuthMethodData();
+        authMethodData.setId(generator.generate());
+        authMethodData.setAuthData1(SecurityUtils.generateSecretKey());
+
+        authMethod.setAuthMethodData(authMethodData);
         return authMethod;
     }
 
@@ -90,8 +134,9 @@ public class AuthMethodService {
      * @return true true if re-generate and save successfully, otherwise return false
      */
     public AuthMethod regenerateSecretKeyForPhoneAuthMethod(AuthMethod authMethod) {
-        if (null != authMethod && AuthType.PHONE_NUMBER.equals(authMethod.getAuthType())) {
-            authMethod.setAuthData2(SecurityUtils.generateSecretKey());
+        if (null != authMethod && AuthType.PHONE_NUMBER.equals(authMethod.getAuthType()) &&
+                null != authMethod.getAuthMethodData()) {
+            authMethod.getAuthMethodData().setAuthData1(SecurityUtils.generateSecretKey());
             authMethod = save(authMethod);
         }
         return authMethod;
@@ -105,9 +150,10 @@ public class AuthMethodService {
      */
     public long increaseMovingFactorForPhoneAuthMethod(AuthMethod authMethod) {
         long movingFactor = 0;
-        if (null != authMethod && AuthType.PHONE_NUMBER.equals(authMethod.getAuthType())) {
+        if (null != authMethod && AuthType.PHONE_NUMBER.equals(authMethod.getAuthType()) &&
+                null != authMethod.getAuthMethodData()) {
             movingFactor = getMovingFactorOfPhoneAuthMethod(authMethod);
-            authMethod.setAuthData3(String.valueOf(++movingFactor));
+            authMethod.getAuthMethodData().setAuthData2(String.valueOf(++movingFactor));
             save(authMethod);
         }
         return movingFactor;
@@ -121,9 +167,10 @@ public class AuthMethodService {
      */
     public long getMovingFactorOfPhoneAuthMethod(AuthMethod authMethod) {
         int movingFactor = 0;
-        if (null != authMethod && AuthType.PHONE_NUMBER.equals(authMethod.getAuthType())) {
+        if (null != authMethod && AuthType.PHONE_NUMBER.equals(authMethod.getAuthType()) &&
+                null != authMethod.getAuthMethodData()) {
             try {
-                movingFactor = Integer.parseInt(authMethod.getAuthData3());
+                movingFactor = Integer.parseInt(authMethod.getAuthMethodData().getAuthData2());
             } catch (NumberFormatException e) {
                 log.warn("Cannot convert moving factor of phone auth method, set moving factor to zero");
             }
@@ -138,8 +185,9 @@ public class AuthMethodService {
      * @return return auth method after set expiration time
      */
     public AuthMethod setExpirationForPhoneAuthMethod(AuthMethod authMethod) {
-        if (null != authMethod && AuthType.PHONE_NUMBER.equals(authMethod.getAuthType())) {
-            authMethod.setExpireDate(LocalDateTime.now().plusSeconds(otpProps.getValiditySeconds()));
+        if (null != authMethod && AuthType.PHONE_NUMBER.equals(authMethod.getAuthType()) &&
+                null != authMethod.getAuthMethodData()) {
+            authMethod.getAuthMethodData().setExpireDate(LocalDateTime.now().plusSeconds(otpProps.getValiditySeconds()));
             return save(authMethod);
         }
         return authMethod;
@@ -152,7 +200,7 @@ public class AuthMethodService {
      * @return return true if username is exist, otherwise return false
      */
     public boolean checkAuthMethodUsernameExist(String username) {
-        return authMethodRepository.findByAuthTypeAndAuthData1(AuthType.USERNAME_PASSWORD, username).isPresent();
+        return authMethodRepository.findByAuthTypeAndDetermineId(AuthType.USERNAME_PASSWORD, username).isPresent();
     }
 
     /**
@@ -162,7 +210,7 @@ public class AuthMethodService {
      * @return return true if email is exist, otherwise return false
      */
     public boolean checkAuthMethodEmailExist(String email) {
-        return authMethodRepository.findByAuthTypeAndAuthData1(AuthType.EMAIL_PASSWORD, email).isPresent();
+        return authMethodRepository.findByAuthTypeAndDetermineId(AuthType.EMAIL_PASSWORD, email).isPresent();
     }
 
     /**
@@ -172,46 +220,48 @@ public class AuthMethodService {
      * @return return true if phone number is exist, otherwise return false
      */
     public boolean checkAuthMethodPhoneExist(String phone) {
-        return authMethodRepository.findByAuthTypeAndAuthData1(AuthType.EMAIL_PASSWORD, phone).isPresent();
+        return authMethodRepository.findByAuthTypeAndDetermineId(AuthType.EMAIL_PASSWORD, phone).isPresent();
     }
 
     @Transactional
     public AuthMethod save(AuthMethod authMethod) {
-        if (null != authMethod) {
+        if (null != authMethod && null != authMethod.getAuthMethodData()) {
+            AuthMethodData authMethodData = authMethodDataRepository.save(authMethod.getAuthMethodData());
+            authMethod.setAuthMethodData(authMethodData);
             return authMethodRepository.save(authMethod);
         }
         throw new SaveEntityException("Auth method is empty, cannot save it");
     }
 
     /**
-     * Find Auth method by auth data 1.
+     * Find Auth method by determine.
      *
-     * @param authData1 auth data 1 value
+     * @param determineId determine value
      * @return return auth method if it exist
      */
-    public AuthMethod findByAuthData1(String authData1) {
-        return authMethodRepository.findByAuthData1(authData1).orElse(null);
+    public AuthMethod findByDetermineId(String determineId) {
+        return authMethodRepository.findByDetermineId(determineId).orElse(null);
     }
 
     /**
-     * Find Auth method by auth type and auth data 1.
+     * Find Auth method by auth type and determine id.
      *
-     * @param authType  authentication type
-     * @param authData1 authentication data 1
+     * @param authType    authentication type
+     * @param determineId determine id
      * @return return auth method if it exist
      */
-    public AuthMethod findByAuthTypeAndAuthData1(AuthType authType, String authData1) {
-        return authMethodRepository.findByAuthTypeAndAuthData1(authType, authData1).orElse(null);
+    public AuthMethod findByAuthTypeAndDetermineId(AuthType authType, String determineId) {
+        return authMethodRepository.findByAuthTypeAndDetermineId(authType, determineId).orElse(null);
     }
 
     /**
-     * Find Auth method by auth data 1 and list auth type.
+     * Find Auth method by determine id and list auth type.
      *
-     * @param authData1 auth data 1 (username, email, phone number)
-     * @param authTypes auth type
+     * @param determineId determine id (username, email, phone number)
+     * @param authTypes   auth type
      * @return return auth method if it exist
      */
-    public AuthMethod findByAuthData1AndAuthTypes(String authData1, AuthType... authTypes) {
-        return authMethodRepository.findByAuthData1AndAuthTypeIn(authData1, authTypes).orElse(null);
+    public AuthMethod findByDetermineIdAndAuthTypes(String determineId, AuthType... authTypes) {
+        return authMethodRepository.findByDetermineIdAndAuthTypeIn(determineId, authTypes).orElse(null);
     }
 }

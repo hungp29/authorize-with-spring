@@ -7,7 +7,6 @@ import org.example.authorize.enums.AuthType;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import java.time.LocalDateTime;
 
 /**
  * Auth method entity.
@@ -28,15 +27,10 @@ public class AuthMethod extends Audit<String> {
     @Column(columnDefinition = "enum('USERNAME_PASSWORD', 'EMAIL_PASSWORD')", nullable = false)
     private AuthType authType;
 
-    @Column(name = "auth_data_1", columnDefinition = "text")
-    private String authData1;
+    @Column(columnDefinition = "text")
+    private String determineId;
 
-    @Column(name = "auth_data_2", columnDefinition = "text")
-    private String authData2;
-
-    @Column(name = "auth_data_3", columnDefinition = "text")
-    private String authData3;
-
-    @Column
-    private LocalDateTime expireDate;
+    @ManyToOne
+    @JoinColumn(name = "auth_method_data_id", nullable = false)
+    private AuthMethodData authMethodData;
 }

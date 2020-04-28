@@ -149,7 +149,7 @@ public class UserPrincipal implements UserDetails {
             authMethodUsed = authMethods.stream()
                     .filter(authMethod -> authMethod.getAuthType().equals(authType)).findFirst()
                     .orElseThrow(() -> new AccountInvalidException("Cannot find the " + authType.getCode() + " authentication method"));
-            authMethodExpire = authMethodUsed.getExpireDate();
+            authMethodExpire = authMethodUsed.getAuthMethodData().getExpireDate();
         }
 
         // Get Username and Password
@@ -157,8 +157,8 @@ public class UserPrincipal implements UserDetails {
         String password = "";
         if (AuthType.USERNAME_PASSWORD.equals(authType) ||
                 AuthType.EMAIL_PASSWORD.equals(authType)) {
-            username = authMethodUsed.getAuthData1();
-            password = authMethodUsed.getAuthData2();
+            username = authMethodUsed.getDetermineId();
+            password = authMethodUsed.getAuthMethodData().getAuthData1();
         } else if (AuthType.REFRESH_TOKEN.equals(authType)) {
             username = CommonUtils.getFistValueNotEmpty(account.getUsername(), account.getEmail(), account.getId());
         }

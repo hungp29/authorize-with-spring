@@ -78,7 +78,7 @@ public class PrincipalService {
      * @return return principal instance if it exist
      */
     public Principal findPrincipalByAuthData1(String authData1) {
-        AuthMethod authMethod = authMethodService.findByAuthData1(authData1);
+        AuthMethod authMethod = authMethodService.findByDetermineId(authData1);
 
         return null != authMethod ? authMethod.getPrincipal() : null;
     }

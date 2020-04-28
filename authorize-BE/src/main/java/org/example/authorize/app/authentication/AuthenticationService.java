@@ -56,7 +56,7 @@ public class AuthenticationService {
      * @return return value
      */
     public boolean generateHOTP(String phone) {
-        AuthMethod phoneAuthMethod = authMethodService.findByAuthTypeAndAuthData1(AuthType.PHONE_NUMBER, phone);
+        AuthMethod phoneAuthMethod = authMethodService.findByAuthTypeAndDetermineId(AuthType.PHONE_NUMBER, phone);
         if (null != phoneAuthMethod) {
             // Generate OTP by using HMAC One Time Password algorithm
             String otp = otpSupport.generateHOTP(phoneAuthMethod);
@@ -64,7 +64,7 @@ public class AuthenticationService {
             // Prepare Data for sms
             Map<String, String> smsData = new HashMap<>();
             smsData.put("otp", otp);
-            smsSender.sendSMS(phoneAuthMethod.getAuthData1(), "otp-message", smsData);
+            smsSender.sendSMS(phoneAuthMethod.getDetermineId(), "otp-message", smsData);
             return true;
         }
         return false;

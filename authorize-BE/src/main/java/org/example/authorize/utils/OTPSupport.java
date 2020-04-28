@@ -34,7 +34,7 @@ public class OTPSupport {
      * @return return otp value is generated
      */
     public String generateHOTP(String phone) {
-        AuthMethod phoneAuthMethod = authMethodService.findByAuthTypeAndAuthData1(AuthType.PHONE_NUMBER, phone);
+        AuthMethod phoneAuthMethod = authMethodService.findByAuthTypeAndDetermineId(AuthType.PHONE_NUMBER, phone);
         return generateHOTP(phoneAuthMethod);
     }
 
@@ -45,16 +45,16 @@ public class OTPSupport {
      * @return return otp value is generated
      */
     public String generateHOTP(AuthMethod phoneAuthMethod) {
-        if (null != phoneAuthMethod) {
+        if (null != phoneAuthMethod && null != phoneAuthMethod.getAuthMethodData()) {
             // Re-generate secret key if it's empty
-            if (StringUtils.isEmpty(phoneAuthMethod.getAuthData2())) {
+            if (StringUtils.isEmpty(phoneAuthMethod.getAuthMethodData().getAuthData1())) {
                 phoneAuthMethod = authMethodService.regenerateSecretKeyForPhoneAuthMethod(phoneAuthMethod);
             }
 
             // Increase moving factor
             long movingFactor = authMethodService.increaseMovingFactorForPhoneAuthMethod(phoneAuthMethod);
             // Generate OTP base on secret key and moving factor
-            String otp = hotpGenerator.generate(CommonUtils.stringToByteArray(phoneAuthMethod.getAuthData2()),
+            String otp = hotpGenerator.generate(CommonUtils.stringToByteArray(phoneAuthMethod.getAuthMethodData().getAuthData1()),
                     movingFactor, otpProps.getOtpLength(), false, 20);
             // Set expiration time for phone auth method
             authMethodService.setExpirationForPhoneAuthMethod(phoneAuthMethod);
@@ -72,15 +72,18 @@ public class OTPSupport {
      * @return return true if otp value is valid, otherwise return false
      */
     public boolean verifyHOTP(String phone, String otp) {
-        AuthMethod phoneAuthMethod = authMethodService.findByAuthTypeAndAuthData1(AuthType.PHONE_NUMBER, phone);
-        if (null != phoneAuthMethod && !StringUtils.isEmpty(phoneAuthMethod.getAuthData2())) {
+        AuthMethod phoneAuthMethod = authMethodService.findByAuthTypeAndDetermineId(AuthType.PHONE_NUMBER, phone);
+        if (null != phoneAuthMethod && null != phoneAuthMethod.getAuthMethodData() &&
+                !StringUtils.isEmpty(phoneAuthMethod.getAuthMethodData().getAuthData2())) {
             long movingFactor = authMethodService.getMovingFactorOfPhoneAuthMethod(phoneAuthMethod);
             // Generate OTP base on secret key and moving factor
-            String otpGenerated = hotpGenerator.generate(CommonUtils.stringToByteArray(phoneAuthMethod.getAuthData2()),
+            String otpGenerated = hotpGenerator.generate(CommonUtils
+                            .stringToByteArray(phoneAuthMethod.getAuthMethodData().getAuthData2()),
                     movingFactor, otpProps.getOtpLength(), false, 20);
 
             return otpGenerated.equals(otp) &&
-                    (null == phoneAuthMethod.getExpireDate() || !LocalDateTime.now().isAfter(phoneAuthMethod.getExpireDate()));
+                    (null == phoneAuthMethod.getAuthMethodData().getExpireDate() ||
+                            !LocalDateTime.now().isAfter(phoneAuthMethod.getAuthMethodData().getExpireDate()));
         }
         return false;
     }
