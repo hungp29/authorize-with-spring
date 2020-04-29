@@ -18,6 +18,7 @@ import org.springframework.util.CollectionUtils;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Auth method service.
@@ -274,13 +275,12 @@ public class AuthMethodService {
      * @param authType    auth type
      * @return return auth method
      */
-    public AuthMethod findAuthMethod(List<AuthMethod> authMethods, AuthType authType) {
+    public Optional<AuthMethod> findAuthMethod(List<AuthMethod> authMethods, AuthType authType) {
         if (!CollectionUtils.isEmpty(authMethods) && null != authType) {
             return authMethods.stream()
                     .filter(authMethod -> AuthType.EMAIL_PASSWORD.equals(authMethod.getAuthType()))
-                    .findFirst()
-                    .orElse(null);
+                    .findFirst();
         }
-        return null;
+        return Optional.empty();
     }
 }

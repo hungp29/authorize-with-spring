@@ -1,6 +1,7 @@
 package org.example.authorize.app.account;
 
 import lombok.RequiredArgsConstructor;
+import org.example.authorize.app.account.req.AccountReq;
 import org.example.authorize.app.account.req.EmailReq;
 import org.example.authorize.app.account.req.PhoneReq;
 import org.example.authorize.app.authmethod.AuthMethodService;
@@ -10,17 +11,18 @@ import org.example.authorize.entity.AuthMethod;
 import org.example.authorize.entity.Principal;
 import org.example.authorize.entity.Role;
 import org.example.authorize.enums.AuthType;
+import org.example.authorize.exception.AccountInvalidException;
 import org.example.authorize.exception.SaveEntityException;
 import org.example.authorize.security.UserPrincipal;
 import org.example.authorize.security.authentoken.JWTAuthenticationToken;
 import org.example.authorize.security.authentoken.OTPAuthenticationToken;
+import org.example.authorize.utils.SecurityUtils;
 import org.example.authorize.utils.generator.id.Generator;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
 
 import java.util.Collections;
 import java.util.List;
@@ -61,28 +63,31 @@ public class AccountServiceImpl implements AccountService {
         return accountRepository.findByPrincipal_RolesIn(Collections.singletonList(role));
     }
 
+    public Account createAccount(AccountReq accountReq) {
+        return null;
+    }
+
     /**
      * Create new account by username and password.
      *
-     * @param username username of account
-     * @param password password of account
+     * @param accountReq information to create new account
      * @return return the account is created
      */
     @Transactional
-    public Account createAndSaveByUsernameAndPassword(String username, String password) {
+    public Account createAndSaveByUsernameAndPassword(AccountReq accountReq) {
         // Create new principal
         Principal principal = principalService.createPrincipal();
         principal = principalService.save(principal);
 
         // Create new auth method
-        AuthMethod authMethod = authMethodService.createAuthMethodUsername(username, password);
+        AuthMethod authMethod = authMethodService.createAuthMethodUsername(accountReq.getUsername(), accountReq.getPassword());
         authMethod.setPrincipal(principal);
         authMethodService.save(authMethod);
 
         // Create new account
         Account account = new Account();
         account.setId(generator.generate());
-        account.setFirstName(username);
+        account.setFirstName(accountReq.getUsername());
         account.setPrincipal(principal);
         account = save(account);
         return account;
@@ -181,13 +186,15 @@ public class AccountServiceImpl implements AccountService {
     @Transactional
     public boolean addOrUpdatePhoneNumber(String id, PhoneReq phoneReq) {
         Account account = accountRepository.findById(id).orElse(null);
-        if (null != account && null != account.getPrincipal() &&
-                !CollectionUtils.isEmpty(account.getPrincipal().getAuthMethods())) {
-            // Set/Update phone auth method
-            AuthMethod phoneAuthMethod = account.getPrincipal().getAuthMethods().stream()
-                    .filter(authMethod -> AuthType.PHONE_NUMBER.equals(authMethod.getAuthType()))
-                    .findFirst()
-                    .orElse(null);
+        if (SecurityUtils.hasPrincipal(account)) {
+            AuthMethod phoneAuthMethod = null;
+            // Set or Update phone auth method
+            if (SecurityUtils.hasAuthMethod(account)) {
+                phoneAuthMethod = account.getPrincipal().getAuthMethods().stream()
+                        .filter(authMethod -> AuthType.PHONE_NUMBER.equals(authMethod.getAuthType()))
+                        .findFirst()
+                        .orElse(null);
+            }
             if (null == phoneAuthMethod) {
                 phoneAuthMethod = authMethodService.createAuthMethodPhoneNumber(phoneReq.getPhone());
                 phoneAuthMethod.setPrincipal(account.getPrincipal());
@@ -196,7 +203,7 @@ public class AccountServiceImpl implements AccountService {
             }
             authMethodService.save(phoneAuthMethod);
 
-            // Set/Update phone number for account
+            // Set or Update phone number for account
             account.setPhoneNumber(phoneReq.getPhone());
             save(account);
             return true;
@@ -215,13 +222,14 @@ public class AccountServiceImpl implements AccountService {
     @Transactional
     public boolean addOrUpdateEmail(String id, EmailReq emailReq) {
         Account account = accountRepository.findById(id).orElse(null);
-        if (null != account && null != account.getPrincipal() &&
-                !CollectionUtils.isEmpty(account.getPrincipal().getAuthMethods())) {
+        if (SecurityUtils.hasPrincipal(account)) {
             List<AuthMethod> authMethods = account.getPrincipal().getAuthMethods();
             // Get username auth method
-            AuthMethod usernameAuthMethod = authMethodService.findAuthMethod(authMethods, AuthType.USERNAME_PASSWORD);
+            AuthMethod usernameAuthMethod = authMethodService.findAuthMethod(authMethods, AuthType.USERNAME_PASSWORD)
+                    .orElseThrow(() -> new AccountInvalidException("Cannot find USERNAME_PASSWORD auth method"));
             // Set/Update email auth method
-            AuthMethod emailAuthMethod = authMethodService.findAuthMethod(authMethods, AuthType.EMAIL_PASSWORD);
+            AuthMethod emailAuthMethod = authMethodService.findAuthMethod(authMethods, AuthType.EMAIL_PASSWORD)
+                    .orElse(null);
             if (null == emailAuthMethod) {
                 emailAuthMethod = authMethodService
                         .createAuthMethodEmail(emailReq.getEmail(), usernameAuthMethod.getAuthMethodData());

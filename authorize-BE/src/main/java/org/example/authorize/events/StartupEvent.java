@@ -3,6 +3,7 @@ package org.example.authorize.events;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.authorize.app.account.AccountService;
+import org.example.authorize.app.account.req.AccountReq;
 import org.example.authorize.app.permission.PermissionDTO;
 import org.example.authorize.app.permission.PermissionService;
 import org.example.authorize.app.policy.PolicyService;
@@ -63,7 +64,12 @@ public class StartupEvent {
         // Create new super account if it's not exist
         List<Account> superAccounts = accountService.findAccountByRole(superRole);
         if (CollectionUtils.isEmpty(superAccounts)) {
-            Account superAccount = accountService.createAndSaveByUsernameAndPassword(appProps.getSuperAccount().getUsername(), appProps.getSuperAccount().getPassword());
+            AccountReq accountReq = AccountReq.builder()
+                    .username(appProps.getSuperAccount().getUsername())
+                    .password(appProps.getSuperAccount().getPassword())
+                    .firstName(appProps.getSuperAccount().getUsername())
+                    .build();
+            Account superAccount = accountService.createAndSaveByUsernameAndPassword(accountReq);
 
             // Set super role and active super account
             Principal superAccountPrincipal = superAccount.getPrincipal();

@@ -1,5 +1,6 @@
 package org.example.authorize.app.account;
 
+import org.example.authorize.app.account.req.AccountReq;
 import org.example.authorize.app.account.req.EmailReq;
 import org.example.authorize.app.account.req.PhoneReq;
 import org.example.authorize.entity.Account;
@@ -39,11 +40,10 @@ public interface AccountService extends UserDetailsService,
     /**
      * Create new account by username and password.
      *
-     * @param username username of account
-     * @param password password of account
+     * @param accountReq information to create new account
      * @return return the account is created
      */
-    Account createAndSaveByUsernameAndPassword(String username, String password);
+    Account createAndSaveByUsernameAndPassword(AccountReq accountReq);
 
     /**
      * Find Account by auth data 1.
