@@ -28,6 +28,7 @@ public class PermissionService {
 
     private final RequestMappingHandlerMapping handlerMapping;
     private final Generator<String> generator;
+
     private final PolicyPermissionRepository policyPermissionRepository;
 
     /**

@@ -49,11 +49,10 @@ public class PrincipalService {
      * @param principal the principal will be active
      * @return principal after active
      */
-    @Transactional
     public Principal active(Principal principal) {
         if (null != principal) {
             principal.setDisabled(false);
-            principal = principalRepository.save(principal);
+            principal = save(principal);
         }
         return principal;
     }
@@ -64,6 +63,7 @@ public class PrincipalService {
      * @param principal principal need to save or update
      * @return return principal is saved or updated
      */
+    @Transactional
     public Principal save(Principal principal) {
         if (null != principal) {
             return principalRepository.save(principal);
@@ -89,11 +89,10 @@ public class PrincipalService {
      * @param principal the principal instance
      * @return principal after locked
      */
-    @Transactional
     public Principal lockPrincipal(Principal principal) {
         if (null != principal) {
             principal.setLocked(true);
-            principal = principalRepository.save(principal);
+            principal = save(principal);
         }
         return principal;
     }
@@ -104,11 +103,10 @@ public class PrincipalService {
      * @param principal the principal instance
      * @return principal after unlocked
      */
-    @Transactional
     public Principal unlockPrincipal(Principal principal) {
         if (null != principal) {
             principal.setLocked(false);
-            principal = principalRepository.save(principal);
+            principal = save(principal);
         }
         return principal;
     }

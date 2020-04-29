@@ -21,6 +21,7 @@ import java.util.Optional;
 public class PolicyService {
 
     private final Generator<String> generator;
+
     private final PolicyRepository policyRepository;
 
     /**
@@ -101,7 +102,7 @@ public class PolicyService {
             if (roles.stream().noneMatch(eRole -> eRole.getId().equals(role.getId()))) {
                 roles.add(role);
                 policy.setRoles(roles);
-                policyRepository.save(policy);
+                save(policy);
             }
         }
     }

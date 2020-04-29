@@ -161,6 +161,8 @@ public class UserPrincipal implements UserDetails {
             password = authMethodUsed.getAuthMethodData().getAuthData1();
         } else if (AuthType.REFRESH_TOKEN.equals(authType)) {
             username = CommonUtils.getFistValueNotEmpty(account.getUsername(), account.getEmail(), account.getId());
+        } else if (AuthType.PHONE_NUMBER.equals(authType)) {
+            username = authMethodUsed.getDetermineId();
         }
 
         return new UserPrincipal(account.getId(), principal.getId(), account.getFirstName(), account.getLastName(),

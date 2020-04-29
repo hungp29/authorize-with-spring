@@ -3,15 +3,14 @@ package org.example.authorize.app.account;
 import lombok.RequiredArgsConstructor;
 import org.example.authorize.app.account.req.EmailReq;
 import org.example.authorize.app.account.req.PhoneReq;
-import org.example.authorize.app.authmethod.AuthMethodRepository;
 import org.example.authorize.app.authmethod.AuthMethodService;
-import org.example.authorize.app.principal.PrincipalRepository;
 import org.example.authorize.app.principal.PrincipalService;
 import org.example.authorize.entity.Account;
 import org.example.authorize.entity.AuthMethod;
 import org.example.authorize.entity.Principal;
 import org.example.authorize.entity.Role;
 import org.example.authorize.enums.AuthType;
+import org.example.authorize.exception.SaveEntityException;
 import org.example.authorize.security.UserPrincipal;
 import org.example.authorize.security.authentoken.JWTAuthenticationToken;
 import org.example.authorize.security.authentoken.OTPAuthenticationToken;
@@ -34,14 +33,13 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class AccountServiceImpl implements AccountService {
 
-    private final AccountRepository accountRepository;
-    private final PrincipalRepository principalRepository;
-    private final AuthMethodRepository authMethodRepository;
+    private final Generator<String> generator;
 
     private final AuthMethodService authMethodService;
     private final PrincipalService principalService;
 
-    private final Generator<String> generator;
+    private final AccountRepository accountRepository;
+
 
     /**
      * Find account by id.
@@ -74,21 +72,34 @@ public class AccountServiceImpl implements AccountService {
     public Account createAndSaveByUsernameAndPassword(String username, String password) {
         // Create new principal
         Principal principal = principalService.createPrincipal();
-        principal = principalRepository.save(principal);
+        principal = principalService.save(principal);
 
         // Create new auth method
         AuthMethod authMethod = authMethodService.createAuthMethodUsername(username, password);
         authMethod.setPrincipal(principal);
-        authMethodRepository.save(authMethod);
+        authMethodService.save(authMethod);
 
         // Create new account
         Account account = new Account();
         account.setId(generator.generate());
         account.setFirstName(username);
         account.setPrincipal(principal);
-        account = accountRepository.save(account);
-
+        account = save(account);
         return account;
+    }
+
+    /**
+     * Save account.
+     *
+     * @param account the account instance
+     * @return return account is saved successfully
+     */
+    @Transactional
+    public Account save(Account account) {
+        if (null != account) {
+            return accountRepository.save(account);
+        }
+        throw new SaveEntityException("Account is empty, cannot save it");
     }
 
     /**
@@ -113,12 +124,13 @@ public class AccountServiceImpl implements AccountService {
      */
     @Override
     public UserDetails loadUserByUsername(String username) {
-        AuthMethod authMethod = authMethodService.findByDetermineIdAndAuthTypes(username, AuthType.USERNAME_PASSWORD, AuthType.EMAIL_PASSWORD);
+        AuthMethod authMethod = authMethodService
+                .findByDetermineIdAndAuthTypes(username, AuthType.USERNAME_PASSWORD, AuthType.EMAIL_PASSWORD);
 
         if (null != authMethod && null != authMethod.getPrincipal()) {
             return UserPrincipal.create(authMethod.getPrincipal().getAccount(), authMethod.getAuthType());
         } else {
-            throw new UsernameNotFoundException("Cannot find user");
+            throw new UsernameNotFoundException("Cannot find user by username");
         }
     }
 
@@ -134,10 +146,10 @@ public class AccountServiceImpl implements AccountService {
         UserPrincipal principal = (UserPrincipal) jwtAuthenticationToken.getAuthentication().getPrincipal();
 
         if (null != principal) {
-            String accountId = principal.getId();
-            return UserPrincipal.create(accountRepository.findById(accountId).orElse(null), AuthType.REFRESH_TOKEN);
+            return UserPrincipal.create(accountRepository.findById(principal.getId())
+                    .orElse(null), AuthType.REFRESH_TOKEN);
         } else {
-            throw new UsernameNotFoundException("Cannot find user");
+            throw new UsernameNotFoundException("Cannot find user by refresh token");
         }
     }
 
@@ -149,12 +161,13 @@ public class AccountServiceImpl implements AccountService {
      */
     @Override
     public UserDetails loadUserDetailsForOTP(OTPAuthenticationToken otpToken) {
-        AuthMethod authMethod = authMethodService.findByAuthTypeAndDetermineId(AuthType.PHONE_NUMBER, (String) otpToken.getPrincipal());
+        AuthMethod authMethod = authMethodService
+                .findByAuthTypeAndDetermineId(AuthType.PHONE_NUMBER, (String) otpToken.getPrincipal());
 
         if (null != authMethod && null != authMethod.getPrincipal()) {
             return UserPrincipal.create(authMethod.getPrincipal().getAccount(), AuthType.PHONE_NUMBER);
         } else {
-            throw new UsernameNotFoundException("Cannot find user");
+            throw new UsernameNotFoundException("Cannot find user by using OTP");
         }
     }
 
@@ -168,7 +181,8 @@ public class AccountServiceImpl implements AccountService {
     @Transactional
     public boolean addOrUpdatePhoneNumber(String id, PhoneReq phoneReq) {
         Account account = accountRepository.findById(id).orElse(null);
-        if (null != account && null != account.getPrincipal() && !CollectionUtils.isEmpty(account.getPrincipal().getAuthMethods())) {
+        if (null != account && null != account.getPrincipal() &&
+                !CollectionUtils.isEmpty(account.getPrincipal().getAuthMethods())) {
             // Set/Update phone auth method
             AuthMethod phoneAuthMethod = account.getPrincipal().getAuthMethods().stream()
                     .filter(authMethod -> AuthType.PHONE_NUMBER.equals(authMethod.getAuthType()))
@@ -184,6 +198,7 @@ public class AccountServiceImpl implements AccountService {
 
             // Set/Update phone number for account
             account.setPhoneNumber(phoneReq.getPhone());
+            save(account);
             return true;
         }
         return false;
@@ -200,14 +215,16 @@ public class AccountServiceImpl implements AccountService {
     @Transactional
     public boolean addOrUpdateEmail(String id, EmailReq emailReq) {
         Account account = accountRepository.findById(id).orElse(null);
-        if (null != account && null != account.getPrincipal() && !CollectionUtils.isEmpty(account.getPrincipal().getAuthMethods())) {
-            // Set/Update phone auth method
-            AuthMethod emailAuthMethod = account.getPrincipal().getAuthMethods().stream()
-                    .filter(authMethod -> AuthType.EMAIL_PASSWORD.equals(authMethod.getAuthType()))
-                    .findFirst()
-                    .orElse(null);
+        if (null != account && null != account.getPrincipal() &&
+                !CollectionUtils.isEmpty(account.getPrincipal().getAuthMethods())) {
+            List<AuthMethod> authMethods = account.getPrincipal().getAuthMethods();
+            // Get username auth method
+            AuthMethod usernameAuthMethod = authMethodService.findAuthMethod(authMethods, AuthType.USERNAME_PASSWORD);
+            // Set/Update email auth method
+            AuthMethod emailAuthMethod = authMethodService.findAuthMethod(authMethods, AuthType.EMAIL_PASSWORD);
             if (null == emailAuthMethod) {
-                emailAuthMethod = authMethodService.createAuthMethodEmail(emailReq.getEmail(), "");
+                emailAuthMethod = authMethodService
+                        .createAuthMethodEmail(emailReq.getEmail(), usernameAuthMethod.getAuthMethodData());
                 emailAuthMethod.setPrincipal(account.getPrincipal());
             } else {
                 emailAuthMethod.setDetermineId(emailReq.getEmail());
@@ -216,6 +233,7 @@ public class AccountServiceImpl implements AccountService {
 
             // Set/Update phone number for account
             account.setEmail(emailReq.getEmail());
+            save(account);
             return true;
         }
         return false;

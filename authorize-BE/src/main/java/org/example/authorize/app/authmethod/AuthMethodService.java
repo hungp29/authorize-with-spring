@@ -14,8 +14,10 @@ import org.example.authorize.utils.generator.id.Generator;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
+import org.springframework.util.CollectionUtils;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * Auth method service.
@@ -26,9 +28,9 @@ import java.time.LocalDateTime;
 public class AuthMethodService {
 
     private final OTPProperties otpProps;
-
     private final Generator<String> generator;
     private final PasswordEncode passwordEncode;
+
     private final AuthMethodRepository authMethodRepository;
     private final AuthMethodDataRepository authMethodDataRepository;
 
@@ -263,5 +265,22 @@ public class AuthMethodService {
      */
     public AuthMethod findByDetermineIdAndAuthTypes(String determineId, AuthType... authTypes) {
         return authMethodRepository.findByDetermineIdAndAuthTypeIn(determineId, authTypes).orElse(null);
+    }
+
+    /**
+     * Find Auth Method from list.
+     *
+     * @param authMethods list auth method
+     * @param authType    auth type
+     * @return return auth method
+     */
+    public AuthMethod findAuthMethod(List<AuthMethod> authMethods, AuthType authType) {
+        if (!CollectionUtils.isEmpty(authMethods) && null != authType) {
+            return authMethods.stream()
+                    .filter(authMethod -> AuthType.EMAIL_PASSWORD.equals(authMethod.getAuthType()))
+                    .findFirst()
+                    .orElse(null);
+        }
+        return null;
     }
 }
