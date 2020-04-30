@@ -63,8 +63,27 @@ public class AccountServiceImpl implements AccountService {
         return accountRepository.findByPrincipal_RolesIn(Collections.singletonList(role));
     }
 
+    /**
+     * Create new account by account information.
+     *
+     * @param accountReq account information
+     * @return return the account is created
+     */
     public Account createAccount(AccountReq accountReq) {
-        return null;
+        // Create new principal
+        Principal principal = principalService.createPrincipal();
+
+        // Create new auth method
+        AuthMethod authMethod = authMethodService.createAuthMethodUsername(accountReq.getUsername(), accountReq.getPassword());
+        principal.setAuthMethods(Collections.singletonList(authMethod));
+
+        // Create new account
+        Account account = new Account();
+        account.setId(generator.generate());
+        account.setFirstName(accountReq.getUsername());
+        account.setLastName(accountReq.getLastName());
+        account.setPrincipal(principal);
+        return account;
     }
 
     /**
@@ -102,6 +121,12 @@ public class AccountServiceImpl implements AccountService {
     @Transactional
     public Account save(Account account) {
         if (null != account) {
+//            if (SecurityUtils.hasPrincipal(account)) {
+//                principalService.save(account.getPrincipal());
+//            }
+//            if (SecurityUtils.hasAuthMethod(account)) {
+//                authMethodService.save()
+//            }
             return accountRepository.save(account);
         }
         throw new SaveEntityException("Account is empty, cannot save it");

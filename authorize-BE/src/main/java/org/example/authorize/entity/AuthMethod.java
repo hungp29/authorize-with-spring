@@ -3,6 +3,7 @@ package org.example.authorize.entity;
 import lombok.Data;
 import org.example.authorize.entity.common.Audit;
 import org.example.authorize.enums.AuthType;
+import org.springframework.data.domain.Persistable;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -13,7 +14,7 @@ import javax.validation.constraints.Size;
  */
 @Entity
 @Data
-public class AuthMethod extends Audit<String> {
+public class AuthMethod extends Audit<String>  {
 
     @Id
     @Size(max = 32)
@@ -30,7 +31,8 @@ public class AuthMethod extends Audit<String> {
     @Column(columnDefinition = "text")
     private String determineId;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "auth_method_data_id", nullable = false)
     private AuthMethodData authMethodData;
+
 }

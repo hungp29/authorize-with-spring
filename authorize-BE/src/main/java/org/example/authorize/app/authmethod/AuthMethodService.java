@@ -236,6 +236,12 @@ public class AuthMethodService {
         throw new SaveEntityException("Auth method is empty, cannot save it");
     }
 
+//    public List<AuthMethod> saveAll(List<AuthMethod> authMethods) {
+//        if (!CollectionUtils.isEmpty(authMethods)) {
+//
+//        }
+//    }
+
     /**
      * Find Auth method by determine.
      *

@@ -66,7 +66,7 @@ public class PolicyService {
      */
     public Policy createPolicy(String name) {
         Policy policy = new Policy();
-        policy.setId(generator.generate(name));
+//        policy.setId(generator.generate(name));
         policy.setName(name);
         policy.setReadOnly(false);
         return policy;

@@ -2,6 +2,7 @@ package org.example.authorize.entity;
 
 import lombok.Data;
 import org.example.authorize.entity.common.Audit;
+import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import javax.validation.constraints.Size;
@@ -15,6 +16,10 @@ import java.util.List;
 public class Policy extends Audit<String> {
 
     @Id
+    @GeneratedValue(generator = "book_seq")
+    @GenericGenerator(
+            name = "book_seq",
+            strategy = "org.example.authorize.utils.generator.id.StringIdentifierGenerator")
     @Size(max = 32)
     private String id;
 
