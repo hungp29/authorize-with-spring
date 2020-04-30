@@ -29,7 +29,7 @@ public class PrincipalService {
      */
     public Principal createPrincipal(boolean disabled) {
         Principal principal = new Principal();
-        principal.setId(generator.generate());
+//        principal.setId(generator.generate());
         principal.setDisabled(disabled);
         return principal;
     }

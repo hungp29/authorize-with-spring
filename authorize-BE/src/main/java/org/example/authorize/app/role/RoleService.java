@@ -61,7 +61,7 @@ public class RoleService {
      */
     public Role createRole(String name) {
         Role role = new Role();
-        role.setId(generator.generate());
+//        role.setId(generator.generate());
         role.setName(name);
         role.setReadOnly(false);
         role.setSystemRole(false);

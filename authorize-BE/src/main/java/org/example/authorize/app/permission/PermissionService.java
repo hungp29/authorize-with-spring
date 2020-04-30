@@ -54,7 +54,7 @@ public class PermissionService {
         });
 
         return permissions.stream()
-                .sorted(Comparator.comparing(PermissionDTO::getId))
+                .sorted(Comparator.comparing(PermissionDTO::getPermission))
                 .collect(Collectors.toList());
     }
 
@@ -79,7 +79,7 @@ public class PermissionService {
             // The value of permission is concat request method + ':' + endpoint.
             // Ex: POST:/api/v1/permissions
             String permission = requestMethod.name() + Constants.COLON + endpoint;
-            permissionDTO.setId(generator.generate(permission));
+//            permissionDTO.setId(generator.generate(permission));
             permissionDTO.setPermission(permission);
 
             // Set permission group
@@ -129,7 +129,7 @@ public class PermissionService {
             List<PolicyPermission> newPolicyPermissions = new ArrayList<>();
             permissionDTOs.forEach(permissionDTO -> {
                 PolicyPermission policyPermission = new PolicyPermission();
-                policyPermission.setId(permissionDTO.getId());
+//                policyPermission.setId(permissionDTO.getId());
                 policyPermission.setPermission(permissionDTO.getPermission());
                 policyPermission.setPolicy(policy);
                 newPolicyPermissions.add(policyPermission);

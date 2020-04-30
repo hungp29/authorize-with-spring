@@ -2,6 +2,8 @@ package org.example.authorize.entity;
 
 import lombok.Data;
 import org.example.authorize.entity.common.Audit;
+import org.example.authorize.entity.common.IdGenerator;
+import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import javax.validation.constraints.Size;
@@ -15,7 +17,13 @@ import java.time.LocalDate;
 public class Account extends Audit<String> {
 
     @Id
-    @Size(max = 32)
+    @IdGenerator("ACC")
+    @GeneratedValue(generator = "id_generator")
+    @GenericGenerator(
+            name = "id_generator",
+            strategy = "org.example.authorize.utils.generator.id.StringIdentifierGenerator"
+    )
+    @Size(max = 35)
     private String id;
 
     @OneToOne

@@ -44,7 +44,7 @@ public class AuthMethodService {
      */
     public AuthMethod createAuthMethodUsername(String username, String password) {
         AuthMethodData authMethodData = new AuthMethodData();
-        authMethodData.setId(generator.generate());
+//        authMethodData.setId(generator.generate());
         authMethodData.setAuthData1(passwordEncode.encode(password));
 
         return createAuthMethodUsername(username, authMethodData);
@@ -63,7 +63,7 @@ public class AuthMethodService {
             throw new UsernameAlreadyExistException("Username " + username + " is exist");
         }
         AuthMethod authMethod = new AuthMethod();
-        authMethod.setId(generator.generate());
+//        authMethod.setId(generator.generate());
         authMethod.setAuthType(AuthType.USERNAME_PASSWORD);
         authMethod.setDetermineId(username);
         authMethod.setAuthMethodData(authMethodData);
@@ -80,7 +80,7 @@ public class AuthMethodService {
      */
     public AuthMethod createAuthMethodEmail(String email, String password) {
         AuthMethodData authMethodData = new AuthMethodData();
-        authMethodData.setId(generator.generate());
+//        authMethodData.setId(generator.generate());
         authMethodData.setAuthData1(passwordEncode.encode(password));
 
         return createAuthMethodEmail(email, authMethodData);
@@ -99,7 +99,7 @@ public class AuthMethodService {
             throw new UsernameAlreadyExistException("Email " + email + " is exist");
         }
         AuthMethod authMethod = new AuthMethod();
-        authMethod.setId(generator.generate());
+//        authMethod.setId(generator.generate());
         authMethod.setAuthType(AuthType.EMAIL_PASSWORD);
         authMethod.setDetermineId(email);
 
@@ -118,12 +118,12 @@ public class AuthMethodService {
             throw new UsernameAlreadyExistException("Phone number " + phoneNumber + " is exist");
         }
         AuthMethod authMethod = new AuthMethod();
-        authMethod.setId(generator.generate());
+//        authMethod.setId(generator.generate());
         authMethod.setAuthType(AuthType.PHONE_NUMBER);
         authMethod.setDetermineId(phoneNumber);
 
         AuthMethodData authMethodData = new AuthMethodData();
-        authMethodData.setId(generator.generate());
+//        authMethodData.setId(generator.generate());
         authMethodData.setAuthData1(SecurityUtils.generateSecretKey());
 
         authMethod.setAuthMethodData(authMethodData);

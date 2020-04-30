@@ -2,6 +2,8 @@ package org.example.authorize.entity;
 
 import lombok.Data;
 import org.example.authorize.entity.common.Audit;
+import org.example.authorize.entity.common.IdGenerator;
+import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import javax.validation.constraints.Size;
@@ -16,7 +18,13 @@ import java.util.List;
 public class AuthMethodData extends Audit<String> {
 
     @Id
-    @Size(max = 32)
+    @IdGenerator("AMD")
+    @GeneratedValue(generator = "id_generator")
+    @GenericGenerator(
+            name = "id_generator",
+            strategy = "org.example.authorize.utils.generator.id.StringIdentifierGenerator"
+    )
+    @Size(max = 35)
     private String id;
 
     @Column(name = "auth_data_1", columnDefinition = "text")
