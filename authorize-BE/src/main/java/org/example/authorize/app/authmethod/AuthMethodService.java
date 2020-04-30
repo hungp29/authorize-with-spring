@@ -229,8 +229,8 @@ public class AuthMethodService {
     @Transactional
     public AuthMethod save(AuthMethod authMethod) {
         if (null != authMethod && null != authMethod.getAuthMethodData()) {
-            AuthMethodData authMethodData = authMethodDataRepository.save(authMethod.getAuthMethodData());
-            authMethod.setAuthMethodData(authMethodData);
+//            AuthMethodData authMethodData = authMethodDataRepository.save(authMethod.getAuthMethodData());
+//            authMethod.setAuthMethodData(authMethodData);
             return authMethodRepository.save(authMethod);
         }
         throw new SaveEntityException("Auth method is empty, cannot save it");

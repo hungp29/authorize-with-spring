@@ -178,15 +178,15 @@ public class PermissionService {
         if (!CollectionUtils.isEmpty(clonePolicyPermissions)) {
             if (!CollectionUtils.isEmpty(permissionDTOs)) {
                 Map<String, PermissionDTO> permissionDTOMap = permissionDTOs.stream()
-                        .collect(Collectors.toMap(PermissionDTO::getId, permissionDTO -> permissionDTO));
+                        .collect(Collectors.toMap(PermissionDTO::getPermission, permissionDTO -> permissionDTO));
 
                 // Filter permissions is already exist and not out of date
                 int index = 0;
                 while (index < clonePolicyPermissions.size()) {
-                    String policyPermissionId = clonePolicyPermissions.get(index).getId();
-                    if (permissionDTOMap.containsKey(policyPermissionId)) {
+                    String policyPermissionKey = clonePolicyPermissions.get(index).getPermission();
+                    if (permissionDTOMap.containsKey(policyPermissionKey)) {
                         // In this case, the permission is already exist, so we not need add/delete these permissions
-                        permissionDTOMap.remove(policyPermissionId);
+                        permissionDTOMap.remove(policyPermissionKey);
                         clonePolicyPermissions.remove(index);
                     } else {
                         index++;

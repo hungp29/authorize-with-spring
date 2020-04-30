@@ -39,6 +39,6 @@ public class AuthMethodData extends Audit<String> {
     @Column
     private LocalDateTime expireDate;
 
-    @OneToMany(mappedBy = "authMethodData", cascade = CascadeType.PERSIST)
+    @OneToMany(mappedBy = "authMethodData")
     private List<AuthMethod> authMethods;
 }
