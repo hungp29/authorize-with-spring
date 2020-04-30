@@ -28,7 +28,6 @@ public class PrincipalAttemptService {
     public PrincipalAttempt createPrincipalAttempt(Principal principal) {
         if (null != principal && !StringUtils.isEmpty(principal.getId())) {
             PrincipalAttempt attempt = new PrincipalAttempt();
-//            attempt.setId(generator.generate());
             attempt.setPrincipal(principal);
             attempt.setAttemptCount((short) 0);
             return attempt;

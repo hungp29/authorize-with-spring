@@ -44,7 +44,6 @@ public class AuthMethodService {
      */
     public AuthMethod createAuthMethodUsername(String username, String password) {
         AuthMethodData authMethodData = new AuthMethodData();
-//        authMethodData.setId(generator.generate());
         authMethodData.setAuthData1(passwordEncode.encode(password));
 
         return createAuthMethodUsername(username, authMethodData);
@@ -63,7 +62,6 @@ public class AuthMethodService {
             throw new UsernameAlreadyExistException("Username " + username + " is exist");
         }
         AuthMethod authMethod = new AuthMethod();
-//        authMethod.setId(generator.generate());
         authMethod.setAuthType(AuthType.USERNAME_PASSWORD);
         authMethod.setDetermineId(username);
         authMethod.setAuthMethodData(authMethodData);
@@ -80,7 +78,6 @@ public class AuthMethodService {
      */
     public AuthMethod createAuthMethodEmail(String email, String password) {
         AuthMethodData authMethodData = new AuthMethodData();
-//        authMethodData.setId(generator.generate());
         authMethodData.setAuthData1(passwordEncode.encode(password));
 
         return createAuthMethodEmail(email, authMethodData);
@@ -99,7 +96,6 @@ public class AuthMethodService {
             throw new UsernameAlreadyExistException("Email " + email + " is exist");
         }
         AuthMethod authMethod = new AuthMethod();
-//        authMethod.setId(generator.generate());
         authMethod.setAuthType(AuthType.EMAIL_PASSWORD);
         authMethod.setDetermineId(email);
 
@@ -118,12 +114,10 @@ public class AuthMethodService {
             throw new UsernameAlreadyExistException("Phone number " + phoneNumber + " is exist");
         }
         AuthMethod authMethod = new AuthMethod();
-//        authMethod.setId(generator.generate());
         authMethod.setAuthType(AuthType.PHONE_NUMBER);
         authMethod.setDetermineId(phoneNumber);
 
         AuthMethodData authMethodData = new AuthMethodData();
-//        authMethodData.setId(generator.generate());
         authMethodData.setAuthData1(SecurityUtils.generateSecretKey());
 
         authMethod.setAuthMethodData(authMethodData);
@@ -226,21 +220,33 @@ public class AuthMethodService {
         return authMethodRepository.findByAuthTypeAndDetermineId(AuthType.EMAIL_PASSWORD, phone).isPresent();
     }
 
+    /**
+     * Save entity auth method.
+     *
+     * @param authMethod the auth method
+     * @return return true if it is saved successfully, otherwise return false
+     */
     @Transactional
     public AuthMethod save(AuthMethod authMethod) {
-        if (null != authMethod && null != authMethod.getAuthMethodData()) {
-//            AuthMethodData authMethodData = authMethodDataRepository.save(authMethod.getAuthMethodData());
-//            authMethod.setAuthMethodData(authMethodData);
+        if (null != authMethod) {
             return authMethodRepository.save(authMethod);
         }
         throw new SaveEntityException("Auth method is empty, cannot save it");
     }
 
-//    public List<AuthMethod> saveAll(List<AuthMethod> authMethods) {
-//        if (!CollectionUtils.isEmpty(authMethods)) {
-//
-//        }
-//    }
+    /**
+     * Save list auth method.
+     *
+     * @param authMethods list auth method
+     * @return return list auth method are saved successfully, otherwise return false
+     */
+    @Transactional
+    public List<AuthMethod> saveAll(List<AuthMethod> authMethods) {
+        if (!CollectionUtils.isEmpty(authMethods)) {
+            return authMethodRepository.saveAll(authMethods);
+        }
+        throw new SaveEntityException("An error occurs while save list auth method");
+    }
 
     /**
      * Find Auth method by determine.

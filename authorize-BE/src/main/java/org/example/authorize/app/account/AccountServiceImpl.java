@@ -79,7 +79,6 @@ public class AccountServiceImpl implements AccountService {
 
         // Create new account
         Account account = new Account();
-//        account.setId(generator.generate());
         account.setFirstName(accountReq.getUsername());
         account.setLastName(accountReq.getLastName());
         account.setPrincipal(principal);
@@ -105,7 +104,6 @@ public class AccountServiceImpl implements AccountService {
 
         // Create new account
         Account account = new Account();
-//        account.setId(generator.generate());
         account.setFirstName(accountReq.getUsername());
         account.setPrincipal(principal);
         account = save(account);
