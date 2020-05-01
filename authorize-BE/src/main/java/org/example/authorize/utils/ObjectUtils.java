@@ -31,11 +31,42 @@ public class ObjectUtils {
         if (null != object && null != annotationClass && annotationClass.isAnnotation()) {
             if (object instanceof Field) {
                 return null != ((Field) object).getAnnotation(annotationClass);
+            } else if (object instanceof Method) {
+                return null != ((Method) object).getAnnotation(annotationClass);
+            } else if (object instanceof Class<?>) {
+                return null != ((Class<?>) object).getAnnotation(annotationClass);
+            } else if (object instanceof Annotation) {
+                return null != ((Annotation) object).annotationType().getAnnotation(annotationClass);
             } else {
                 return null != object.getClass().getAnnotation(annotationClass);
             }
         }
         return false;
+    }
+
+    /**
+     * Get Annotation from object if it's exist.
+     *
+     * @param object          object
+     * @param annotationClass annotation class
+     * @param <T>             generic of annotation
+     * @return return annotation get from object
+     */
+    public static <T extends Annotation> T getAnnotation(Object object, Class<T> annotationClass) {
+        if (null != object && null != annotationClass && annotationClass.isAnnotation()) {
+            if (object instanceof Field) {
+                return ((Field) object).getAnnotation(annotationClass);
+            } else if (object instanceof Method) {
+                return ((Method) object).getAnnotation(annotationClass);
+            } else if (object instanceof Class<?>) {
+                return ((Class<?>) object).getAnnotation(annotationClass);
+            } else if (object instanceof Annotation) {
+                return ((Annotation) object).annotationType().getAnnotation(annotationClass);
+            } else {
+                return object.getClass().getAnnotation(annotationClass);
+            }
+        }
+        return null;
     }
 
     /**
@@ -87,18 +118,34 @@ public class ObjectUtils {
      */
     public static <T> T getValueOfFieldByGetMethod(Object object, String fieldName, Class<T> returnValueClass) {
         if (null != object && !StringUtils.isEmpty(fieldName)) {
+            String getMethodName = "get" + fieldName.substring(0, 1).toUpperCase() + fieldName.substring(1);
+            return ObjectUtils.getValueOfFieldByMethod(object, getMethodName, returnValueClass);
+        }
+        return null;
+    }
+
+    /**
+     * Get value of field by using method.
+     *
+     * @param object           object
+     * @param methodName       the method name
+     * @param returnValueClass return value class
+     * @param <T>              generic of return value
+     * @return return value
+     */
+    public static <T> T getValueOfFieldByMethod(Object object, String methodName, Class<T> returnValueClass) {
+        if (null != object && !StringUtils.isEmpty(methodName)) {
             try {
-                String getMethodName = "get" + fieldName.substring(0, 1).toUpperCase() + fieldName.substring(1);
-                Method getMethod = object.getClass().getMethod(getMethodName);
+                Method getMethod = object.getClass().getMethod(methodName);
                 Object value = getMethod.invoke(object);
 
                 if (returnValueClass.isAssignableFrom(value.getClass())) {
                     return returnValueClass.cast(value);
                 }
             } catch (NoSuchMethodException e) {
-                log.warn(object.getClass().getName() + " don't have get method for field " + fieldName);
+                log.warn(object.getClass().getName() + " don't have method " + methodName);
             } catch (IllegalAccessException | InvocationTargetException e) {
-                log.warn("Cannot get value of field " + fieldName + " from object " + object.getClass().getName());
+                log.warn("Cannot get value from method " + methodName + " of object " + object.getClass().getName());
             }
         }
         return null;

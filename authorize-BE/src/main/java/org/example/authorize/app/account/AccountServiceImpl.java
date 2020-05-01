@@ -80,8 +80,10 @@ public class AccountServiceImpl implements AccountService {
 
         // Create new account
         Account account = new Account();
+        account.setUsername(accountReq.getUsername());
         account.setFirstName(accountReq.getUsername());
         account.setLastName(accountReq.getLastName());
+        account.setEmail(accountReq.getEmail());
         account.setPrincipal(principal);
         return account;
     }

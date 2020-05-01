@@ -5,4 +5,6 @@ public interface AccessCondition<T> {
     ConditionPrototype getConditionPrototype();
 
     boolean validate(T permittedValue);
+
+    RequestValueResolver<T> getRequestedValueResolver();
 }

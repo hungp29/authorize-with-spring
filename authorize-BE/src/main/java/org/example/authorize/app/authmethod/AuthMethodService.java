@@ -290,7 +290,7 @@ public class AuthMethodService {
     public Optional<AuthMethod> findAuthMethod(List<AuthMethod> authMethods, AuthType authType) {
         if (!CollectionUtils.isEmpty(authMethods) && null != authType) {
             return authMethods.stream()
-                    .filter(authMethod -> AuthType.EMAIL_PASSWORD.equals(authMethod.getAuthType()))
+                    .filter(authMethod -> authType.equals(authMethod.getAuthType()))
                     .findFirst();
         }
         return Optional.empty();

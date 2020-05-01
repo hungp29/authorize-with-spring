@@ -14,4 +14,6 @@ public class PermissionGroupConstants {
     public static final String AUTHENTICATION = "Authentication";
 
     public static final String ACCOUNT = "Account Management";
+
+    public static final String TEST = "Test";
 }
