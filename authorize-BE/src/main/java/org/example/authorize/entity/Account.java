@@ -26,7 +26,7 @@ public class Account extends Audit<String> {
     @Size(max = 35)
     private String id;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "principal_id", nullable = false)
     private Principal principal;
 

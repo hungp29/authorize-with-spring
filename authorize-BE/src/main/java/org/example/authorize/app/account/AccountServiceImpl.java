@@ -75,6 +75,7 @@ public class AccountServiceImpl implements AccountService {
 
         // Create new auth method
         AuthMethod authMethod = authMethodService.createAuthMethodUsername(accountReq.getUsername(), accountReq.getPassword());
+        authMethod.setPrincipal(principal);
         principal.setAuthMethods(Collections.singletonList(authMethod));
 
         // Create new account
@@ -82,31 +83,6 @@ public class AccountServiceImpl implements AccountService {
         account.setFirstName(accountReq.getUsername());
         account.setLastName(accountReq.getLastName());
         account.setPrincipal(principal);
-        return account;
-    }
-
-    /**
-     * Create new account by username and password.
-     *
-     * @param accountReq information to create new account
-     * @return return the account is created
-     */
-    @Transactional
-    public Account createAndSaveByUsernameAndPassword(AccountReq accountReq) {
-        // Create new principal
-        Principal principal = principalService.createPrincipal();
-        principal = principalService.save(principal);
-
-        // Create new auth method
-        AuthMethod authMethod = authMethodService.createAuthMethodUsername(accountReq.getUsername(), accountReq.getPassword());
-        authMethod.setPrincipal(principal);
-        authMethodService.save(authMethod);
-
-        // Create new account
-        Account account = new Account();
-        account.setFirstName(accountReq.getUsername());
-        account.setPrincipal(principal);
-        account = save(account);
         return account;
     }
 
@@ -119,25 +95,19 @@ public class AccountServiceImpl implements AccountService {
     @Transactional
     public Account save(Account account) {
         if (null != account) {
-//            if (SecurityUtils.hasPrincipal(account)) {
-//                principalService.save(account.getPrincipal());
-//            }
-//            if (SecurityUtils.hasAuthMethod(account)) {
-//                authMethodService.save()
-//            }
             return accountRepository.save(account);
         }
         throw new SaveEntityException("Account is empty, cannot save it");
     }
 
     /**
-     * Find Account by auth data 1.
+     * Find Account by determine id.
      *
-     * @param authData1 auth data 1 (username, email, phone number)
+     * @param determineId determine id (username, email, phone number)
      * @return return account instance if it exist
      */
-    public Account findAccountByAuthData1(String authData1) {
-        AuthMethod authMethod = authMethodService.findByDetermineId(authData1);
+    public Account findAccountByDetermineId(String determineId) {
+        AuthMethod authMethod = authMethodService.findByDetermineId(determineId);
         if (null != authMethod && null != authMethod.getPrincipal()) {
             return authMethod.getPrincipal().getAccount();
         }

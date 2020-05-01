@@ -69,7 +69,8 @@ public class StartupEvent {
                     .password(appProps.getSuperAccount().getPassword())
                     .firstName(appProps.getSuperAccount().getUsername())
                     .build();
-            Account superAccount = accountService.createAndSaveByUsernameAndPassword(accountReq);
+            Account superAccount = accountService.createAccount(accountReq);
+            superAccount = accountService.save(superAccount);
 
             // Set super role and active super account
             Principal superAccountPrincipal = superAccount.getPrincipal();

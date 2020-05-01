@@ -10,6 +10,7 @@ import org.example.authorize.security.userdetails.OTPUserDetailsService;
 import org.example.authorize.security.userdetails.TokenUserDetailsService;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -38,12 +39,21 @@ public interface AccountService extends UserDetailsService,
     List<Account> findAccountByRole(Role role);
 
     /**
-     * Create new account by username and password.
+     * Create new account by account information.
      *
-     * @param accountReq information to create new account
+     * @param accountReq account information
      * @return return the account is created
      */
-    Account createAndSaveByUsernameAndPassword(AccountReq accountReq);
+    Account createAccount(AccountReq accountReq);
+
+    /**
+     * Save account.
+     *
+     * @param account the account instance
+     * @return return account is saved successfully
+     */
+    @Transactional
+    Account save(Account account);
 
     /**
      * Find Account by auth data 1.
@@ -51,7 +61,7 @@ public interface AccountService extends UserDetailsService,
      * @param authData1 auth data 1 (username, email, phone number)
      * @return return account instance if it exist
      */
-    Account findAccountByAuthData1(String authData1);
+    Account findAccountByDetermineId(String authData1);
 
     /**
      * Update phone number for account.
