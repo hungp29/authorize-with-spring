@@ -1,0 +1,88 @@
+# ===================================================================
+# Application specific properties
+# Add your own application properties here, see the ApplicationProperties class
+# ===================================================================
+
+# ===================================================================
+# Application properties
+# ===================================================================
+application:
+  name: Authorize
+  super-role-name: Super Admin
+  policy-full-access: Full Access
+  super-account:
+    username: admin
+    password: 123456!
+  login-attempts-threshold: 5
+
+# ===================================================================
+# Spring properties
+# ===================================================================
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/authorize_demo?useSSL=false
+    username: root
+    password: 12345678
+
+  # JPA configuration
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL5InnoDBDialect
+        enable_lazy_load_no_trans: true
+        format_sql: true
+        type: trace
+        jdbc:
+          lob:
+            non_contextual_creation: true
+    hibernate:
+      ddl-auto: validate
+    show-sql: on
+
+  # Redis configuration
+  redis:
+    host: localhost
+    port: 6379
+    password: 123456!
+
+
+# ===================================================================
+# JSON Web Token
+# ===================================================================
+
+jwt:
+  name: AUTHORIZE_APP
+  signing-key: bW1lZGljLWFwaS1qd3Qtc2VjcmV0LWtleS01TUdNNE1qRTRPREk0WXpSaU5qWmtPVFJoTlRVM1ltTmtNV1JtTVdZeE16a3pZ
+  access-token-validity-seconds: 86400 # 1 day
+  refresh-token-validity-seconds: 172800 # 2 days
+  prefix: authorize-app
+
+# ===================================================================
+# OTP configuration
+# ===================================================================
+otp:
+  algorithm: HmacSHA1 # for TOTP algorithm
+  time-step: 30 # for TOTP algorithm
+  otp-length: 6
+  validity-seconds: 60 # for HOTP algorithm
+
+# ===================================================================
+# Logger
+# ===================================================================
+logging:
+  level:
+    root: INFO
+    org:
+      hibernate:
+        type:
+          descriptor:
+            sql: trace
+
+# ===================================================================
+# Velocity Template
+# ===================================================================
+velocity:
+  resource-loader: class
+  class-loader: org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader
+  template-path: /template/
+  suffix: .vm
