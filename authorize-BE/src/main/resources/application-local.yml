@@ -14,7 +14,7 @@ application:
     username: admin
     password: 123456!
   login-attempts-threshold: 5
-  version-media-type: application/vnd.authorize.version
+  version-media-type: application/vnd.authorize.app
 
 # ===================================================================
 # Spring properties

@@ -24,7 +24,6 @@ public class OTPAuthenticationProvider implements AuthenticationProvider, Initia
     private OTPUserDetailsService<OTPAuthenticationToken> otpUserDetailsService = null;
     private UserDetailsChecker userDetailsChecker = new AccountStatusUserDetailsChecker();
     private OTPSupport otpSupport = null;
-    private boolean throwExceptionWhenTokenExpire = true;
 
     private int order = -1;
 
@@ -63,9 +62,7 @@ public class OTPAuthenticationProvider implements AuthenticationProvider, Initia
         OTPAuthenticationToken otpAuthentication = (OTPAuthenticationToken) authentication;
 
         if (!otpSupport.verifyHOTP((String) otpAuthentication.getPrincipal(), (String) otpAuthentication.getCredentials())) {
-            if (throwExceptionWhenTokenExpire) {
-                throw new BadCredentialsException("The code is expiration or invalid");
-            }
+            throw new BadCredentialsException("The code is expiration or invalid");
         }
 
         UserDetails userDetails = otpUserDetailsService.loadUserDetailsForOTP(otpAuthentication);
@@ -86,10 +83,6 @@ public class OTPAuthenticationProvider implements AuthenticationProvider, Initia
     public void setOtpSupport(OTPSupport otpSupport) {
         Assert.notNull(otpSupport, "OTPSupport cannot be null");
         this.otpSupport = otpSupport;
-    }
-
-    public void setThrowExceptionWhenTokenExpire(boolean throwExceptionWhenTokenExpire) {
-        this.throwExceptionWhenTokenExpire = throwExceptionWhenTokenExpire;
     }
 
     @Override

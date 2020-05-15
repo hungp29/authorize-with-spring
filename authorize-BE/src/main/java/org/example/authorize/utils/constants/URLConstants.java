@@ -21,6 +21,9 @@ public class URLConstants {
     public static final String M_ADD_PHONE = "/{id}/phone";
     public static final String M_ADD_EMAIL = "/{id}/email";
 
+    public static final String C_PERMISSION = "/api/permissions";
+    public static final String M_GET_PERMISSION = "";
+
     public static final String C_TEST = "/api/test";
     public static final String M_TEST = "";
 

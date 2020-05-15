@@ -1,5 +1,6 @@
 package org.example.authorize.version;
 
+import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.mvc.condition.AbstractRequestCondition;
 
 import javax.servlet.http.HttpServletRequest;
@@ -16,6 +17,7 @@ import java.util.stream.Collectors;
 public class VersionCondition extends AbstractRequestCondition<VersionCondition> {
 
     private List<Version> versions;
+    private String acceptMediaType;
 
     public VersionCondition(String... version) {
         this.versions = Arrays.stream(version).map(Version::new).collect(Collectors.toList());
@@ -48,10 +50,13 @@ public class VersionCondition extends AbstractRequestCondition<VersionCondition>
 
         if (matcher.matches()) {
             String APIMediaType = matcher.group(1);
-            Version APIVersion = new Version(matcher.group(2));
 
-            if (versions.stream().anyMatch(compareVersion -> compareVersion.compareTo(APIVersion) == 0)) {
-                return this;
+            if (StringUtils.isEmpty(acceptMediaType) || acceptMediaType.equals(APIMediaType)) {
+                Version APIVersion = new Version(matcher.group(2));
+
+                if (versions.stream().anyMatch(compareVersion -> compareVersion.compareTo(APIVersion) == 0)) {
+                    return this;
+                }
             }
         }
         return null;
@@ -60,5 +65,14 @@ public class VersionCondition extends AbstractRequestCondition<VersionCondition>
     @Override
     public int compareTo(VersionCondition other, HttpServletRequest request) {
         return 0;
+    }
+
+    /**
+     * Set Accept Media Type.
+     *
+     * @param acceptMediaType the accept media type
+     */
+    public void setAcceptMediaType(String acceptMediaType) {
+        this.acceptMediaType = acceptMediaType;
     }
 }

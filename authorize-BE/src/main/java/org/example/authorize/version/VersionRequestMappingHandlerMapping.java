@@ -11,6 +11,8 @@ import java.lang.reflect.Method;
  */
 public class VersionRequestMappingHandlerMapping extends RequestMappingHandlerMapping {
 
+    private String acceptMediaType;
+
     @Override
     protected RequestCondition<VersionCondition> getCustomMethodCondition(Method method) {
         APIVersion controllerAnnotation = ObjectUtils.getAnnotation(method.getDeclaringClass(), APIVersion.class);
@@ -32,6 +34,16 @@ public class VersionRequestMappingHandlerMapping extends RequestMappingHandlerMa
      * @return return RequestCondition instance
      */
     private RequestCondition<VersionCondition> createVersionCondition(APIVersion apiVersion) {
-        return new VersionCondition(apiVersion.value());
+        VersionCondition versionCondition = new VersionCondition(apiVersion.value());
+        versionCondition.setAcceptMediaType(acceptMediaType);
+        return versionCondition;
+    }
+
+    /**
+     * Set Accept Media Type.
+     * @param acceptMediaType the media type
+     */
+    public void setAcceptMediaType(String acceptMediaType) {
+        this.acceptMediaType = acceptMediaType;
     }
 }

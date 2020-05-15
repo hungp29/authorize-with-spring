@@ -1,5 +1,7 @@
 package org.example.authorize.config;
 
+import lombok.RequiredArgsConstructor;
+import org.example.authorize.config.prop.ApplicationProperties;
 import org.example.authorize.version.VersionRequestMappingHandlerMapping;
 import org.springframework.boot.autoconfigure.web.servlet.WebMvcRegistrations;
 import org.springframework.context.annotation.Bean;
@@ -10,7 +12,10 @@ import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandl
  * App Configuration.
  */
 @Configuration
+@RequiredArgsConstructor
 public class AppConfiguration {
+
+    private final ApplicationProperties appProps;
 
     /**
      * Configuration Version RequestMappingHandlerMapping.
@@ -22,7 +27,9 @@ public class AppConfiguration {
         return new WebMvcRegistrations() {
             @Override
             public RequestMappingHandlerMapping getRequestMappingHandlerMapping() {
-                return new VersionRequestMappingHandlerMapping();
+                VersionRequestMappingHandlerMapping versionMapping = new VersionRequestMappingHandlerMapping();
+                versionMapping.setAcceptMediaType(appProps.getVersionMediaType());
+                return versionMapping;
             }
         };
     }
