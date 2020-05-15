@@ -8,6 +8,7 @@ import org.example.authorize.security.permission.PermissionGroup;
 import org.example.authorize.utils.SecurityUtils;
 import org.example.authorize.utils.constants.PermissionGroupConstants;
 import org.example.authorize.utils.constants.URLConstants;
+import org.example.authorize.version.APIVersion;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 /**
  * Authentication Controller.
  */
+@APIVersion("1.0")
 @RestController
 @PermissionGroup(PermissionGroupConstants.AUTHENTICATION)
 @RequestMapping(URLConstants.C_AUTHENTICATION)

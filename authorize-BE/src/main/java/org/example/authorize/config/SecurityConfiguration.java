@@ -131,7 +131,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         OTPAuthenticationProvider provider = new OTPAuthenticationProvider();
         provider.setOtpUserDetailsService(accountService);
         provider.setOtpSupport(otpSupport);
-        provider.setThrowExceptionWhenTokenExpire(false);
         return provider;
     }
 

@@ -20,6 +20,8 @@ public class ApplicationProperties {
 
     private short loginAttemptsThreshold;
 
+    private String versionMediaType;
+
     /**
      * Super account properties.
      */
