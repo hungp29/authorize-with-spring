@@ -7,11 +7,13 @@ import org.example.authorize.response.WResponseEntity;
 import org.example.authorize.security.permission.PermissionGroup;
 import org.example.authorize.utils.constants.PermissionGroupConstants;
 import org.example.authorize.utils.constants.URLConstants;
+import org.example.authorize.version.APIVersion;
 import org.springframework.web.bind.annotation.*;
 
 /**
  * Account Controller.
  */
+@APIVersion("1.0")
 @RestController
 @PermissionGroup(PermissionGroupConstants.ACCOUNT)
 @RequestMapping(URLConstants.C_ACCOUNT)
