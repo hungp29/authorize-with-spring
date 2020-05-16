@@ -7,6 +7,7 @@ import org.springframework.security.authentication.*;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.servlet.NoHandlerFoundException;
 
 @Slf4j
 @RestControllerAdvice
@@ -77,6 +78,18 @@ public class RestExceptionHandler {
     public WResponseEntity<String> handleCredentialsExpiredException(CredentialsExpiredException e) {
         log.error(e.getMessage(), e);
         return WResponseEntity.error(ResponseCode.CREDENTIALS_EXPIRED);
+    }
+
+    /**
+     * Handle NoHandlerFoundException.
+     *
+     * @param e exception
+     * @return error response
+     */
+    @ExceptionHandler(NoHandlerFoundException.class)
+    public WResponseEntity<String> handle404(NoHandlerFoundException e) {
+        log.error(e.getMessage(), e);
+        return WResponseEntity.error(ResponseCode.NOT_FOUND, e.getMessage());
     }
 
     /**

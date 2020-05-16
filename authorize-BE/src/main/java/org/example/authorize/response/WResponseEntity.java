@@ -141,4 +141,16 @@ public class WResponseEntity<T> extends ResponseEntity<Response<T>> {
     public static <T> WResponseEntity<T> error(ResponseCode code) {
         return new WResponseEntity<>(null, code, code.getMessage());
     }
+
+    /**
+     * A shortcut for creating a {@code WResponseEntity} with the given Response code and params of message.
+     *
+     * @param code   Response Code
+     * @param params Params of message
+     * @param <T>    Generic of WResponseEntity
+     * @return the created {@code WResponseEntity}
+     */
+    public static <T> WResponseEntity<T> error(ResponseCode code, String... params) {
+        return new WResponseEntity<>(null, code, code.getMessage(params));
+    }
 }
