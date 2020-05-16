@@ -18,8 +18,17 @@ module.exports = (env) => {
   return {
     entry: path.join(__dirname, '/src/index.js'),
     output: {
-      filename: 'build.js',
-      path: path.join(__dirname, 'dist')
+      filename: '[name].[hash].js',
+      chunkFilename: '[name].[chunkhash].js',
+      path: path.join(__dirname, 'build')
+    },
+    optimization: {
+      splitChunks: {
+        chunks: 'all'
+      }
+    },
+    resolve: {
+      extensions: ['.ts', '.tsx', '.js', ".jsx"],
     },
     module: {
       rules: [
@@ -42,8 +51,7 @@ module.exports = (env) => {
             'css-loader',
             'postcss-loader'
           ]
-        },
-        {
+        }, {
           test: /\.html$/,
           use: [{
             loader: 'html-loader',
@@ -52,6 +60,9 @@ module.exports = (env) => {
               root: path.resolve(__dirname, 'src')
             }
           }]
+        }, {
+          test: /\.(jpg|jpeg|png|svg|woff|eot|ttf|otf|pdf)$/,
+          use: ['file-loader']
         }
       ]
     },
@@ -61,6 +72,31 @@ module.exports = (env) => {
           template: path.join(__dirname, '/src/index.html')
         }
       )
-    ]
+      // new MiniCssExtractPlugin(),
+      // new CopyPlugin([{
+      //   from: path.join(__dirname, 'public'),
+      //   to: path.join(__dirname, 'build')
+      // }]),
+      // new webpack.HotModuleReplacementPlugin()
+    ],
+    devServer: {
+      port: 9002,
+      host: '0.0.0.0',
+      useLocalIp: true,
+      compress: true,
+      disableHostCheck: true,
+      hot: true,
+      hotOnly: true,
+      open: true,
+      overlay: true,
+      stats: 'minimal',
+      clientLogLevel: 'warning',
+      contentBase: path.join(__dirname, 'src'),
+      historyApiFallback: {
+        disableDotRule: true
+      },
+    },
+    stats: 'minimal',
+    mode: 'development'
   }
 }
