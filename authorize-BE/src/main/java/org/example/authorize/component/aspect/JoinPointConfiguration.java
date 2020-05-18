@@ -15,9 +15,23 @@ public class JoinPointConfiguration {
     }
 
     /**
+     * Point cut for package App.
+     */
+    @Pointcut("execution(* org.example.authorize.app..*.*(..))")
+    public void pointCutPackageApp() {
+    }
+
+    /**
+     * Point cut for package Event.
+     */
+    @Pointcut("execution(* org.example.authorize.component.events..*.*(..))")
+    public void pointCutPackageEvent() {
+    }
+
+    /**
      * Point cut for all package need to log.
      */
-    @Pointcut("execution(* org.example.authorize.app..*.*(..)) || execution(* org.example.authorize.component.events..*.*(..))")
+    @Pointcut("pointCutPackageApp() || pointCutPackageEvent()")
     public void pointCutPackagesNeedLog() {
     }
 }
