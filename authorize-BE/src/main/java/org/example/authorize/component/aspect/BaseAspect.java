@@ -13,6 +13,7 @@ public class BaseAspect {
     protected static final String STOP = "STOP";
     protected static final String EXECUTION_TIME = "EXECUTION TIME";
     protected static final String ARGUMENT = "ARGUMENT";
+    protected static final String RETURNING = "RETURNING";
 
     /**
      * Log tracking method.

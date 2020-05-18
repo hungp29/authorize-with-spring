@@ -2,6 +2,7 @@ package org.example.authorize.component.aspect.trackingparam;
 
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
+import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.example.authorize.component.aspect.BaseAspect;
@@ -13,17 +14,33 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @Aspect
 @Component
-public class LogArgumentAspect extends BaseAspect {
+public class LogParamAspect extends BaseAspect {
 
+    /**
+     * Log Arguments.
+     *
+     * @param joinPoint Point cut
+     */
     @Before("org.example.authorize.component.aspect.JoinPointConfiguration.pointCutArgumentAnnotation()")
     public void logArgument(JoinPoint joinPoint) {
         Object[] args = joinPoint.getArgs();
 
         if (args.length > 0) {
-            logWithPrefix(ARGUMENT, "List Arguments");
+            logWithPrefix(ARGUMENT, ">>> " + (args.length > 1 ? "List Arguments" : "Argument") + " (" + args.length + ")");
             for (Object arg : args) {
                 logWithPrefix(ARGUMENT, arg.toString());
             }
+            logWithPrefix(ARGUMENT, ">>> END " + (args.length > 1 ? "List Arguments" : "Argument") );
         }
+    }
+
+    /**
+     * Log return value.
+     *
+     * @param retVal    return value
+     */
+    @AfterReturning(value = "org.example.authorize.component.aspect.JoinPointConfiguration.pointCutReturningAnnotation()", returning = "retVal")
+    public void logReturning(Object retVal) {
+        logWithPrefix(RETURNING, retVal.toString());
     }
 }

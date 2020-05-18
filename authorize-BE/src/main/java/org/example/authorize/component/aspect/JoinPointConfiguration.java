@@ -15,6 +15,13 @@ public class JoinPointConfiguration {
     }
 
     /**
+     * Point cut for annotation Log Returning.
+     */
+    @Pointcut("@annotation(org.example.authorize.component.aspect.trackingparam.LogReturning)")
+    public void pointCutReturningAnnotation() {
+    }
+
+    /**
      * Point cut for package App.
      */
     @Pointcut("execution(* org.example.authorize.app..*.*(..))")

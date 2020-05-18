@@ -25,6 +25,6 @@ public class URLConstants {
     public static final String M_GET_PERMISSION = "";
 
     public static final String C_TEST = "/api/test";
-    public static final String M_TEST = "";
+    public static final String M_TEST = "/{value}";
 
 }
