@@ -1,5 +1,6 @@
 package org.example.authorize.app.test;
 
+import lombok.RequiredArgsConstructor;
 import org.example.authorize.component.aspect.trackingparam.LogArgument;
 import org.example.authorize.component.aspect.trackingparam.LogReturning;
 import org.example.authorize.component.version.APIVersion;
@@ -20,7 +21,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @PermissionGroup(PermissionGroupConstants.TEST)
 @RequestMapping(URLConstants.C_TEST)
+@RequiredArgsConstructor
 public class TestController {
+
 
     @LogArgument
     @LogReturning

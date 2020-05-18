@@ -63,7 +63,7 @@ public class LogTracking extends BaseAspect {
             proceed = joinPoint.proceed();
             long executionTime = System.currentTimeMillis() - start;
 
-            logWithPrefix(EXECUTION_TIME, joinPoint.getSignature().toShortString() + " executed in " + executionTime + "ms");
+            logWithPrefix(TIME, joinPoint.getSignature().toShortString() + " executed in " + executionTime + "ms");
         } else {
             proceed = joinPoint.proceed();
         }
