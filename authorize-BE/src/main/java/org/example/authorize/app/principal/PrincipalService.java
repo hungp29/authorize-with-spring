@@ -2,6 +2,7 @@ package org.example.authorize.app.principal;
 
 import lombok.RequiredArgsConstructor;
 import org.example.authorize.app.authmethod.AuthMethodService;
+import org.example.authorize.component.aspect.executiontime.LogExecutionTime;
 import org.example.authorize.entity.AuthMethod;
 import org.example.authorize.entity.Principal;
 import org.example.authorize.exception.SaveEntityException;
@@ -27,6 +28,7 @@ public class PrincipalService {
      * @param disabled disable principal when creating or not
      * @return return principal
      */
+    @LogExecutionTime
     public Principal createPrincipal(boolean disabled) {
         Principal principal = new Principal();
         principal.setDisabled(disabled);
@@ -38,6 +40,7 @@ public class PrincipalService {
      *
      * @return return principal
      */
+    @LogExecutionTime
     public Principal createPrincipal() {
         return createPrincipal(true);
     }
@@ -48,6 +51,7 @@ public class PrincipalService {
      * @param principal the principal will be active
      * @return principal after active
      */
+    @LogExecutionTime
     public Principal active(Principal principal) {
         if (null != principal) {
             principal.setDisabled(false);
@@ -62,6 +66,7 @@ public class PrincipalService {
      * @param principal principal need to save or update
      * @return return principal is saved or updated
      */
+    @LogExecutionTime
     @Transactional
     public Principal save(Principal principal) {
         if (null != principal) {
@@ -76,6 +81,7 @@ public class PrincipalService {
      * @param authData1 auth data 1 (username, email, phone number)
      * @return return principal instance if it exist
      */
+    @LogExecutionTime
     public Principal findPrincipalByAuthData1(String authData1) {
         AuthMethod authMethod = authMethodService.findByDetermineId(authData1);
 
@@ -88,6 +94,7 @@ public class PrincipalService {
      * @param principal the principal instance
      * @return principal after locked
      */
+    @LogExecutionTime
     public Principal lockPrincipal(Principal principal) {
         if (null != principal) {
             principal.setLocked(true);
@@ -102,6 +109,7 @@ public class PrincipalService {
      * @param principal the principal instance
      * @return principal after unlocked
      */
+    @LogExecutionTime
     public Principal unlockPrincipal(Principal principal) {
         if (null != principal) {
             principal.setLocked(false);

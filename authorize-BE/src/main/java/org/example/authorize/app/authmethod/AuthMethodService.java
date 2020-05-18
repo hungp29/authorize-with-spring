@@ -2,6 +2,7 @@ package org.example.authorize.app.authmethod;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.example.authorize.component.aspect.executiontime.LogExecutionTime;
 import org.example.authorize.config.prop.OTPProperties;
 import org.example.authorize.entity.AuthMethod;
 import org.example.authorize.entity.AuthMethodData;
@@ -42,6 +43,7 @@ public class AuthMethodService {
      * @param password password
      * @return return auth method
      */
+    @LogExecutionTime
     public AuthMethod createAuthMethodUsername(String username, String password) {
         AuthMethodData authMethodData = new AuthMethodData();
         authMethodData.setAuthData1(passwordEncode.encode(password));
@@ -56,6 +58,7 @@ public class AuthMethodService {
      * @param authMethodData auth method data
      * @return return auth method
      */
+    @LogExecutionTime
     public AuthMethod createAuthMethodUsername(String username, AuthMethodData authMethodData) {
         Assert.notNull(authMethodData, "AuthMethodData cannot be null");
         if (checkAuthMethodUsernameExist(username)) {
@@ -76,6 +79,7 @@ public class AuthMethodService {
      * @param password the password
      * @return return auth method
      */
+    @LogExecutionTime
     public AuthMethod createAuthMethodEmail(String email, String password) {
         AuthMethodData authMethodData = new AuthMethodData();
         authMethodData.setAuthData1(passwordEncode.encode(password));
@@ -90,6 +94,7 @@ public class AuthMethodService {
      * @param authMethodData the auth method data
      * @return return auth method
      */
+    @LogExecutionTime
     public AuthMethod createAuthMethodEmail(String email, AuthMethodData authMethodData) {
         Assert.notNull(authMethodData, "AuthMethodData cannot be null");
         if (checkAuthMethodEmailExist(email)) {
@@ -109,6 +114,7 @@ public class AuthMethodService {
      * @param phoneNumber phone number
      * @return return auth method
      */
+    @LogExecutionTime
     public AuthMethod createAuthMethodPhoneNumber(String phoneNumber) {
         if (checkAuthMethodPhoneExist(phoneNumber)) {
             throw new UsernameAlreadyExistException("Phone number " + phoneNumber + " is exist");
@@ -130,6 +136,7 @@ public class AuthMethodService {
      * @param authMethod authentication method for phone number
      * @return true true if re-generate and save successfully, otherwise return false
      */
+    @LogExecutionTime
     public AuthMethod regenerateSecretKeyForPhoneAuthMethod(AuthMethod authMethod) {
         if (null != authMethod && AuthType.PHONE_NUMBER.equals(authMethod.getAuthType()) &&
                 null != authMethod.getAuthMethodData()) {
@@ -145,6 +152,7 @@ public class AuthMethodService {
      * @param authMethod phone authentication method
      * @return return true if update moving factor successfully, otherwise return false
      */
+    @LogExecutionTime
     public long increaseMovingFactorForPhoneAuthMethod(AuthMethod authMethod) {
         long movingFactor = 0;
         if (null != authMethod && AuthType.PHONE_NUMBER.equals(authMethod.getAuthType()) &&
@@ -162,6 +170,7 @@ public class AuthMethodService {
      * @param authMethod phone authentication method
      * @return return moving factor value
      */
+    @LogExecutionTime
     public long getMovingFactorOfPhoneAuthMethod(AuthMethod authMethod) {
         int movingFactor = 0;
         if (null != authMethod && AuthType.PHONE_NUMBER.equals(authMethod.getAuthType()) &&
@@ -181,6 +190,7 @@ public class AuthMethodService {
      * @param authMethod the phone auth method
      * @return return auth method after set expiration time
      */
+    @LogExecutionTime
     public AuthMethod setExpirationForPhoneAuthMethod(AuthMethod authMethod) {
         if (null != authMethod && AuthType.PHONE_NUMBER.equals(authMethod.getAuthType()) &&
                 null != authMethod.getAuthMethodData()) {
@@ -196,6 +206,7 @@ public class AuthMethodService {
      * @param username username to check
      * @return return true if username is exist, otherwise return false
      */
+    @LogExecutionTime
     public boolean checkAuthMethodUsernameExist(String username) {
         return authMethodRepository.findByAuthTypeAndDetermineId(AuthType.USERNAME_PASSWORD, username).isPresent();
     }
@@ -206,6 +217,7 @@ public class AuthMethodService {
      * @param email email to check
      * @return return true if email is exist, otherwise return false
      */
+    @LogExecutionTime
     public boolean checkAuthMethodEmailExist(String email) {
         return authMethodRepository.findByAuthTypeAndDetermineId(AuthType.EMAIL_PASSWORD, email).isPresent();
     }
@@ -216,6 +228,7 @@ public class AuthMethodService {
      * @param phone phone number to check
      * @return return true if phone number is exist, otherwise return false
      */
+    @LogExecutionTime
     public boolean checkAuthMethodPhoneExist(String phone) {
         return authMethodRepository.findByAuthTypeAndDetermineId(AuthType.EMAIL_PASSWORD, phone).isPresent();
     }
@@ -226,6 +239,7 @@ public class AuthMethodService {
      * @param authMethod the auth method
      * @return return true if it is saved successfully, otherwise return false
      */
+    @LogExecutionTime
     @Transactional
     public AuthMethod save(AuthMethod authMethod) {
         if (null != authMethod) {
@@ -240,6 +254,7 @@ public class AuthMethodService {
      * @param authMethods list auth method
      * @return return list auth method are saved successfully, otherwise return false
      */
+    @LogExecutionTime
     @Transactional
     public List<AuthMethod> saveAll(List<AuthMethod> authMethods) {
         if (!CollectionUtils.isEmpty(authMethods)) {
@@ -254,6 +269,7 @@ public class AuthMethodService {
      * @param determineId determine value
      * @return return auth method if it exist
      */
+    @LogExecutionTime
     public AuthMethod findByDetermineId(String determineId) {
         return authMethodRepository.findByDetermineId(determineId).orElse(null);
     }
@@ -265,6 +281,7 @@ public class AuthMethodService {
      * @param determineId determine id
      * @return return auth method if it exist
      */
+    @LogExecutionTime
     public AuthMethod findByAuthTypeAndDetermineId(AuthType authType, String determineId) {
         return authMethodRepository.findByAuthTypeAndDetermineId(authType, determineId).orElse(null);
     }
@@ -276,6 +293,7 @@ public class AuthMethodService {
      * @param authTypes   auth type
      * @return return auth method if it exist
      */
+    @LogExecutionTime
     public AuthMethod findByDetermineIdAndAuthTypes(String determineId, AuthType... authTypes) {
         return authMethodRepository.findByDetermineIdAndAuthTypeIn(determineId, authTypes).orElse(null);
     }
@@ -287,6 +305,7 @@ public class AuthMethodService {
      * @param authType    auth type
      * @return return auth method
      */
+    @LogExecutionTime
     public Optional<AuthMethod> findAuthMethod(List<AuthMethod> authMethods, AuthType authType) {
         if (!CollectionUtils.isEmpty(authMethods) && null != authType) {
             return authMethods.stream()

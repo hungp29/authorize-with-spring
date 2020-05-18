@@ -1,6 +1,6 @@
-package org.example.authorize.rbac.resolver;
+package org.example.authorize.security.rbac.resolver;
 
-import org.example.authorize.rbac.AbstractRequestResolver;
+import org.example.authorize.security.rbac.AbstractRequestResolver;
 import org.springframework.security.core.Authentication;
 
 public class TestResolver extends AbstractRequestResolver<Boolean> {

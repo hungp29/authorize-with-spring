@@ -1,7 +1,7 @@
 package org.example.authorize.security.permission;
 
-import org.example.authorize.rbac.AccessCondition;
-import org.example.authorize.rbac.RequestValueResolver;
+import org.example.authorize.security.rbac.AccessCondition;
+import org.example.authorize.security.rbac.RequestValueResolver;
 
 import java.lang.annotation.*;
 

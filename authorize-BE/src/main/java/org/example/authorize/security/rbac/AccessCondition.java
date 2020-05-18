@@ -1,4 +1,4 @@
-package org.example.authorize.rbac;
+package org.example.authorize.security.rbac;
 
 public interface AccessCondition<T> {
 

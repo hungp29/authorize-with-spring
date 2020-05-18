@@ -1,4 +1,4 @@
-package org.example.authorize.version;
+package org.example.authorize.component.version;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 

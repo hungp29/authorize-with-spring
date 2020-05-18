@@ -1,8 +1,9 @@
-package org.example.authorize.events;
+package org.example.authorize.component.events;
 
 import lombok.RequiredArgsConstructor;
 import org.example.authorize.app.principal.PrincipalService;
 import org.example.authorize.app.principal.attempt.PrincipalAttemptService;
+import org.example.authorize.component.aspect.executiontime.LogExecutionTime;
 import org.example.authorize.config.prop.ApplicationProperties;
 import org.example.authorize.entity.Principal;
 import org.example.authorize.entity.PrincipalAttempt;
@@ -25,6 +26,7 @@ public class AuthenticationEventListener {
      *
      * @param event Authentication Failure event
      */
+    @LogExecutionTime
     @EventListener(AuthenticationFailureBadCredentialsEvent.class)
     public void onLoginFailure(AuthenticationFailureBadCredentialsEvent event) {
         if (event.getException().getClass().equals(UsernameNotFoundException.class)) {
@@ -53,6 +55,7 @@ public class AuthenticationEventListener {
      *
      * @param event Authentication Success event
      */
+    @LogExecutionTime
     @EventListener(AuthenticationSuccessEvent.class)
     public void onLoginSuccess(AuthenticationSuccessEvent event) {
         // Username can be username, email or phone number

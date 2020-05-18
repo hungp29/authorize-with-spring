@@ -1,6 +1,7 @@
 package org.example.authorize.app.role;
 
 import lombok.RequiredArgsConstructor;
+import org.example.authorize.component.aspect.executiontime.LogExecutionTime;
 import org.example.authorize.entity.Role;
 import org.example.authorize.exception.SaveEntityException;
 import org.example.authorize.utils.generator.id.Generator;
@@ -26,6 +27,7 @@ public class RoleService {
      * @param id the id of role
      * @return return the role has id equals
      */
+    @LogExecutionTime
     public Optional<Role> findRoleById(String id) {
         return roleRepository.findById(id);
     }
@@ -35,6 +37,7 @@ public class RoleService {
      *
      * @return return super role if it's exist
      */
+    @LogExecutionTime
     public Optional<Role> findSuperRole() {
         return roleRepository.findByReadOnlyTrueAndSystemRoleFalse();
     }
@@ -45,6 +48,7 @@ public class RoleService {
      * @param role the role object
      * @return return new role is created
      */
+    @LogExecutionTime
     @Transactional
     public Role save(Role role) {
         if (null != role) {
@@ -59,6 +63,7 @@ public class RoleService {
      * @param name name of role
      * @return return role is created.
      */
+    @LogExecutionTime
     public Role createRole(String name) {
         Role role = new Role();
         role.setName(name);
@@ -74,6 +79,7 @@ public class RoleService {
      * @param readOnly set read only for role or not
      * @return return role is created.
      */
+    @LogExecutionTime
     public Role createRole(String name, boolean readOnly) {
         Role role = createRole(name);
         role.setReadOnly(readOnly);
@@ -88,6 +94,7 @@ public class RoleService {
      * @param systemRole set system role or not
      * @return return role is created.
      */
+    @LogExecutionTime
     public Role createRole(String name, boolean readOnly, boolean systemRole) {
         Role role = createRole(name);
         role.setReadOnly(readOnly);

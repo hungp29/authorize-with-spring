@@ -2,6 +2,7 @@ package org.example.authorize.app.authentication;
 
 import lombok.RequiredArgsConstructor;
 import org.example.authorize.app.authmethod.AuthMethodService;
+import org.example.authorize.component.aspect.executiontime.LogExecutionTime;
 import org.example.authorize.entity.AuthMethod;
 import org.example.authorize.enums.AuthType;
 import org.example.authorize.security.jwt.AccessToken;
@@ -35,6 +36,7 @@ public class AuthenticationService {
      * @param rememberMe     remember me
      * @return return access token instance
      */
+    @LogExecutionTime
     public AccessToken createAccessToken(Authentication authentication, boolean rememberMe) {
         return tokenProvider.createAccessToken(authentication, rememberMe);
     }
@@ -45,6 +47,7 @@ public class AuthenticationService {
      * @param refreshToken the refresh token
      * @return return new access token
      */
+    @LogExecutionTime
     public AccessToken refreshAccessToken(String refreshToken) {
         return tokenProvider.refreshAccessToken(refreshToken);
     }
@@ -55,6 +58,7 @@ public class AuthenticationService {
      * @param phone the phone number of account.
      * @return return value
      */
+    @LogExecutionTime
     public boolean generateHOTP(String phone) {
         AuthMethod phoneAuthMethod = authMethodService.findByAuthTypeAndDetermineId(AuthType.PHONE_NUMBER, phone);
         if (null != phoneAuthMethod) {

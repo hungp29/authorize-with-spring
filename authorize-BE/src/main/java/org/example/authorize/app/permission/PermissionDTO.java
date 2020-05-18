@@ -1,7 +1,7 @@
 package org.example.authorize.app.permission;
 
 import lombok.Data;
-import org.example.authorize.rbac.ConditionPrototype;
+import org.example.authorize.security.rbac.ConditionPrototype;
 import org.example.authorize.security.permission.PermissionType;
 
 import java.util.ArrayList;

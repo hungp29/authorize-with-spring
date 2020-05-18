@@ -1,8 +1,8 @@
-package org.example.authorize.rbac.condition;
+package org.example.authorize.security.rbac.condition;
 
-import org.example.authorize.rbac.AbstractAccessCondition;
-import org.example.authorize.rbac.ConditionPrototype;
-import org.example.authorize.rbac.RequestValueResolver;
+import org.example.authorize.security.rbac.AbstractAccessCondition;
+import org.example.authorize.security.rbac.ConditionPrototype;
+import org.example.authorize.security.rbac.RequestValueResolver;
 
 public class OwnedResourceCondition extends AbstractAccessCondition<Boolean> {
 
