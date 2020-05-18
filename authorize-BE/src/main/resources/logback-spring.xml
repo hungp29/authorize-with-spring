@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration>
+
+<configuration scan="true">
+    <include resource="org/springframework/boot/logging/logback/base.xml"/>
+
+    <springProfile name="dev, local">
+        <!-- Configuration log for tracking -->
+        <appender name="LOG-TRACKING" class="ch.qos.logback.core.rolling.RollingFileAppender">
+            <file>logs/tracking.log</file>
+
+            <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+                <fileNamePattern>logs/tracking.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+                <maxFileSize>50MB</maxFileSize>
+                <!--<maxHistory>60</maxHistory>-->
+                <totalSizeCap>1GB</totalSizeCap>
+            </rollingPolicy>
+
+            <encoder>
+                <charset>utf-8</charset>
+                <!--                <pattern>%-22d{dd/MMM/yyyy HH:mm:ss} %-8p %c [%t] - %m \(%F:%L\) %n</pattern>-->
+                <Pattern>%d %-5level [%thread] %logger{0}: %msg%n</Pattern>
+            </encoder>
+        </appender>
+        <logger name="org.example.authorize.component.aspect.BaseAspect" level="${logging.level.root}">
+            <appender-ref ref="LOG-TRACKING"/>
+        </logger>
+
+        <!--Configuration log for application-->
+        <appender name="LOG-APP" class="ch.qos.logback.core.rolling.RollingFileAppender">
+            <file>logs/application.log</file>
+
+            <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+                <fileNamePattern>logs/application.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+                <maxFileSize>50MB</maxFileSize>
+                <!--<maxHistory>60</maxHistory>-->
+                <totalSizeCap>1GB</totalSizeCap>
+            </rollingPolicy>
+
+            <encoder>
+                <charset>utf-8</charset>
+                <!--                <pattern>%-22d{dd/MMM/yyyy HH:mm:ss} %-8p %c [%t] - %m \(%F:%L\) %n</pattern>-->
+                <Pattern>%d %-5level [%thread] %logger{0}: %msg%n</Pattern>
+            </encoder>
+        </appender>
+
+        <!--LOG everything at INFO level-->
+        <root level="${logging.level.root}">
+            <appender-ref ref="CONSOLE"/>
+            <appender-ref ref="LOG-APP"/>
+        </root>
+    </springProfile>
+
+    <springProfile name="prod">
+        <!--Configuration log for application-->
+        <appender name="LOG-APP" class="ch.qos.logback.core.rolling.RollingFileAppender">
+            <file>logs/application.log</file>
+
+            <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+                <fileNamePattern>logs/application.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+                <maxFileSize>50MB</maxFileSize>
+                <!--<maxHistory>60</maxHistory>-->
+                <totalSizeCap>1GB</totalSizeCap>
+            </rollingPolicy>
+
+            <encoder>
+                <charset>utf-8</charset>
+                <!--                <pattern>%-22d{dd/MMM/yyyy HH:mm:ss} %-8p %c [%t] - %m \(%F:%L\) %n</pattern>-->
+                <Pattern>%d %-5level [%thread] %logger{0}: %msg%n</Pattern>
+            </encoder>
+        </appender>
+
+        <!--LOG everything at ERROR level-->
+        <root level="${logging.level.root}">
+            <appender-ref ref="LOG-APP"/>
+        </root>
+
+        <logger name="com.mmedic.Application" level="INFO"/>
+    </springProfile>
+
+    <logger name="javax.activation" level="WARN"/>
+    <logger name="javax.mail" level="WARN"/>
+    <logger name="javax.management.remote" level="WARN"/>
+    <logger name="javax.xml.bind" level="WARN"/>
+    <logger name="ch.qos.logback" level="WARN"/>
+
+    <logger name="org.apache" level="WARN"/>
+    <logger name="org.apache.catalina.startup.DigesterFactory" level="OFF"/>
+    <logger name="org.hibernate.validator" level="WARN"/>
+    <logger name="org.hibernate" level="WARN"/>
+    <logger name="org.hibernate.ejb.HibernatePersistence" level="OFF"/>
+    <logger name="org.postgresql.jdbc" level="WARN"/>
+    <logger name="org.springframework" level="WARN"/>
+    <logger name="org.springframework.web" level="WARN"/>
+    <logger name="org.springframework.security" level="WARN"/>
+    <logger name="org.springframework.cache" level="WARN"/>
+    <logger name="io.swagger.models.parameters.AbstractSerializableParameter" level="ERROR"/>
+
+    <contextListener class="ch.qos.logback.classic.jul.LevelChangePropagator">
+        <resetJUL>true</resetJUL>
+    </contextListener>
+
+</configuration>
