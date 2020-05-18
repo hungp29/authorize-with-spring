@@ -20,7 +20,6 @@ public class BaseAspect {
      *
      * @param flag    START, STOP, EXECUTION TIME
      * @param message the message
-     * @return the value is formatted
      */
     protected void logWithPrefix(String flag, String message) {
         log.info(String.format(PREFIX_TEMPLATE, flag) + message);
