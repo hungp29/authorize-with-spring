@@ -1,11 +1,11 @@
 package org.example.authorize.utils;
 
 import lombok.extern.slf4j.Slf4j;
-import org.example.authorize.rbac.AccessCondition;
-import org.example.authorize.rbac.ConditionPrototype;
-import org.example.authorize.rbac.RequestValueResolver;
 import org.example.authorize.security.permission.PermissionCondition;
 import org.example.authorize.security.permission.PermissionType;
+import org.example.authorize.security.rbac.AccessCondition;
+import org.example.authorize.security.rbac.ConditionPrototype;
+import org.example.authorize.security.rbac.RequestValueResolver;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.lang.reflect.Constructor;

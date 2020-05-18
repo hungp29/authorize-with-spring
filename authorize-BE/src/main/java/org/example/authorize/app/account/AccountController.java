@@ -3,11 +3,11 @@ package org.example.authorize.app.account;
 import lombok.RequiredArgsConstructor;
 import org.example.authorize.app.account.req.EmailReq;
 import org.example.authorize.app.account.req.PhoneReq;
+import org.example.authorize.component.version.APIVersion;
 import org.example.authorize.response.WResponseEntity;
 import org.example.authorize.security.permission.PermissionGroup;
 import org.example.authorize.utils.constants.PermissionGroupConstants;
 import org.example.authorize.utils.constants.URLConstants;
-import org.example.authorize.version.APIVersion;
 import org.springframework.web.bind.annotation.*;
 
 /**

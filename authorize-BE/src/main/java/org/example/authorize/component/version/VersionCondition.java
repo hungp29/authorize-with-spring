@@ -1,4 +1,4 @@
-package org.example.authorize.version;
+package org.example.authorize.component.version;
 
 import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.mvc.condition.AbstractRequestCondition;

@@ -1,4 +1,4 @@
-package org.example.authorize.events;
+package org.example.authorize.component.events;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

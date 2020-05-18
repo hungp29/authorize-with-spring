@@ -4,9 +4,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.example.authorize.utils.constants.Constants;
 import org.springframework.util.StringUtils;
 
-import javax.persistence.Id;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Field;
 import java.nio.charset.StandardCharsets;
 
 /**

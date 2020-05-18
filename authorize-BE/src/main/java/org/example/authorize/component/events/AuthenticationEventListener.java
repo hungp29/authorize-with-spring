@@ -1,4 +1,4 @@
-package org.example.authorize.events;
+package org.example.authorize.component.events;
 
 import lombok.RequiredArgsConstructor;
 import org.example.authorize.app.principal.PrincipalService;

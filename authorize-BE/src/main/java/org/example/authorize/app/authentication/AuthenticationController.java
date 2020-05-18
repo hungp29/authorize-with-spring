@@ -2,13 +2,14 @@ package org.example.authorize.app.authentication;
 
 import lombok.RequiredArgsConstructor;
 import org.example.authorize.app.authentication.req.AuthReq;
+import org.example.authorize.component.aspect.trackingparam.LogArgument;
+import org.example.authorize.component.version.APIVersion;
 import org.example.authorize.response.WResponseEntity;
 import org.example.authorize.security.jwt.AccessToken;
 import org.example.authorize.security.permission.PermissionGroup;
 import org.example.authorize.utils.SecurityUtils;
 import org.example.authorize.utils.constants.PermissionGroupConstants;
 import org.example.authorize.utils.constants.URLConstants;
-import org.example.authorize.version.APIVersion;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -37,6 +38,7 @@ public class AuthenticationController {
      * @param authReq request have username and password
      * @return return account token
      */
+    @LogArgument
     @PostMapping(URLConstants.M_AUTHENTICATION)
     public WResponseEntity<AccessToken> authorize(@RequestBody AuthReq authReq) {
         Authentication authentication = authenticationManagerBuilder.getObject()
