@@ -2,12 +2,12 @@ package org.example.authorize.security.scopemethodsecurity;
 
 import org.aopalliance.intercept.MethodInvocation;
 import org.example.authorize.exception.AccessConditionException;
-import org.example.authorize.security.rbac.AccessCondition;
-import org.example.authorize.security.rbac.RequestValueResolver;
 import org.example.authorize.security.BGrantedAuthority;
 import org.example.authorize.security.UserPrincipal;
 import org.example.authorize.security.permission.PermissionCondition;
 import org.example.authorize.security.permission.PermissionConditions;
+import org.example.authorize.security.rbac.AccessCondition;
+import org.example.authorize.security.rbac.RequestValueResolver;
 import org.example.authorize.utils.ObjectUtils;
 import org.example.authorize.utils.constants.Constants;
 import org.springframework.security.access.expression.SecurityExpressionRoot;

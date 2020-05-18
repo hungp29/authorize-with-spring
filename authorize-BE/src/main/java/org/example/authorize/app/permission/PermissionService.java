@@ -2,13 +2,12 @@ package org.example.authorize.app.permission;
 
 import lombok.RequiredArgsConstructor;
 import org.example.authorize.app.policy.PolicyPermissionRepository;
-import org.example.authorize.component.aspect.executiontime.LogExecutionTime;
 import org.example.authorize.entity.Policy;
 import org.example.authorize.entity.PolicyPermission;
-import org.example.authorize.security.rbac.ConditionPrototype;
 import org.example.authorize.security.permission.PermissionCondition;
 import org.example.authorize.security.permission.PermissionConditions;
 import org.example.authorize.security.permission.PermissionGroup;
+import org.example.authorize.security.rbac.ConditionPrototype;
 import org.example.authorize.utils.PermissionUtils;
 import org.example.authorize.utils.SecurityUtils;
 import org.example.authorize.utils.constants.Constants;
@@ -37,7 +36,6 @@ public class PermissionService {
      *
      * @return return list permission
      */
-    @LogExecutionTime
     public List<PermissionDTO> getPermissions() {
         List<PermissionDTO> permissions = new ArrayList<>();
         // For each endpoint
@@ -68,7 +66,6 @@ public class PermissionService {
      * @param handlerMethod handler method of API
      * @return return permission object
      */
-    @LogExecutionTime
     private PermissionDTO buildPermissionObject(String endpoint, RequestMethod requestMethod, HandlerMethod handlerMethod) {
         PermissionDTO permissionDTO = null;
         if (!SecurityUtils.isMatchWhiteList(requestMethod, endpoint)) {
@@ -124,7 +121,6 @@ public class PermissionService {
      * @param permissionDTOs list new permission
      * @return return list policy permission is saved successfully
      */
-    @LogExecutionTime
     @Transactional
     public List<PolicyPermission> grantPermissionForPolicy(Policy policy, Collection<PermissionDTO> permissionDTOs) {
         List<PolicyPermission> savedPolicyPermission = null;
@@ -147,7 +143,6 @@ public class PermissionService {
      *
      * @param policyPermissions list permission of policy will be forfeit
      */
-    @LogExecutionTime
     @Transactional
     public void forfeitPermissionForPolicy(List<PolicyPermission> policyPermissions) {
         if (!CollectionUtils.isEmpty(policyPermissions)) {
@@ -160,7 +155,6 @@ public class PermissionService {
      *
      * @param policyPermission the permission will be forfeit
      */
-    @LogExecutionTime
     @Transactional
     public void forfeitPermissionForPolicy(PolicyPermission policyPermission) {
         if (null != policyPermission) {
@@ -174,7 +168,6 @@ public class PermissionService {
      * @param policy         policy need to update permission
      * @param permissionDTOs list permission
      */
-    @LogExecutionTime
     @Transactional
     public void updatePermissionForPolicy(Policy policy, List<PermissionDTO> permissionDTOs) {
         // If full access policy is exist, checking all permission to detect new permissions and out of date permissions

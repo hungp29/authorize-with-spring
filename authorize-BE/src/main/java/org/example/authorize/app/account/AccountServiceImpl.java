@@ -6,7 +6,6 @@ import org.example.authorize.app.account.req.EmailReq;
 import org.example.authorize.app.account.req.PhoneReq;
 import org.example.authorize.app.authmethod.AuthMethodService;
 import org.example.authorize.app.principal.PrincipalService;
-import org.example.authorize.component.aspect.executiontime.LogExecutionTime;
 import org.example.authorize.entity.Account;
 import org.example.authorize.entity.AuthMethod;
 import org.example.authorize.entity.Principal;
@@ -50,7 +49,6 @@ public class AccountServiceImpl implements AccountService {
      * @param id the id of account
      * @return return the account if it's exist
      */
-    @LogExecutionTime
     public Optional<Account> findAccountById(String id) {
         return accountRepository.findById(id);
     }
@@ -61,7 +59,6 @@ public class AccountServiceImpl implements AccountService {
      * @param role the role of account
      * @return list account
      */
-    @LogExecutionTime
     public List<Account> findAccountByRole(Role role) {
         return accountRepository.findByPrincipal_RolesIn(Collections.singletonList(role));
     }
@@ -72,7 +69,6 @@ public class AccountServiceImpl implements AccountService {
      * @param accountReq account information
      * @return return the account is created
      */
-    @LogExecutionTime
     public Account createAccount(AccountReq accountReq) {
         // Create new principal
         Principal principal = principalService.createPrincipal();
@@ -98,7 +94,6 @@ public class AccountServiceImpl implements AccountService {
      * @param account the account instance
      * @return return account is saved successfully
      */
-    @LogExecutionTime
     @Transactional
     public Account save(Account account) {
         if (null != account) {
@@ -113,7 +108,6 @@ public class AccountServiceImpl implements AccountService {
      * @param determineId determine id (username, email, phone number)
      * @return return account instance if it exist
      */
-    @LogExecutionTime
     public Account findAccountByDetermineId(String determineId) {
         AuthMethod authMethod = authMethodService.findByDetermineId(determineId);
         if (null != authMethod && null != authMethod.getPrincipal()) {
@@ -128,7 +122,6 @@ public class AccountServiceImpl implements AccountService {
      * @param username username of account
      * @return return UserDetails instance
      */
-    @LogExecutionTime
     @Override
     public UserDetails loadUserByUsername(String username) {
         AuthMethod authMethod = authMethodService
@@ -147,7 +140,6 @@ public class AccountServiceImpl implements AccountService {
      * @param token JWT authentication provider
      * @return return UserDetails instance
      */
-    @LogExecutionTime
     @Override
     public UserDetails loadUserDetails(PreAuthenticatedAuthenticationToken token) {
         JWTAuthenticationToken jwtAuthenticationToken = (JWTAuthenticationToken) token;
@@ -167,7 +159,6 @@ public class AccountServiceImpl implements AccountService {
      * @param otpToken The otp authentication token
      * @return return UserDetails instance
      */
-    @LogExecutionTime
     @Override
     public UserDetails loadUserDetailsForOTP(OTPAuthenticationToken otpToken) {
         AuthMethod authMethod = authMethodService
@@ -187,7 +178,6 @@ public class AccountServiceImpl implements AccountService {
      * @param phoneReq phone request object
      * @return return true if update successfully, otherwise return false
      */
-    @LogExecutionTime
     @Transactional
     public boolean addOrUpdatePhoneNumber(String id, PhoneReq phoneReq) {
         Account account = accountRepository.findById(id).orElse(null);
@@ -224,7 +214,6 @@ public class AccountServiceImpl implements AccountService {
      * @param emailReq email request object
      * @return return true if update successfully, otherwise return false
      */
-    @LogExecutionTime
     @Transactional
     public boolean addOrUpdateEmail(String id, EmailReq emailReq) {
         Account account = accountRepository.findById(id).orElse(null);

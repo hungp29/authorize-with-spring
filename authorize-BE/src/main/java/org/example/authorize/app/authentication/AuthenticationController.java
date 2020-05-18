@@ -2,14 +2,14 @@ package org.example.authorize.app.authentication;
 
 import lombok.RequiredArgsConstructor;
 import org.example.authorize.app.authentication.req.AuthReq;
-import org.example.authorize.component.aspect.executiontime.LogExecutionTime;
+import org.example.authorize.component.aspect.trackingparam.LogArgument;
+import org.example.authorize.component.version.APIVersion;
 import org.example.authorize.response.WResponseEntity;
 import org.example.authorize.security.jwt.AccessToken;
 import org.example.authorize.security.permission.PermissionGroup;
 import org.example.authorize.utils.SecurityUtils;
 import org.example.authorize.utils.constants.PermissionGroupConstants;
 import org.example.authorize.utils.constants.URLConstants;
-import org.example.authorize.component.version.APIVersion;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -38,7 +38,7 @@ public class AuthenticationController {
      * @param authReq request have username and password
      * @return return account token
      */
-    @LogExecutionTime
+    @LogArgument
     @PostMapping(URLConstants.M_AUTHENTICATION)
     public WResponseEntity<AccessToken> authorize(@RequestBody AuthReq authReq) {
         Authentication authentication = authenticationManagerBuilder.getObject()
@@ -55,7 +55,6 @@ public class AuthenticationController {
      * @param authReq request data, it include phone number
      * @return return otp
      */
-    @LogExecutionTime
     @PostMapping(URLConstants.M_OTP)
     public WResponseEntity<Boolean> generateOTP(@RequestBody AuthReq authReq) {
         return WResponseEntity.success(authenticationService.generateHOTP(authReq.getPhone()));
@@ -67,7 +66,6 @@ public class AuthenticationController {
      * @param authReq request data, it include phone number and otp value
      * @return return access token if authentication successfully
      */
-    @LogExecutionTime
     @PostMapping(URLConstants.M_OTP_VERIFY)
     public WResponseEntity<AccessToken> authorizeByOTP(@RequestBody AuthReq authReq) {
         Authentication authentication = authenticationManagerBuilder.getObject()
@@ -83,7 +81,6 @@ public class AuthenticationController {
      * @param refreshReq refresh request, it have refresh token value.
      * @return return new access token
      */
-    @LogExecutionTime
     @PostMapping(URLConstants.M_REFRESH_TOKEN)
     public WResponseEntity<AccessToken> refresh(@RequestBody RefreshReq refreshReq) {
         return WResponseEntity.success(authenticationService.refreshAccessToken(refreshReq.getToken()));

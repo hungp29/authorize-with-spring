@@ -8,10 +8,10 @@ import org.aspectj.lang.annotation.Pointcut;
 public class JoinPointConfiguration {
 
     /**
-     * Point cut for annotation Log Execution Time.
+     * Point cut for annotation Log Argument.
      */
-    @Pointcut("@annotation(org.example.authorize.component.aspect.executiontime.LogExecutionTime)")
-    public void pointCutExecutionTime() {
+    @Pointcut("@annotation(org.example.authorize.component.aspect.trackingparam.LogArgument)")
+    public void pointCutArgumentAnnotation() {
     }
 
     /**

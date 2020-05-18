@@ -1,8 +1,8 @@
 package org.example.authorize.config;
 
 import lombok.RequiredArgsConstructor;
-import org.example.authorize.config.prop.ApplicationProperties;
 import org.example.authorize.component.version.VersionRequestMappingHandlerMapping;
+import org.example.authorize.config.prop.ApplicationProperties;
 import org.springframework.boot.autoconfigure.web.servlet.WebMvcRegistrations;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

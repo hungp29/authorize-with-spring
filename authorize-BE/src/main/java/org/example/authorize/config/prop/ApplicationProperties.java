@@ -22,6 +22,8 @@ public class ApplicationProperties {
 
     private String versionMediaType;
 
+    private boolean logTracking;
+
     /**
      * Super account properties.
      */

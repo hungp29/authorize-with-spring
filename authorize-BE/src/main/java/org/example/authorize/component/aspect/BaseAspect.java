@@ -1,0 +1,27 @@
+package org.example.authorize.component.aspect;
+
+import lombok.extern.slf4j.Slf4j;
+
+/**
+ * Base function for Aspect.
+ */
+@Slf4j
+public class BaseAspect {
+    private static final String PREFIX_TEMPLATE = "[%-14s] ";
+
+    protected static final String START = "START";
+    protected static final String STOP = "STOP";
+    protected static final String EXECUTION_TIME = "EXECUTION TIME";
+    protected static final String ARGUMENT = "ARGUMENT";
+
+    /**
+     * Log tracking method.
+     *
+     * @param flag    START, STOP, EXECUTION TIME
+     * @param message the message
+     * @return the value is formatted
+     */
+    protected void logWithPrefix(String flag, String message) {
+        log.info(String.format(PREFIX_TEMPLATE, flag) + message);
+    }
+}

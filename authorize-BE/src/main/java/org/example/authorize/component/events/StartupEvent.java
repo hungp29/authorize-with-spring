@@ -9,7 +9,6 @@ import org.example.authorize.app.permission.PermissionService;
 import org.example.authorize.app.policy.PolicyService;
 import org.example.authorize.app.principal.PrincipalService;
 import org.example.authorize.app.role.RoleService;
-import org.example.authorize.component.aspect.executiontime.LogExecutionTime;
 import org.example.authorize.config.prop.ApplicationProperties;
 import org.example.authorize.entity.Account;
 import org.example.authorize.entity.Policy;
@@ -43,7 +42,6 @@ public class StartupEvent {
      * Once the app is ready, it will check for the existence of an Super Admin account,
      * if it doesn't exist, create a new one.
      */
-    @LogExecutionTime
     @EventListener(ApplicationReadyEvent.class)
     public void onStartApp() {
         log.debug("Checking the existence of the super account");
@@ -87,7 +85,6 @@ public class StartupEvent {
      *
      * @return return policy full access
      */
-    @LogExecutionTime
     private Policy getPolicyFullAccess() {
         // Get all API need to permission to access
         List<PermissionDTO> permissionDTOs = permissionService.getPermissions();

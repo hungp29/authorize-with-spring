@@ -15,6 +15,7 @@ application:
     password: 123456!
   login-attempts-threshold: 5
   version-media-type: application/vnd.authorize.app
+  log-tracking: true
 
 # ===================================================================
 # Spring properties

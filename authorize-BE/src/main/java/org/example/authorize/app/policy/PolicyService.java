@@ -1,7 +1,6 @@
 package org.example.authorize.app.policy;
 
 import lombok.RequiredArgsConstructor;
-import org.example.authorize.component.aspect.executiontime.LogExecutionTime;
 import org.example.authorize.entity.Policy;
 import org.example.authorize.entity.Role;
 import org.example.authorize.exception.SaveEntityException;
@@ -31,7 +30,6 @@ public class PolicyService {
      * @param policy the new policy
      * @return return the policy is created successfully
      */
-    @LogExecutionTime
     @Transactional
     public Policy save(Policy policy) {
         if (null != policy) {
@@ -46,7 +44,6 @@ public class PolicyService {
      * @param id the id of policy
      * @return return the policy if it's exist
      */
-    @LogExecutionTime
     public Optional<Policy> findPolicyById(String id) {
         return policyRepository.findById(id);
     }
@@ -57,7 +54,6 @@ public class PolicyService {
      * @param name the name of policy
      * @return return the policy if it's exist
      */
-    @LogExecutionTime
     public Optional<Policy> findPolicyByName(String name) {
         return policyRepository.findByName(name);
     }
@@ -68,7 +64,6 @@ public class PolicyService {
      * @param name name of policy
      * @return return new policy is created
      */
-    @LogExecutionTime
     public Policy createPolicy(String name) {
         Policy policy = new Policy();
         policy.setName(name);
@@ -83,7 +78,6 @@ public class PolicyService {
      * @param readOnly set read only for policy or not
      * @return return new policy is created
      */
-    @LogExecutionTime
     public Policy createPolicy(String name, boolean readOnly) {
         Policy policy = createPolicy(name);
         policy.setReadOnly(readOnly);
@@ -96,7 +90,6 @@ public class PolicyService {
      * @param policy the policy
      * @param role   the role to attach
      */
-    @LogExecutionTime
     @Transactional
     public void attachRoleToPolicy(Policy policy, Role role) {
         if (null != policy && null != role) {

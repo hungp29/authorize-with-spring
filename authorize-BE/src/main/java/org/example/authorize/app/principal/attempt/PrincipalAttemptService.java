@@ -1,7 +1,6 @@
 package org.example.authorize.app.principal.attempt;
 
 import lombok.RequiredArgsConstructor;
-import org.example.authorize.component.aspect.executiontime.LogExecutionTime;
 import org.example.authorize.entity.Principal;
 import org.example.authorize.entity.PrincipalAttempt;
 import org.example.authorize.exception.SaveEntityException;
@@ -26,7 +25,6 @@ public class PrincipalAttemptService {
      * @param principal the principal object.
      * @return return PrincipalAttemp instance
      */
-    @LogExecutionTime
     public PrincipalAttempt createPrincipalAttempt(Principal principal) {
         if (null != principal && !StringUtils.isEmpty(principal.getId())) {
             PrincipalAttempt attempt = new PrincipalAttempt();
@@ -43,7 +41,6 @@ public class PrincipalAttemptService {
      * @param principalAttempt PrincipalAttempt instance need to increase count
      * @return return PrincipalAttempt after increase
      */
-    @LogExecutionTime
     @Transactional
     public PrincipalAttempt increaseAttempt(PrincipalAttempt principalAttempt) {
         if (null != principalAttempt) {
@@ -60,7 +57,6 @@ public class PrincipalAttemptService {
      * @param principalAttempt PrincipalAttempt instance need to reset count
      * @return return PrincipalAttempt after reset
      */
-    @LogExecutionTime
     @Transactional
     public PrincipalAttempt resetAttempt(PrincipalAttempt principalAttempt) {
         if (null != principalAttempt && principalAttempt.getAttemptCount() > 0) {
@@ -76,7 +72,6 @@ public class PrincipalAttemptService {
      * @param attempt attempt object
      * @return retrun true if save/update successfully
      */
-    @LogExecutionTime
     @Transactional
     public PrincipalAttempt save(PrincipalAttempt attempt) {
         if (null != attempt) {
