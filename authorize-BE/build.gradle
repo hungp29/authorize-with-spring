@@ -48,6 +48,7 @@ dependencies {
     implementation "org.springframework.boot:spring-boot-starter-security"
     implementation "org.springframework.boot:spring-boot-starter-data-redis"
     implementation "org.springframework.boot:spring-boot-starter-aop"
+    implementation "org.springframework.boot:spring-boot-starter-cache"
     annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
 
     // DB
@@ -67,7 +68,7 @@ dependencies {
 
     // Redis
     implementation "redis.clients:jedis:$jedisVersion"
-    
+
     // Generate QR
     implementation "com.google.zxing:javase:$zxingVersion"
     implementation "commons-codec:commons-codec:$commonCodecVersion"

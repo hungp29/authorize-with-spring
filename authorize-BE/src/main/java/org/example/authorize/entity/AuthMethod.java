@@ -15,7 +15,7 @@ import javax.validation.constraints.Size;
  */
 @Entity
 @Data
-public class AuthMethod extends Audit<String>  {
+public class AuthMethod extends Audit<String> {
 
     @Id
     @IdGenerator("AUM")
