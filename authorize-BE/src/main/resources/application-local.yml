@@ -41,11 +41,15 @@ spring:
       ddl-auto: validate
     show-sql: on
 
+  # Cache configuration
+  cache:
+    type: redis
+
   # Redis configuration
   redis:
     host: localhost
     port: 6379
-    password: 123456!
+#    password: 123456!
 
 
 # ===================================================================

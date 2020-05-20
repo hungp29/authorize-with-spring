@@ -41,6 +41,7 @@ public class VersionRequestMappingHandlerMapping extends RequestMappingHandlerMa
 
     /**
      * Set Accept Media Type.
+     *
      * @param acceptMediaType the media type
      */
     public void setAcceptMediaType(String acceptMediaType) {

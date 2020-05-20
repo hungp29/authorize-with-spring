@@ -1,9 +1,11 @@
 package org.example.authorize.app.test;
 
 import lombok.RequiredArgsConstructor;
+import org.example.authorize.app.policy.PolicyService;
 import org.example.authorize.component.aspect.trackingparam.LogArgument;
 import org.example.authorize.component.aspect.trackingparam.LogReturning;
 import org.example.authorize.component.version.APIVersion;
+import org.example.authorize.entity.Policy;
 import org.example.authorize.response.WResponseEntity;
 import org.example.authorize.security.permission.PermissionCondition;
 import org.example.authorize.security.permission.PermissionConditions;
@@ -24,6 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class TestController {
 
+    private final PolicyService policyService;
 
     @LogArgument
     @LogReturning
@@ -31,7 +34,9 @@ public class TestController {
             @PermissionCondition(condition = OwnedResourceCondition.class, resolver = TestResolver.class)
     })
     @GetMapping(URLConstants.M_TEST)
-    public WResponseEntity<String> test(@PathVariable int value) {
-        return WResponseEntity.success("This is test API " + value);
+    public WResponseEntity<String> test(@PathVariable String value) {
+        Policy policy = policyService.findPolicyByName(value).orElse(null);
+        String id = null != policy ? policy.getId() : "";
+        return WResponseEntity.success("Policy Id " + id);
     }
 }
