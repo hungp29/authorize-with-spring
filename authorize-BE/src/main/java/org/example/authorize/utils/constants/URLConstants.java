@@ -11,6 +11,9 @@ public class URLConstants {
     private URLConstants() {
     }
 
+    public static final String COMMON_CREATE = "";
+    public static final String COMMON_GET = "/{id}";
+
     public static final String C_AUTHENTICATION = "/api/authentications";
     public static final String M_AUTHENTICATION = "";
     public static final String M_REFRESH_TOKEN = "/refresh";
@@ -23,6 +26,8 @@ public class URLConstants {
 
     public static final String C_PERMISSION = "/api/permissions";
     public static final String M_GET_PERMISSION = "";
+
+    public static final String C_PRODUCT = "/api/products";
 
     public static final String C_TEST = "/api/test";
     public static final String M_TEST = "/{value}";

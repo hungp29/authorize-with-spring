@@ -7,6 +7,9 @@ import org.springframework.util.StringUtils;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -251,5 +254,108 @@ public class ObjectUtils {
             return mapper.convertValue(mapData, objectClass);
         }
         return null;
+    }
+
+    /**
+     * New instance object by class.
+     *
+     * @param clazz class name
+     * @param <T>   generic type
+     * @return
+     * @throws NoSuchMethodException     if a matching method is not found.
+     * @throws IllegalAccessException    if this {@code Constructor} object
+     *                                   is enforcing Java language access control and the underlying
+     *                                   constructor is inaccessible.
+     * @throws InvocationTargetException if the underlying constructor
+     *                                   throws an exception.
+     * @throws InstantiationException    if the class that declares the
+     *                                   underlying constructor represents an abstract class.
+     */
+    public static <T> T newInstanceFromClass(Class<T> clazz) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
+        Constructor<T> constructor = clazz.getDeclaredConstructor();
+        return constructor.newInstance();
+    }
+
+    /**
+     * Get all fields of object.
+     *
+     * @param objectClass class of object need to get all fields
+     * @return list fields
+     */
+    public static List<Field> getFields(Class<?> objectClass) {
+        List<Field> fields = new ArrayList<>();
+        if (null != objectClass) {
+            Class<?> checkingClass = objectClass;
+            do {
+                fields.addAll(Arrays.asList(checkingClass.getDeclaredFields()));
+                checkingClass = checkingClass.getSuperclass();
+            } while (null != checkingClass);
+        }
+        return fields;
+    }
+
+    /**
+     * Get {@code Field} of object.
+     *
+     * @param object    object contain Field
+     * @param fieldName field name
+     * @return {@code Field}
+     */
+    public static Field getField(Object object, String fieldName) {
+        if (null != object && !StringUtils.isEmpty(fieldName)) {
+            Class<?> checkingClass = object.getClass();
+            do {
+                try {
+                    return checkingClass.getDeclaredField(fieldName);
+                } catch (NoSuchFieldException e) {
+                    checkingClass = checkingClass.getSuperclass();
+                }
+            } while (null != checkingClass);
+        }
+        return null;
+    }
+
+    /**
+     * Get value from object.
+     *
+     * @param object    object contain value
+     * @param fieldName field name of object
+     * @return value of field of object
+     * @throws IllegalAccessException if this {@code Field} object
+     *                                is enforcing Java language access control and the underlying
+     *                                field is inaccessible.
+     */
+    public static Object getValueOfField(Object object, String fieldName) throws IllegalAccessException {
+        Object value = null;
+        Field field = ObjectUtils.getField(object, fieldName);
+        if (null != field) {
+            boolean accessible = field.isAccessible();
+            field.setAccessible(true);
+            // Set value for field of object
+            value = field.get(object);
+            field.setAccessible(accessible);
+        }
+        return value;
+    }
+
+    /**
+     * Set value for field of object.
+     *
+     * @param object    object to set value
+     * @param fieldName field name of object
+     * @param value     value to set
+     * @throws IllegalAccessException if this {@code Field} object
+     *                                is enforcing Java language access control and the underlying
+     *                                field is either inaccessible or final.
+     */
+    public static void setValueForField(Object object, String fieldName, Object value) throws IllegalAccessException {
+        Field field = ObjectUtils.getField(object, fieldName);
+        if (null != field && null != value) {
+            boolean accessible = field.isAccessible();
+            field.setAccessible(true);
+            // Set value for field of object
+            field.set(object, value);
+            field.setAccessible(accessible);
+        }
     }
 }

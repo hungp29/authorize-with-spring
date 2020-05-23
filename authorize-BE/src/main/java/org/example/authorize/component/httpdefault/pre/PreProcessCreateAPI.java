@@ -4,7 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
-import org.example.authorize.component.httpdefault.CreateRequestClassDTO;
+import org.example.authorize.component.httpdefault.dtoconfig.CreateRequestClassDTO;
 import org.example.authorize.component.httpdefault.DefaultHttpRestController;
 import org.example.authorize.utils.ObjectUtils;
 import org.springframework.stereotype.Component;

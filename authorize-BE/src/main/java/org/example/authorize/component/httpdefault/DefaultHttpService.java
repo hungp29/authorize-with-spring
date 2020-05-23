@@ -1,13 +1,19 @@
 package org.example.authorize.component.httpdefault;
 
 import lombok.extern.slf4j.Slf4j;
+import org.example.authorize.component.httpdefault.dtoconfig.CreateRequestClassDTO;
+import org.example.authorize.component.httpdefault.dtoconfig.CreateResponseClassDTO;
+import org.example.authorize.component.httpdefault.dtoconfig.GetResponseClassDTO;
 import org.example.authorize.entity.common.Audit;
+import org.example.authorize.exception.InvalidEntityException;
+import org.example.authorize.exception.EntityNotFoundException;
 import org.example.authorize.exception.SaveEntityException;
 import org.example.authorize.utils.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.Serializable;
+import java.util.Optional;
 
 /**
  * Default Service.
@@ -19,9 +25,62 @@ public class DefaultHttpService<T extends Audit<?>> {
 
     private DefaultHttpRepository<T> repository;
 
+    /**
+     * Create and save new entity.
+     *
+     * @param entityDTO DTO of entity
+     * @return response DTO of entity
+     */
     protected Object createAndSaveEntity(Object entityDTO) {
-        ObjectUtils.getGenericClass(this.getClass());
-        return null;
+        Class<T> entityClass = (Class<T>) ObjectUtils.getGenericClass(this.getClass());
+
+        // Validate configurations of entity
+        if (!ObjectUtils.hasAnnotation(entityClass, CreateRequestClassDTO.class)) {
+            throw new InvalidEntityException(entityClass.getSimpleName() + " don't have CreateRequestClassDTO configuration");
+        }
+        if (!ObjectUtils.hasAnnotation(entityClass, CreateResponseClassDTO.class)) {
+            throw new InvalidEntityException(entityClass.getSimpleName() + " don't have CreateResponseClassDTO configuration");
+        }
+
+        // Get class of DTO
+        Class<?> dtoRequestClass = ObjectUtils.getAnnotation(entityClass, CreateRequestClassDTO.class).value();
+        // Checking DTO object is have valid Class
+        if (!dtoRequestClass.isAssignableFrom(entityDTO.getClass())) {
+            throw new InvalidEntityException("Cannot cast " + entityDTO.getClass().getSimpleName() + " to " + entityClass.getSimpleName());
+        }
+
+        // Convert DTO to Entity
+        T entity = ConvertUtils.convertDTOToEntity(entityDTO, entityClass);
+
+        // Save entity
+        entity = save(entity);
+
+        // Convert entity to Response DTO
+        Class<?> dtoResponseClass = ObjectUtils.getAnnotation(entityClass, CreateResponseClassDTO.class).value();
+        return ConvertUtils.convertEntityToDTO(entity, dtoResponseClass);
+    }
+
+    /**
+     * Get entity by id.
+     *
+     * @param id   the id of entity
+     * @param <ID> generic of id
+     * @return response dto
+     */
+    protected <ID extends Serializable> Object getEntity(ID id) {
+        Class<T> entityClass = (Class<T>) ObjectUtils.getGenericClass(this.getClass());
+
+        // Validate configurations of entity
+        if (!ObjectUtils.hasAnnotation(entityClass, GetResponseClassDTO.class)) {
+            throw new InvalidEntityException(entityClass.getSimpleName() + " don't have GetResponseClassDTO configuration");
+        }
+
+        // Query entity from database
+        T entity = findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Cannot found data for entity " + entityClass.getSimpleName()));
+
+        Class<?> dtoResponseClass = ObjectUtils.getAnnotation(entityClass, GetResponseClassDTO.class).value();
+        return ConvertUtils.convertEntityToDTO(entity, dtoResponseClass);
     }
 
     /**
@@ -36,6 +95,18 @@ public class DefaultHttpService<T extends Audit<?>> {
             return repository.save(entity);
         }
         throw new SaveEntityException(ObjectUtils.getGenericClass(this.getClass()) + " is empty, cannot save it");
+    }
+
+    /**
+     * Find entity by Id.
+     *
+     * @param id   the id of entity
+     * @param <ID> Generic of Id
+     * @return entity if it's exist
+     */
+    @Transactional(readOnly = true)
+    protected <ID extends Serializable> Optional<T> findById(ID id) {
+        return repository.findById(id);
     }
 
     /**

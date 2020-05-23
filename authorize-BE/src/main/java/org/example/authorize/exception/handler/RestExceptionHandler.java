@@ -1,6 +1,7 @@
 package org.example.authorize.exception.handler;
 
 import lombok.extern.slf4j.Slf4j;
+import org.example.authorize.exception.EntityNotFoundException;
 import org.example.authorize.response.WResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.*;
@@ -29,7 +30,7 @@ public class RestExceptionHandler {
      * Handler Access Denied Exception.
      *
      * @param e access denied exception
-     * @return error response with code 403
+     * @return error response
      */
     @ExceptionHandler({AccessDeniedException.class})
     public WResponseEntity<String> handleAccessDeniedException(AccessDeniedException e) {
@@ -37,6 +38,12 @@ public class RestExceptionHandler {
         return WResponseEntity.error(ResponseCode.ACCESS_DENIED);
     }
 
+    /**
+     * Handler Bad Credential Exception.
+     *
+     * @param e Bad Credential Exception
+     * @return error response
+     */
     @ExceptionHandler({BadCredentialsException.class,
             InternalAuthenticationServiceException.class})
     public WResponseEntity<String> handleBadCredentialException(Exception e) {
@@ -90,6 +97,18 @@ public class RestExceptionHandler {
     public WResponseEntity<String> handle404(NoHandlerFoundException e) {
         log.error(e.getMessage(), e);
         return WResponseEntity.error(ResponseCode.NOT_FOUND, e.getMessage());
+    }
+
+    /**
+     * Handler Entity Not Found exception.
+     *
+     * @param e exception
+     * @return error response
+     */
+    @ExceptionHandler(EntityNotFoundException.class)
+    public WResponseEntity<String> handleNotFoundEntity(EntityNotFoundException e) {
+        log.error(e.getMessage(), e);
+        return WResponseEntity.error(ResponseCode.ENTITY_NOT_FOUND, e.getMessage());
     }
 
     /**

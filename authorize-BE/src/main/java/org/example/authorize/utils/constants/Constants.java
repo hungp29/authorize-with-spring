@@ -25,7 +25,12 @@ public class Constants {
 
     public static final String COMMA = ",";
 
+    public static final String DOT = ".";
+
     public static final String ZERO = "0";
 
     public static final String DATE_FM_FILE_NAME = "yyyyMMddHHmmss";
+
+    /* REGEX */
+    public static final String DOT_REGEX = "\\.";
 }

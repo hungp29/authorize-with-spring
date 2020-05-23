@@ -13,7 +13,8 @@ public enum ResponseCode {
     ACCOUNT_DISABLED("00102", "Account is disabled"),
     ACCOUNT_LOCKED("00103", "Account is locked"),
     CREDENTIALS_EXPIRED("00104", "Credentials have expired"),
-    NOT_FOUND("00404", "404 - %s");
+    NOT_FOUND("00404", "404 - %s"),
+    ENTITY_NOT_FOUND("00105", "Entity not found");
 
     private String code;
     private String message;

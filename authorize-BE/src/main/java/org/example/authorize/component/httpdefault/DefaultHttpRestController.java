@@ -3,6 +3,7 @@ package org.example.authorize.component.httpdefault;
 import lombok.extern.slf4j.Slf4j;
 import org.example.authorize.entity.common.Audit;
 import org.example.authorize.response.WResponseEntity;
+import org.example.authorize.utils.constants.URLConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -25,7 +26,7 @@ public class DefaultHttpRestController<T extends Audit<?>> {
      * @param createRequestDTO the data of entity
      * @return DTO of entity
      */
-    @PostMapping
+    @PostMapping(URLConstants.COMMON_CREATE)
     public WResponseEntity<Object> create(@RequestBody Object createRequestDTO) {
         return WResponseEntity.success(service.createAndSaveEntity(createRequestDTO));
     }
@@ -36,9 +37,9 @@ public class DefaultHttpRestController<T extends Audit<?>> {
      * @param id id of entity.
      * @return DTO of entity
      */
-    @GetMapping("/{id}")
-    public WResponseEntity<String> get(@PathVariable String id) {
-        return WResponseEntity.success(id + " ok");
+    @GetMapping(URLConstants.COMMON_GET)
+    public WResponseEntity<Object> get(@PathVariable String id) {
+        return WResponseEntity.success(service.getEntity(id));
     }
 
     /**
