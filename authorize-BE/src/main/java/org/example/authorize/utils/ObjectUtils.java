@@ -78,7 +78,12 @@ public class ObjectUtils {
      */
     public static Field getFieldHasAnnotation(Object object, Class<? extends Annotation> annotationClass) {
         if (null != object && null != annotationClass && annotationClass.isAnnotation()) {
-            Field[] fields = object.getClass().getDeclaredFields();
+            Field[] fields;
+            if (object instanceof Class) {
+                fields = ((Class<?>) object).getDeclaredFields();
+            } else {
+                fields = object.getClass().getDeclaredFields();
+            }
 
             for (Field field : fields) {
                 if (ObjectUtils.hasAnnotation(field, annotationClass)) {
@@ -87,6 +92,26 @@ public class ObjectUtils {
             }
         }
         return null;
+    }
+
+    /**
+     * Get Field from object, which have annotation specify.
+     *
+     * @param object          object
+     * @param annotationClass annotation class
+     * @param superClass      checking in super class if object don't have field
+     * @return return field if it exist, otherwise return false
+     */
+    public static Field getFieldHasAnnotation(Object object, Class<? extends Annotation> annotationClass, boolean superClass) {
+        Field field = null;
+        if (null != object) {
+            Class<?> classChecking = object.getClass();
+            do {
+                field = ObjectUtils.getFieldHasAnnotation(classChecking, annotationClass);
+                classChecking = superClass ? classChecking.getSuperclass() : null;
+            } while (null != classChecking && null == field);
+        }
+        return field;
     }
 
     /**

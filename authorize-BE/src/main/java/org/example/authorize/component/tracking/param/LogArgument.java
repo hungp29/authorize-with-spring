@@ -1,4 +1,4 @@
-package org.example.authorize.component.aspect.trackingparam;
+package org.example.authorize.component.tracking.param;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

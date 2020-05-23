@@ -1,8 +1,8 @@
 package org.example.authorize.app.test;
 
 import lombok.RequiredArgsConstructor;
-import org.example.authorize.component.aspect.trackingparam.LogArgument;
-import org.example.authorize.component.aspect.trackingparam.LogReturning;
+import org.example.authorize.component.tracking.param.LogArgument;
+import org.example.authorize.component.tracking.param.LogReturning;
 import org.example.authorize.component.version.APIVersion;
 import org.example.authorize.response.WResponseEntity;
 import org.example.authorize.security.permission.PermissionCondition;

@@ -10,7 +10,7 @@ import org.example.authorize.exception.SaveEntityException;
 import org.example.authorize.exception.UsernameAlreadyExistException;
 import org.example.authorize.utils.PasswordEncode;
 import org.example.authorize.utils.SecurityUtils;
-import org.example.authorize.utils.generator.id.Generator;
+import org.example.authorize.component.generator.id.Generator;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;

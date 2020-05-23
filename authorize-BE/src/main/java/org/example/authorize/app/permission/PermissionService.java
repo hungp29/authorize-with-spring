@@ -11,7 +11,7 @@ import org.example.authorize.security.rbac.ConditionPrototype;
 import org.example.authorize.utils.PermissionUtils;
 import org.example.authorize.utils.SecurityUtils;
 import org.example.authorize.utils.constants.Constants;
-import org.example.authorize.utils.generator.id.Generator;
+import org.example.authorize.component.generator.id.Generator;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;

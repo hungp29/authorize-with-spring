@@ -1,4 +1,4 @@
-package org.example.authorize.component.aspect;
+package org.example.authorize.component.tracking;
 
 import org.aspectj.lang.annotation.Pointcut;
 
@@ -10,14 +10,14 @@ public class JoinPointConfiguration {
     /**
      * Point cut for annotation Log Argument.
      */
-    @Pointcut("@annotation(org.example.authorize.component.aspect.trackingparam.LogArgument)")
+    @Pointcut("@annotation(org.example.authorize.component.tracking.param.LogArgument)")
     public void pointCutArgumentAnnotation() {
     }
 
     /**
      * Point cut for annotation Log Returning.
      */
-    @Pointcut("@annotation(org.example.authorize.component.aspect.trackingparam.LogReturning)")
+    @Pointcut("@annotation(org.example.authorize.component.tracking.param.LogReturning)")
     public void pointCutReturningAnnotation() {
     }
 

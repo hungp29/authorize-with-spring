@@ -1,4 +1,4 @@
-package org.example.authorize.utils.generator.id;
+package org.example.authorize.component.generator.id;
 
 import org.example.authorize.exception.GeneratorException;
 import org.example.authorize.utils.constants.Constants;

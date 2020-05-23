@@ -1,9 +1,9 @@
 package org.example.authorize.entity;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.example.authorize.entity.common.Audit;
-import org.example.authorize.entity.common.IdGenerator;
-import org.hibernate.annotations.GenericGenerator;
+import org.example.authorize.entity.common.IdPrefixValue;
 
 import javax.persistence.*;
 import javax.validation.constraints.Size;
@@ -14,17 +14,9 @@ import java.util.List;
  */
 @Entity
 @Data
+@EqualsAndHashCode(callSuper = true)
+@IdPrefixValue("POL")
 public class Policy extends Audit<String> {
-
-    @Id
-    @IdGenerator("POL")
-    @GeneratedValue(generator = "id_generator")
-    @GenericGenerator(
-            name = "id_generator",
-            strategy = "org.example.authorize.utils.generator.id.StringIdentifierGenerator"
-    )
-    @Size(max = 35)
-    private String id;
 
     @Size(max = 255)
     @Column(nullable = false)

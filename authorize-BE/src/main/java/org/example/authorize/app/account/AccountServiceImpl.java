@@ -17,7 +17,7 @@ import org.example.authorize.security.UserPrincipal;
 import org.example.authorize.security.authentoken.JWTAuthenticationToken;
 import org.example.authorize.security.authentoken.OTPAuthenticationToken;
 import org.example.authorize.utils.SecurityUtils;
-import org.example.authorize.utils.generator.id.Generator;
+import org.example.authorize.component.generator.id.Generator;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;

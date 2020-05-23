@@ -1,8 +1,9 @@
 package org.example.authorize.entity;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.example.authorize.entity.common.Audit;
-import org.example.authorize.entity.common.IdGenerator;
+import org.example.authorize.entity.common.IdPrefixValue;
 import org.example.authorize.enums.AuthType;
 import org.hibernate.annotations.GenericGenerator;
 
@@ -15,17 +16,9 @@ import javax.validation.constraints.Size;
  */
 @Entity
 @Data
+@EqualsAndHashCode(callSuper = true)
+@IdPrefixValue("AUM")
 public class AuthMethod extends Audit<String>  {
-
-    @Id
-    @IdGenerator("AUM")
-    @GeneratedValue(generator = "id_generator")
-    @GenericGenerator(
-            name = "id_generator",
-            strategy = "org.example.authorize.utils.generator.id.StringIdentifierGenerator"
-    )
-    @Size(max = 35)
-    private String id;
 
     @ManyToOne
     @JoinColumn(name = "principal_id", nullable = false)

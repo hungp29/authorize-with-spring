@@ -22,7 +22,7 @@
                 <Pattern>%d %-5level [%thread] %logger{0}: %msg%n</Pattern>
             </encoder>
         </appender>
-        <logger name="org.example.authorize.component.aspect.BaseAspect" level="${logging.level.root}">
+        <logger name="org.example.authorize.component.tracking.BaseAspect" level="${logging.level.root}">
             <appender-ref ref="LOG-TRACKING"/>
         </logger>
 

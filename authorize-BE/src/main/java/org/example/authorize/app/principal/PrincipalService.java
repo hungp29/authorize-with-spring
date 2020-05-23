@@ -5,7 +5,7 @@ import org.example.authorize.app.authmethod.AuthMethodService;
 import org.example.authorize.entity.AuthMethod;
 import org.example.authorize.entity.Principal;
 import org.example.authorize.exception.SaveEntityException;
-import org.example.authorize.utils.generator.id.Generator;
+import org.example.authorize.component.generator.id.Generator;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

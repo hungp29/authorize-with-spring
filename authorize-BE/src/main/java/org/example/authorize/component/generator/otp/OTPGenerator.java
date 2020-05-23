@@ -1,4 +1,4 @@
-package org.example.authorize.utils.generator.otp;
+package org.example.authorize.component.generator.otp;
 
 /**
  * This class contains methods that are used to calculate the One-Time Password (OTP).

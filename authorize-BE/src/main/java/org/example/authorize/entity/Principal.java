@@ -1,8 +1,9 @@
 package org.example.authorize.entity;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.example.authorize.entity.common.Audit;
-import org.example.authorize.entity.common.IdGenerator;
+import org.example.authorize.entity.common.IdPrefixValue;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -16,17 +17,9 @@ import java.util.List;
  */
 @Entity
 @Data
+@EqualsAndHashCode(callSuper = true)
+@IdPrefixValue("PRI")
 public class Principal extends Audit<String> {
-
-    @Id
-    @IdGenerator("PRI")
-    @GeneratedValue(generator = "id_generator")
-    @GenericGenerator(
-            name = "id_generator",
-            strategy = "org.example.authorize.utils.generator.id.StringIdentifierGenerator"
-    )
-    @Size(max = 35)
-    private String id;
 
     @NotNull
     @Column(nullable = false)

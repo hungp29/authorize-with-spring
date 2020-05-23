@@ -1,4 +1,4 @@
-package org.example.authorize.utils.generator.otp;
+package org.example.authorize.component.generator.otp;
 
 import lombok.RequiredArgsConstructor;
 import org.example.authorize.config.prop.OTPProperties;

@@ -1,8 +1,9 @@
 package org.example.authorize.entity;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.example.authorize.entity.common.Audit;
-import org.example.authorize.entity.common.IdGenerator;
+import org.example.authorize.entity.common.IdPrefixValue;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -15,17 +16,9 @@ import java.util.List;
  */
 @Entity
 @Data
+@EqualsAndHashCode(callSuper = true)
+@IdPrefixValue("AMD")
 public class AuthMethodData extends Audit<String> {
-
-    @Id
-    @IdGenerator("AMD")
-    @GeneratedValue(generator = "id_generator")
-    @GenericGenerator(
-            name = "id_generator",
-            strategy = "org.example.authorize.utils.generator.id.StringIdentifierGenerator"
-    )
-    @Size(max = 35)
-    private String id;
 
     @Column(name = "auth_data_1", columnDefinition = "text")
     private String authData1;

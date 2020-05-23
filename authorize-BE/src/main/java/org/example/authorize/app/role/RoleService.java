@@ -3,7 +3,7 @@ package org.example.authorize.app.role;
 import lombok.RequiredArgsConstructor;
 import org.example.authorize.entity.Role;
 import org.example.authorize.exception.SaveEntityException;
-import org.example.authorize.utils.generator.id.Generator;
+import org.example.authorize.component.generator.id.Generator;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

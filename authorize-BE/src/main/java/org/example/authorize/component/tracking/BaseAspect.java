@@ -1,4 +1,4 @@
-package org.example.authorize.component.aspect;
+package org.example.authorize.component.tracking;
 
 import lombok.extern.slf4j.Slf4j;
 

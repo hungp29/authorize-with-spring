@@ -1,4 +1,4 @@
-package org.example.authorize.component.aspect.tracking;
+package org.example.authorize.component.tracking.method;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -8,7 +8,7 @@ import org.aspectj.lang.annotation.After;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
-import org.example.authorize.component.aspect.BaseAspect;
+import org.example.authorize.component.tracking.BaseAspect;
 import org.example.authorize.config.prop.ApplicationProperties;
 import org.springframework.stereotype.Component;
 
@@ -19,7 +19,7 @@ import org.springframework.stereotype.Component;
 @Aspect
 @Component
 @RequiredArgsConstructor
-public class LogTracking extends BaseAspect {
+public class MethodTrackingAspect extends BaseAspect {
 
     private final ApplicationProperties appProps;
 
@@ -28,7 +28,7 @@ public class LogTracking extends BaseAspect {
      *
      * @param joinPoint point cut
      */
-    @Before("org.example.authorize.component.aspect.JoinPointConfiguration.pointCutPackagesNeedLog()")
+    @Before("org.example.authorize.component.tracking.JoinPointConfiguration.pointCutPackagesNeedLog()")
     public void before(JoinPoint joinPoint) {
         if (appProps.isLogTracking()) {
             logWithPrefix(START, joinPoint.getSignature().toShortString());
@@ -40,7 +40,7 @@ public class LogTracking extends BaseAspect {
      *
      * @param joinPoint point cut
      */
-    @After("org.example.authorize.component.aspect.JoinPointConfiguration.pointCutPackagesNeedLog()")
+    @After("org.example.authorize.component.tracking.JoinPointConfiguration.pointCutPackagesNeedLog()")
     public void after(JoinPoint joinPoint) {
         if (appProps.isLogTracking()) {
             logWithPrefix(STOP, joinPoint.getSignature().toShortString());
@@ -54,7 +54,7 @@ public class LogTracking extends BaseAspect {
      * @return the result of proceeding
      * @throws Throwable if the invoked proceed throws anything
      */
-    @Around("org.example.authorize.component.aspect.JoinPointConfiguration.pointCutPackagesNeedLog()")
+    @Around("org.example.authorize.component.tracking.JoinPointConfiguration.pointCutPackagesNeedLog()")
     public Object measureTime(ProceedingJoinPoint joinPoint) throws Throwable {
         Object proceed;
         if (appProps.isLogTracking()) {

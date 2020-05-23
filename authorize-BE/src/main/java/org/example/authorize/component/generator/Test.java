@@ -1,4 +1,4 @@
-package org.example.authorize.utils.generator;
+package org.example.authorize.component.generator;
 
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.MultiFormatWriter;

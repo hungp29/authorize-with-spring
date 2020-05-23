@@ -1,4 +1,4 @@
-package org.example.authorize.utils.generator.otp;
+package org.example.authorize.component.generator.otp;
 
 import org.example.authorize.exception.AlgorithmException;
 import org.example.authorize.exception.OTPException;

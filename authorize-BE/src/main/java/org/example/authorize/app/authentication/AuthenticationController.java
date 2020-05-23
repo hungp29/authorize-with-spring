@@ -2,7 +2,7 @@ package org.example.authorize.app.authentication;
 
 import lombok.RequiredArgsConstructor;
 import org.example.authorize.app.authentication.req.AuthReq;
-import org.example.authorize.component.aspect.trackingparam.LogArgument;
+import org.example.authorize.component.tracking.param.LogArgument;
 import org.example.authorize.component.version.APIVersion;
 import org.example.authorize.response.WResponseEntity;
 import org.example.authorize.security.jwt.AccessToken;
