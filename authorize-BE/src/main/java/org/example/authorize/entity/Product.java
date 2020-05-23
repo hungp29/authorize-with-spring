@@ -6,12 +6,9 @@ import org.example.authorize.app.product.dto.CreateProductRequestDTO;
 import org.example.authorize.component.httpdefault.CreateRequestClassDTO;
 import org.example.authorize.entity.common.Audit;
 import org.example.authorize.entity.common.IdPrefixValue;
-import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
 import javax.validation.constraints.Size;
 
 /**

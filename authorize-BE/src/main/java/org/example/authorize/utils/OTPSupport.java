@@ -2,11 +2,11 @@ package org.example.authorize.utils;
 
 import lombok.RequiredArgsConstructor;
 import org.example.authorize.app.authmethod.AuthMethodService;
+import org.example.authorize.component.generator.otp.OTPGenerator;
 import org.example.authorize.config.prop.OTPProperties;
 import org.example.authorize.entity.AuthMethod;
 import org.example.authorize.enums.AuthType;
 import org.example.authorize.exception.AuthMethodException;
-import org.example.authorize.component.generator.otp.OTPGenerator;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 

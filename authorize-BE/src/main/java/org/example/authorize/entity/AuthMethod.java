@@ -5,11 +5,9 @@ import lombok.EqualsAndHashCode;
 import org.example.authorize.entity.common.Audit;
 import org.example.authorize.entity.common.IdPrefixValue;
 import org.example.authorize.enums.AuthType;
-import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 
 /**
  * Auth method entity.
@@ -18,7 +16,7 @@ import javax.validation.constraints.Size;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @IdPrefixValue("AUM")
-public class AuthMethod extends Audit<String>  {
+public class AuthMethod extends Audit<String> {
 
     @ManyToOne
     @JoinColumn(name = "principal_id", nullable = false)

@@ -1,16 +1,20 @@
 package org.example.authorize.utils;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.StringUtils;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.*;
+import java.util.Map;
 
 /**
  * Object Utils.
  */
 @Slf4j
 public class ObjectUtils {
+
 
     /**
      * Prevent new instance.
@@ -230,5 +234,22 @@ public class ObjectUtils {
      */
     public static boolean hasSuperClass(Object object, Class<?> superClass) {
         return null != ObjectUtils.getSuperClass(object, superClass);
+    }
+
+    /**
+     * Convert map data to object.
+     *
+     * @param mapData     map data
+     * @param objectClass object class
+     * @return new instance of object
+     */
+    public static Object convertMapToObject(Map<String, ?> mapData, Class<?> objectClass) {
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+
+        if (null != mapData && null != objectClass) {
+            return mapper.convertValue(mapData, objectClass);
+        }
+        return null;
     }
 }

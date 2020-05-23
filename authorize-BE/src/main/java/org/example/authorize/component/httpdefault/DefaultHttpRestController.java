@@ -1,6 +1,5 @@
 package org.example.authorize.component.httpdefault;
 
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.authorize.entity.common.Audit;
 import org.example.authorize.response.WResponseEntity;
@@ -9,8 +8,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-
-import java.util.LinkedHashMap;
 
 /**
  * Default Rest Controller.
@@ -25,12 +22,12 @@ public class DefaultHttpRestController<T extends Audit<?>> {
     /**
      * Create new entity.
      *
-     * @param entity the data of entity
+     * @param createRequestDTO the data of entity
      * @return DTO of entity
      */
     @PostMapping
-    public WResponseEntity<Object> create(@RequestBody LinkedHashMap<String, ?> entity) {
-        return WResponseEntity.success(service.createAndSaveEntity(entity));
+    public WResponseEntity<Object> create(@RequestBody Object createRequestDTO) {
+        return WResponseEntity.success(service.createAndSaveEntity(createRequestDTO));
     }
 
     /**

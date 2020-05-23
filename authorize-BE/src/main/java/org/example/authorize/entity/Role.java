@@ -4,9 +4,10 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.example.authorize.entity.common.Audit;
 import org.example.authorize.entity.common.IdPrefixValue;
-import org.hibernate.annotations.GenericGenerator;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.ManyToMany;
 import javax.validation.constraints.Size;
 import java.util.List;
 

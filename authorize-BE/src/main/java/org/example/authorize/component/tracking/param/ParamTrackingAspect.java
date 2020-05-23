@@ -30,14 +30,14 @@ public class ParamTrackingAspect extends BaseAspect {
             for (Object arg : args) {
                 logWithPrefix(ARGUMENT, arg.toString());
             }
-            logWithPrefix(ARGUMENT, ">>> END " + (args.length > 1 ? "List Arguments" : "Argument") );
+            logWithPrefix(ARGUMENT, ">>> END " + (args.length > 1 ? "List Arguments" : "Argument"));
         }
     }
 
     /**
      * Log return value.
      *
-     * @param retVal    return value
+     * @param retVal return value
      */
     @AfterReturning(value = "org.example.authorize.component.tracking.JoinPointConfiguration.pointCutReturningAnnotation()", returning = "retVal")
     public void logReturning(Object retVal) {

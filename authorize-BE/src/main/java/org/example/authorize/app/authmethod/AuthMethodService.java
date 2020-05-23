@@ -2,6 +2,7 @@ package org.example.authorize.app.authmethod;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.example.authorize.component.generator.id.Generator;
 import org.example.authorize.config.prop.OTPProperties;
 import org.example.authorize.entity.AuthMethod;
 import org.example.authorize.entity.AuthMethodData;
@@ -10,7 +11,6 @@ import org.example.authorize.exception.SaveEntityException;
 import org.example.authorize.exception.UsernameAlreadyExistException;
 import org.example.authorize.utils.PasswordEncode;
 import org.example.authorize.utils.SecurityUtils;
-import org.example.authorize.component.generator.id.Generator;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;

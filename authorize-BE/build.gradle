@@ -67,7 +67,7 @@ dependencies {
 
     // Redis
     implementation "redis.clients:jedis:$jedisVersion"
-    
+
     // Generate QR
     implementation "com.google.zxing:javase:$zxingVersion"
     implementation "commons-codec:commons-codec:$commonCodecVersion"
