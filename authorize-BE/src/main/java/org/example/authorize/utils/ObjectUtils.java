@@ -4,9 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.StringUtils;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
+import java.lang.reflect.*;
 
 /**
  * Object Utils.
@@ -174,5 +172,63 @@ public class ObjectUtils {
             }
         }
         return null;
+    }
+
+    /**
+     * Get generic class.
+     *
+     * @param clazz class contain generic
+     * @param index index of generic
+     * @return Class of generic, if cannot found then return null
+     */
+    public static Class<?> getGenericClass(Class<?> clazz, int index) {
+        if (null != clazz) {
+            Type[] types = ((ParameterizedType) clazz.getGenericSuperclass()).getActualTypeArguments();
+            if (null != types && types.length > 0 && index < types.length) {
+                return (Class<?>) types[index];
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Get first generic class.
+     *
+     * @param clazz clazz contain generic
+     * @return Class of generic, if cannot found then return null
+     */
+    public static Class<?> getGenericClass(Class<?> clazz) {
+        return ObjectUtils.getGenericClass(clazz, 0);
+    }
+
+    /**
+     * Get super class of object.
+     *
+     * @param object     object to check and get super class
+     * @param superClass super class
+     * @return super class if it's exist
+     */
+    public static Class<?> getSuperClass(Object object, Class<?> superClass) {
+        if (null != object && null != superClass) {
+            Class<?> checkingClass = object.getClass();
+            do {
+                checkingClass = checkingClass.getSuperclass();
+                if (superClass.equals(checkingClass)) {
+                    return checkingClass;
+                }
+            } while (null != checkingClass);
+        }
+        return null;
+    }
+
+    /**
+     * Checking object has super class.
+     *
+     * @param object     object need to checking
+     * @param superClass super class
+     * @return true if object have super class, otherwise return false
+     */
+    public static boolean hasSuperClass(Object object, Class<?> superClass) {
+        return null != ObjectUtils.getSuperClass(object, superClass);
     }
 }
