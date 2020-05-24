@@ -6,11 +6,11 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Annotation defined Get Response DTO of entity.
+ * Annotation defined Update Request DTO of entity.
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
-public @interface GetResponseClassDTO {
+public @interface UpdateRequestClassDTO {
 
     Class<?> value();
 }

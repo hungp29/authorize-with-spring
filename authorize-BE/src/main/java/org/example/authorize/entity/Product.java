@@ -5,9 +5,7 @@ import lombok.EqualsAndHashCode;
 import org.example.authorize.app.common.dto.CreateResponseDTO;
 import org.example.authorize.app.product.dto.CreateProductRequestDTO;
 import org.example.authorize.app.product.dto.ProductResponseDTO;
-import org.example.authorize.component.httpdefault.dtoconfig.CreateRequestClassDTO;
-import org.example.authorize.component.httpdefault.dtoconfig.CreateResponseClassDTO;
-import org.example.authorize.component.httpdefault.dtoconfig.GetResponseClassDTO;
+import org.example.authorize.component.httpdefault.dtoconfig.*;
 import org.example.authorize.entity.common.Audit;
 import org.example.authorize.entity.common.IdPrefixValue;
 
@@ -24,7 +22,9 @@ import javax.validation.constraints.Size;
 @IdPrefixValue("PRO")
 @CreateRequestClassDTO(CreateProductRequestDTO.class)
 @CreateResponseClassDTO(CreateResponseDTO.class)
-@GetResponseClassDTO(ProductResponseDTO.class)
+@ReadResponseClassDTO(ProductResponseDTO.class)
+@UpdateRequestClassDTO(CreateProductRequestDTO.class)
+@UpdateResponseClassDTO(CreateResponseDTO.class)
 public class Product extends Audit<String> {
 
     @Column

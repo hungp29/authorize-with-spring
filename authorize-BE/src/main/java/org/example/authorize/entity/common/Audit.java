@@ -2,6 +2,8 @@ package org.example.authorize.entity.common;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.example.authorize.app.product.dto.CreateProductRequestDTO;
+import org.example.authorize.component.httpdefault.IgnoreMapping;
 import org.hibernate.annotations.GenericGenerator;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
@@ -34,17 +36,21 @@ public abstract class Audit<T extends Serializable> implements Serializable {
 
     @Column
     @CreatedBy
+    @IgnoreMapping(CreateProductRequestDTO.class)
     private T createBy;
 
     @Column
     @CreatedDate
+    @IgnoreMapping(CreateProductRequestDTO.class)
     private LocalDateTime createAt;
 
     @Column
     @LastModifiedBy
+    @IgnoreMapping(CreateProductRequestDTO.class)
     private T updateBy;
 
     @Column
     @LastModifiedDate
+    @IgnoreMapping(CreateProductRequestDTO.class)
     private LocalDateTime updateAt;
 }

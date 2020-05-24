@@ -1,11 +1,11 @@
-package org.example.authorize.component.httpdefault.pre;
+package org.example.authorize.component.httpdefault.preprocess;
 
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
-import org.example.authorize.component.httpdefault.dtoconfig.CreateRequestClassDTO;
 import org.example.authorize.component.httpdefault.DefaultHttpRestController;
+import org.example.authorize.component.httpdefault.dtoconfig.UpdateRequestClassDTO;
 import org.example.authorize.utils.ObjectUtils;
 import org.springframework.stereotype.Component;
 
@@ -18,7 +18,7 @@ import java.util.Map;
 @Slf4j
 @Aspect
 @Component
-public class PreProcessCreateAPI {
+public class PreProcessUpdateAPI {
 
     private static final Class<?>[] SUPPORT_CLASS = {Map.class};
 
@@ -30,14 +30,14 @@ public class PreProcessCreateAPI {
      * @return response DTO of entity
      * @throws Throwable
      */
-    @Around("execution(* org.example.authorize.component.httpdefault.DefaultHttpRestController.create(..)) && args(arg)")
-    public Object proceedCreateMethod(ProceedingJoinPoint joinPoint, Object arg) throws Throwable {
+    @Around("execution(* org.example.authorize.component.httpdefault.DefaultHttpRestController.update(..)) && args(id, entity)")
+    public Object proceedCreateMethod(ProceedingJoinPoint joinPoint, Object id, Object entity) throws Throwable {
         Object proceed;
-        if (isSupport(arg)) {
-            Class<?> createRequestDTOClass = getClassForCreateRequestDTO(joinPoint);
+        if (isSupport(entity)) {
+            Class<?> createRequestDTOClass = getClassForUpdateRequestDTO(joinPoint);
             // Convert to create request DTO
-            Object createRequest = convertToDTO(arg, createRequestDTOClass);
-            proceed = joinPoint.proceed(new Object[]{createRequest});
+            Object createRequest = convertToDTO(entity, createRequestDTOClass);
+            proceed = joinPoint.proceed(new Object[]{id, createRequest});
         } else {
 
             proceed = joinPoint.proceed();
@@ -66,13 +66,13 @@ public class PreProcessCreateAPI {
      * @param joinPoint join point
      * @return class of create request DTO
      */
-    private Class<?> getClassForCreateRequestDTO(ProceedingJoinPoint joinPoint) {
+    private Class<?> getClassForUpdateRequestDTO(ProceedingJoinPoint joinPoint) {
         if (ObjectUtils.hasSuperClass(joinPoint.getTarget(), DefaultHttpRestController.class)) {
             Class<?> controllerClass = joinPoint.getTarget().getClass();
             Class<?> entityClass = ObjectUtils.getGenericClass(controllerClass);
 
-            if (ObjectUtils.hasAnnotation(entityClass, CreateRequestClassDTO.class)) {
-                return ObjectUtils.getAnnotation(entityClass, CreateRequestClassDTO.class).value();
+            if (ObjectUtils.hasAnnotation(entityClass, UpdateRequestClassDTO.class)) {
+                return ObjectUtils.getAnnotation(entityClass, UpdateRequestClassDTO.class).value();
             }
         }
         return null;

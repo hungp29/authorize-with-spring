@@ -13,6 +13,8 @@ public class URLConstants {
 
     public static final String COMMON_CREATE = "";
     public static final String COMMON_GET = "/{id}";
+    public static final String COMMON_UPDATE = "/{id}";
+    public static final String COMMON_DELETE = "/{id}";
 
     public static final String C_AUTHENTICATION = "/api/authentications";
     public static final String M_AUTHENTICATION = "";

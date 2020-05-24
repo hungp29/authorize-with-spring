@@ -36,9 +36,16 @@ public class JoinPointConfiguration {
     }
 
     /**
+     * Point cut for package Generic Conroller.
+     */
+    @Pointcut("execution(* org.example.authorize.component.httpdefault..*.*(..))")
+    public void pointCutPackageHttpDefault() {
+    }
+
+    /**
      * Point cut for all package need to log.
      */
-    @Pointcut("pointCutPackageApp() || pointCutPackageEvent()")
+    @Pointcut("pointCutPackageApp() || pointCutPackageEvent() || pointCutPackageHttpDefault()")
     public void pointCutPackagesNeedLog() {
     }
 }

@@ -1,12 +1,10 @@
 package org.example.authorize.component.httpdefault;
 
 import lombok.extern.slf4j.Slf4j;
-import org.example.authorize.component.httpdefault.dtoconfig.CreateRequestClassDTO;
-import org.example.authorize.component.httpdefault.dtoconfig.CreateResponseClassDTO;
-import org.example.authorize.component.httpdefault.dtoconfig.GetResponseClassDTO;
+import org.example.authorize.component.httpdefault.dtoconfig.*;
 import org.example.authorize.entity.common.Audit;
-import org.example.authorize.exception.InvalidEntityException;
 import org.example.authorize.exception.EntityNotFoundException;
+import org.example.authorize.exception.InvalidEntityException;
 import org.example.authorize.exception.SaveEntityException;
 import org.example.authorize.utils.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +30,7 @@ public class DefaultHttpService<T extends Audit<?>> {
      * @return response DTO of entity
      */
     protected Object createAndSaveEntity(Object entityDTO) {
+        @SuppressWarnings("unchecked")
         Class<T> entityClass = (Class<T>) ObjectUtils.getGenericClass(this.getClass());
 
         // Validate configurations of entity
@@ -68,10 +67,11 @@ public class DefaultHttpService<T extends Audit<?>> {
      * @return response dto
      */
     protected <ID extends Serializable> Object getEntity(ID id) {
+        @SuppressWarnings("unchecked")
         Class<T> entityClass = (Class<T>) ObjectUtils.getGenericClass(this.getClass());
 
         // Validate configurations of entity
-        if (!ObjectUtils.hasAnnotation(entityClass, GetResponseClassDTO.class)) {
+        if (!ObjectUtils.hasAnnotation(entityClass, ReadResponseClassDTO.class)) {
             throw new InvalidEntityException(entityClass.getSimpleName() + " don't have GetResponseClassDTO configuration");
         }
 
@@ -79,8 +79,65 @@ public class DefaultHttpService<T extends Audit<?>> {
         T entity = findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Cannot found data for entity " + entityClass.getSimpleName()));
 
-        Class<?> dtoResponseClass = ObjectUtils.getAnnotation(entityClass, GetResponseClassDTO.class).value();
+        Class<?> dtoResponseClass = ObjectUtils.getAnnotation(entityClass, ReadResponseClassDTO.class).value();
         return ConvertUtils.convertEntityToDTO(entity, dtoResponseClass);
+    }
+
+    /**
+     * Update entity.
+     *
+     * @param id        of entity
+     * @param entityDTO entity DTO
+     * @param <ID>      generic of Id
+     * @return updated entity response DTO
+     */
+    protected <ID extends Serializable> Object updateEntity(ID id, Object entityDTO) {
+        @SuppressWarnings("unchecked")
+        Class<T> entityClass = (Class<T>) ObjectUtils.getGenericClass(this.getClass());
+
+        // Validate configurations of entity
+        if (!ObjectUtils.hasAnnotation(entityClass, UpdateRequestClassDTO.class)) {
+            throw new InvalidEntityException(entityClass.getSimpleName() + " don't have UpdateRequestClassDTO configuration");
+        }
+        if (!ObjectUtils.hasAnnotation(entityClass, UpdateResponseClassDTO.class)) {
+            throw new InvalidEntityException(entityClass.getSimpleName() + " don't have UpdateResponseClassDTO configuration");
+        }
+
+        // Get class of DTO
+        Class<?> dtoRequestClass = ObjectUtils.getAnnotation(entityClass, UpdateRequestClassDTO.class).value();
+        // Checking DTO object is have valid Class
+        if (!dtoRequestClass.isAssignableFrom(entityDTO.getClass())) {
+            throw new InvalidEntityException("Cannot cast " + entityDTO.getClass().getSimpleName() + " to " + entityClass.getSimpleName());
+        }
+
+        // Find entity by id.
+        T entity = findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Cannot found data for entity " + entityClass.getSimpleName()));
+
+        // Copy value from DTO to Entity
+        ConvertUtils.copyValueFromDTOToEntity(entityDTO, entity);
+
+        // Update entity
+        entity = save(entity);
+
+        // Convert entity to Response DTO
+        Class<?> dtoResponseClass = ObjectUtils.getAnnotation(entityClass, UpdateResponseClassDTO.class).value();
+        return ConvertUtils.convertEntityToDTO(entity, dtoResponseClass);
+    }
+
+    /**
+     * Delete entity.
+     *
+     * @param id   id of entity
+     * @param <ID> generic of Id
+     * @return true if entity is deleted successfully
+     */
+    protected <ID extends Serializable> boolean deleteEntity(ID id) {
+        if (null != id) {
+            deleteById(id);
+            return true;
+        }
+        return false;
     }
 
     /**

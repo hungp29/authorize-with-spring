@@ -1,7 +1,7 @@
 package org.example.authorize.component.httpdefault;
 
 import org.example.authorize.component.httpdefault.fieldconverter.FieldConverter;
-import org.example.authorize.exception.ConvertException;
+import org.example.authorize.exception.MappingFieldException;
 import org.example.authorize.utils.ObjectUtils;
 import org.example.authorize.utils.constants.Constants;
 import org.springframework.util.CollectionUtils;
@@ -36,27 +36,30 @@ public class ConvertUtils {
 
             // Mapping data from Entity to DTO
             for (Field dtoField : dtoFields) {
-                Field entityField = findFieldByMapFieldFrom(entityFields, dtoField.getName());
-                MapField mapField = ObjectUtils.getAnnotation(entityField, MapField.class);
+                IgnoreMapping ignoreMapping = ObjectUtils.getAnnotation(dtoField, IgnoreMapping.class);
+                if (!checkingIgnoreMapping(ignoreMapping, entity.getClass())) {
+                    Field entityField = findFieldByMapFieldFrom(entityFields, dtoField.getName());
+                    MapField mapField = ObjectUtils.getAnnotation(entityField, MapField.class);
 
-                Object value;
-                if (null != mapField) {
-                    String entityFieldPath = mapField.mapTo();
-                    // If don't have any mapTo configuration, using entity field name instead
-                    if (StringUtils.isEmpty(entityFieldPath)) {
-                        entityFieldPath = entityField.getName();
+                    Object value;
+                    if (null != mapField) {
+                        String entityFieldPath = mapField.mapTo();
+                        // If don't have any mapTo configuration, using entity field name instead
+                        if (StringUtils.isEmpty(entityFieldPath)) {
+                            entityFieldPath = entityField.getName();
+                        }
+                        // Get value from field of entiy
+                        Class<?> converterClass = mapField.converter();
+                        FieldConverter converter = (FieldConverter) ObjectUtils.newInstanceFromClass(converterClass);
+                        value = converter.convertFieldEntityToDTO(getValueOfField(entity, entityFieldPath));
+                    } else {
+                        value = getValueOfField(entity, dtoField.getName());
                     }
-                    // Get value from field of entiy
-                    Class<?> converterClass = mapField.converter();
-                    FieldConverter converter = (FieldConverter) ObjectUtils.newInstanceFromClass(converterClass);
-                    value = converter.convertFieldEntityToDTO(getValueOfField(entity, entityFieldPath));
-                } else {
-                    value = getValueOfField(entity, dtoField.getName());
+                    setValueForField(dto, dtoField.getName(), value);
                 }
-                setValueForField(dto, dtoField.getName(), value);
             }
         } catch (InstantiationException | InvocationTargetException | NoSuchMethodException | IllegalAccessException e) {
-            throw new ConvertException("Error occurs while convert Entity to DTO", e);
+            throw new MappingFieldException("Error occurs while convert Entity to DTO", e);
         }
         return dto;
     }
@@ -97,39 +100,42 @@ public class ConvertUtils {
 
             // Mapping data from DTO to Entity
             for (Field entityField : entityFields) {
-                MapField mapField = ObjectUtils.getAnnotation(entityField, MapField.class);
-                // If field have configuration annotation MapField
-                if (null != mapField) {
-                    String dtoFieldName = mapField.from();
-                    String entityFieldPath = mapField.mapTo();
-                    // If don't have any mapTo configuration, using entity field name instead
-                    if (StringUtils.isEmpty(entityFieldPath)) {
-                        entityFieldPath = entityField.getName();
+                IgnoreMapping ignoreMapping = ObjectUtils.getAnnotation(entityField, IgnoreMapping.class);
+                if (!checkingIgnoreMapping(ignoreMapping, dto.getClass())) {
+                    MapField mapField = ObjectUtils.getAnnotation(entityField, MapField.class);
+                    // If field have configuration annotation MapField
+                    if (null != mapField) {
+                        String dtoFieldName = mapField.from();
+                        String entityFieldPath = mapField.mapTo();
+                        // If don't have any mapTo configuration, using entity field name instead
+                        if (StringUtils.isEmpty(entityFieldPath)) {
+                            entityFieldPath = entityField.getName();
+                        }
+
+                        // Get value of DTO
+                        Object dtoFieldValue = getValueOfField(dto, dtoFieldName);
+
+                        // Check and get data for special field
+                        if (!SpecialValue.NONE.equals(mapField.specialFrom())) {
+                            dtoFieldValue = SpecialValueImpl.getSpecialValue(mapField.specialFrom());
+                        }
+
+                        // Convert value of field from DTO to Entity
+                        Class<?> converterClass = mapField.converter();
+                        FieldConverter converter = (FieldConverter) ObjectUtils.newInstanceFromClass(converterClass);
+                        dtoFieldValue = converter.convertFieldDTOToEntity(dtoFieldValue);
+
+                        // Set value to entity
+                        setValueForField(entity, entityFieldPath, dtoFieldValue);
+                    } else {
+                        // In case don't have any configuration MapField, set value for entity field by the field name same with DTO
+                        Object dtoFieldValue = getValueOfField(dto, entityField.getName());
+                        ObjectUtils.setValueForField(entity, entityField.getName(), dtoFieldValue);
                     }
-
-                    // Get value of DTO
-                    Object dtoFieldValue = getValueOfField(dto, dtoFieldName);
-
-                    // Check and get data for special field
-                    if (!SpecialValue.NONE.equals(mapField.specialFrom())) {
-                        dtoFieldValue = SpecialValueImpl.getSpecialValue(mapField.specialFrom());
-                    }
-
-                    // Convert value of field from DTO to Entity
-                    Class<?> converterClass = mapField.converter();
-                    FieldConverter converter = (FieldConverter) ObjectUtils.newInstanceFromClass(converterClass);
-                    dtoFieldValue = converter.convertFieldDTOToEntity(dtoFieldValue);
-
-                    // Set value to entity
-                    setValueForField(entity, entityFieldPath, dtoFieldValue);
-                } else {
-                    // In case don't have any configuration MapField, set value for entity field by the field name same with DTO
-                    Object dtoFieldValue = getValueOfField(dto, entityField.getName());
-                    ObjectUtils.setValueForField(entity, entityField.getName(), dtoFieldValue);
                 }
             }
         } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | InstantiationException e) {
-            throw new ConvertException("Error occurs while convert DTO to Entity", e);
+            throw new MappingFieldException("Error occurs while convert DTO to Entity", e);
         }
         return entity;
     }
@@ -183,6 +189,81 @@ public class ConvertUtils {
                     setValueForField(subObject, nextPath, value);
                     ObjectUtils.setValueForField(object, paths[0], subObject);
                 }
+            }
+        }
+    }
+
+    /**
+     * Checking ignore mapping field.
+     *
+     * @param ignoreMapping Annotation IgnoreMapping
+     * @param checkingClass Class need to checking
+     * @return if checking class exists in IgnoreMapping value array then ignore mapping this field
+     */
+    private static boolean checkingIgnoreMapping(IgnoreMapping ignoreMapping, Class<?> checkingClass) {
+        boolean ignore = false;
+        if (null != ignoreMapping && null != checkingClass) {
+            Class<?>[] classes = ignoreMapping.value();
+            for (Class<?> clazz : classes) {
+                if (clazz.equals(checkingClass)) {
+                    ignore = true;
+                    break;
+                }
+            }
+        }
+        return ignore;
+    }
+
+    /**
+     * Copy value from DTO to Entity.
+     *
+     * @param dto    dto instance
+     * @param entity entity instance
+     */
+    public static void copyValueFromDTOToEntity(Object dto, Object entity) {
+        if (null != dto && null != entity) {
+            try {
+                List<Field> entityFields = ObjectUtils.getFields(entity.getClass());
+
+                // Copy value from DTO to Entity
+                for (Field entityField : entityFields) {
+                    IgnoreMapping ignoreMapping = ObjectUtils.getAnnotation(entityField, IgnoreMapping.class);
+                    if (!checkingIgnoreMapping(ignoreMapping, dto.getClass())) {
+                        MapField mapField = ObjectUtils.getAnnotation(entityField, MapField.class);
+                        // If field have configuration annotation MapField
+                        if (null != mapField) {
+                            String dtoFieldName = mapField.from();
+                            String entityFieldPath = mapField.mapTo();
+
+                            // If don't have any mapTo configuration, using entity field name instead
+                            if (StringUtils.isEmpty(entityFieldPath)) {
+                                entityFieldPath = entityField.getName();
+                            }
+
+                            // Get value of DTO
+                            Object dtoFieldValue = getValueOfField(dto, dtoFieldName);
+
+                            // Check and get data for special field
+                            if (!SpecialValue.NONE.equals(mapField.specialFrom())) {
+                                dtoFieldValue = SpecialValueImpl.getSpecialValue(mapField.specialFrom());
+                            }
+
+                            // Convert value of field from DTO to Entity
+                            Class<?> converterClass = mapField.converter();
+                            FieldConverter converter = (FieldConverter) ObjectUtils.newInstanceFromClass(converterClass);
+                            dtoFieldValue = converter.convertFieldDTOToEntity(dtoFieldValue);
+
+                            // Set value to entity
+                            setValueForField(entity, entityFieldPath, dtoFieldValue);
+                        } else {
+                            // In case don't have any configuration MapField, set value for entity field by the field name same with DTO
+                            Object dtoFieldValue = getValueOfField(dto, entityField.getName());
+                            ObjectUtils.setValueForField(entity, entityField.getName(), dtoFieldValue);
+                        }
+                    }
+                }
+            } catch (IllegalAccessException | NoSuchMethodException | InstantiationException | InvocationTargetException e) {
+                throw new MappingFieldException("Error occurs while copy DTO to Entity", e);
             }
         }
     }
